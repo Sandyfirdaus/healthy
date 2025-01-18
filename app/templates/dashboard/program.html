@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include "base/header.html" %}
+    <title>Program - PSIDAMAI</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+      $(document).ready(function () {
+        const username = "{{ user_info.username }}";
+        $.ajax({
+          type: "post",
+          url: "/check-status-screening",
+          data: { username},
+          success: function (response) {
+            console.log(response);
+            if (response.exists) {
+              $('#mindfulness-link').off('click').css('pointer-events', 'auto').css('color', ''); // Mengaktifkan kembali link
+            } else {
+              $('#mindfulness-link').on('click', function (e) {
+                e.preventDefault(); // Mencegah link agar tidak bisa diakses
+            }).css('pointer-events', 'none').css('color', 'gray');
+            Swal.fire({
+              icon: "info",
+              title: "Kamu belum bisa mengakses program yang tersedia!",
+              text: "Silahkan tes skrining terlebih dahulu",
+              confirmButtonText: "Oke",
+            }).then(() => {
+              window.location.href = "/homesignin";
+            });
+            }
+          },
+        });
+    })
+    </script>
+  </head>
+  
+  <body>
+    {% include "base/navbar_masuk.html" %}
+
+    <main class="main">
+      <!-- Page Title -->
+      <div class="page-title">
+        <div
+          class="container d-lg-flex justify-content-between align-items-center"
+        >
+          <h1 class="mb-2 mb-lg-0 program-title">Program</h1>
+        </div>
+      </div>
+      <!-- End Page Title -->
+
+      <!-- Programs Posts Section -->
+      <section id="program-posts" class="program-posts section">
+        <div class="container ">
+          <div class="row gy-4">
+            <div class="col-lg-4" data-aos="fade-up">
+              <article>
+                <div class="post-img">
+                  <img
+                    src="{{url_for('static', filename='assets/img/program/program-1.jpg')}}"
+                    alt="Gangguan Kecemasan"
+                    class="img-fluid"
+                  />
+                </div>
+                <h2 class="title-center">
+                  <a href="/program_content" id="mindfulness-link" >Perkenalan Mindfulness Untuk Mahasiswa</a>
+                </h2>
+              </article>
+            </div>
+            <!-- End post list item -->
+
+            
+
+          
+      <!-- End Programs Posts Section -->
+    </main>
+
+    {% include "base/footer.html" %}
+
+  </body>
+</html>

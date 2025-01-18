@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include "base/header.html" %}
+    <title>Program - PSIDAMAI</title>
+    <script>
+      $(document).ready(function () {
+        getStatus();
+        $("#materi-2").addClass("disabled");
+        $("#materi-2").removeAttr("href");
+        $("#materi-3").addClass("disabled");
+        $("#materi-3").removeAttr("href");
+        $("#materi-4").addClass("disabled");
+        $("#materi-4").removeAttr("href");
+      });
+      function getStatus() {
+        $.ajax({
+          url: "/check-status",
+          type: "GET",
+          success: function (response) {
+            progres = response["progres"];
+
+            for (let i = 0; i < progres.length; i++) {
+              const icon = document.getElementById(`icon${progres[i].materi}`);
+              if (progres[i].materi == "Sesi 1 - Menjadi Sadar") {
+                icon.classList.remove("d-none");
+                $("#materi-2").removeClass("disabled");
+                $("#materi-2").attr("href", "/materi/2");
+                $("#materi-2").css({
+                  "pointer-events": "",
+                  opacity: "",
+                });
+              }
+              if (progres[i].materi == "Sesi 2 - Memahami Pikiran Kamu") {
+                icon.classList.remove("d-none");
+                $("#materi-3").removeClass("disabled");
+                $("#materi-3").attr("href", "/materi/3");
+                $("#materi-3").css({
+                  "pointer-events": "",
+                  opacity: "",
+                });
+              }
+              if (
+                progres[i].materi ==
+                "Sesi 3 - Mengenali Hambatan dan Mendengarkan Tubuh"
+              ) {
+                icon.classList.remove("d-none");
+                $("#materi-4").removeClass("disabled");
+                $("#materi-4").attr("href", "/materi/4");
+                $("#materi-4").css({
+                  "pointer-events": "",
+                  opacity: "",
+                });
+              }
+              if (
+                progres[i].materi == "Sesi 4 - Mindfulness dalam Keseharian"
+              ) {
+                icon.classList.remove("d-none");
+              }
+            }
+          },
+          error: function (xhr, progres, error) {
+            console.error(error);
+          },
+        });
+      }
+    </script>
+  </head>
+
+  <body class="service-details-page">
+    <header id="header" class="header d-flex align-items-center sticky-top">
+      <div
+        class="container-fluid position-relative d-flex align-items-center justify-content-between"
+      >
+        <a href="#" class="logo d-flex align-items-center me-auto me-xl-0">
+          <img
+            src="{{url_for('static', filename='assets/img/logo_web.png')}}"
+            alt="PSI Damai Logo"
+          />
+        </a>
+
+        <nav id="navmenu" class="navmenu">
+          <i class="mobile-nav-toggle d-xl-none bi bi"></i>
+        </nav>
+
+        <a class="btn-getstarted" href="/program">Kembali</a>
+      </div>
+    </header>
+
+    <main id="main-content" class="container my-5">
+      <section id="mindfulness-section" class="text-start">
+        <h2
+          class="section-title-start"
+          style="font-size: 1.5rem; color: #17cf97"
+        >
+          Perkenalan Mindfulness Untuk Mahasiswa
+        </h2>
+        <div class="row align-items-start mt-4">
+          {% for id, materi in materi_data.items() %}
+          <div class="col-md-12 mb-4 d-flex align-items-center">
+            <a
+              href="/materi/{{ id }}"
+              class="d-flex align-items-center text-decoration-none"
+              id="materi-{{ id }}"
+            >
+              <img
+                src="{{ url_for('static', filename=materi.image) }}"
+                alt="Mindfulness"
+                class="img-fluid rounded me-3"
+                style="max-width: 120px"
+              />
+              <h3
+                class="subsection-title"
+                style="font-size: 1.2rem; color: #5baaa5"
+              >
+                {{ materi.judul }}
+                <i
+                  id="icon{{ materi.judul }}"
+                  class="mdi mdi-check-circle d-none"
+                ></i>
+              </h3>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+
+    {% include "base/footer.html" %}
+
+    <script>
+      function logout() {
+        $.ajax({
+          url: "/logout",
+          type: "DELETE",
+          success: function (response) {
+            document.cookie =
+              "mytoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/";
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

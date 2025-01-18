@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include "base/header.html" %}
+    <title>Homesignin - PSIDAMAI</title>
+  </head>
+  <body>
+    {% include "base/navbar_masuk.html" %}
+
+    <!-- Ikon Catatan -->
+  <button class="note-icon" data-bs-toggle="modal" data-bs-target="#noteModal">
+    📝
+  </button>
+
+  <!-- Modal Catatan -->
+  <div
+    class="modal fade"
+    id="noteModal"
+    tabindex="-1"
+    aria-labelledby="noteModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="noteModalLabel">Catatan Pribadi Anda</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <textarea
+            id="noteContent"
+            class="form-control"
+            rows="10"
+            placeholder="Tulis catatan Anda di sini..."
+          ></textarea>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Tutup
+          </button>
+          <button
+            type="button"
+            class="btn btn-success"
+            onclick="saveNote()"
+          >
+            Simpan Catatan
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function saveNote() {
+      const noteContent = document.getElementById("noteContent").value;
+      if (noteContent.trim()) {
+        alert("Catatan Anda telah disimpan:\n" + noteContent);
+      } else {
+        alert("Catatan kosong. Silakan tulis sesuatu.");
+      }
+    }
+  </script>
+
+    <section id="portfolio-details" class="portfolio-details section">
+      <div class="container" data-aos="fade-up">
+        <!-- Swiper Slider for Images -->
+        <div class="portfolio-details-slider swiper init-swiper">
+          <script type="application/json" class="swiper-config">
+            {
+              "loop": true,
+              "speed": 350,
+              "autoplay": {
+                "delay": 5000
+              },
+              "slidesPerView": "auto",
+              "navigation": {
+                "nextEl": ".swiper-button-next",
+                "prevEl": ".swiper-button-prev"
+              },
+              "pagination": {
+                "el": ".swiper-pagination",
+                "type": "bullets",
+                "clickable": true
+              }
+            }
+          </script>
+          <div class="swiper-wrapper align-items-center">
+            <!-- Swiper slides -->
+            <div class="swiper-slide">
+              <img
+                src="{{url_for('static', filename='assets/img/homesignin/carousel-1.png')}}"
+                alt=""
+              />
+            </div>
+            <div class="swiper-slide">
+              <img
+                src="{{url_for('static', filename='assets/img/homesignin/carousel-2.png')}}"
+                alt=""
+              />
+            </div>
+            <div class="swiper-slide">
+              <img
+                src="{{url_for('static', filename='assets/img/homesignin/carousel-3.png')}}"
+                alt=""
+              />
+            </div>
+          </div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-pagination"></div>
+        </div>
+
+
+          <!-- Button for screening -->
+<div class="screening-button mt-5 text-center">
+  <button 
+    class="btn btn-success btn-lg" 
+    onclick="startTest()">
+    Skrining Cek Kesehatan Mentalmu, Yuk!
+  </button>
+</div>
+
+          <div
+  class="modal fade"
+  id="screeningModal"
+  tabindex="-1"
+  aria-labelledby="screeningModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fs-3" id="screeningModalLabel">Skrining Kesehatan Mental</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          onclick="window.location.href = '/';"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" id="screeningForm" onsubmit="submitForm(event)">
+          <!-- Tempat pertanyaan -->
+          <div id="questionContainer">
+            <img id="questionImage" src="" alt="Gambar pertanyaan" style="width: 100%; max-height: 300px; object-fit: contain; margin-bottom: 20px;" />
+            <p id="questionText" class="fs-4"></p>
+            <div>
+              <label class="fs-5"><input type="radio" name="response" value="0" /> Tidak Pernah</label><br>
+              <label class="fs-5"><input type="radio" name="response" value="1" /> Kadang-Kadang</label><br>
+              <label class="fs-5"><input type="radio" name="response" value="2" /> Lumayan Sering</label><br>
+              <label class="fs-5"><input type="radio" name="response" value="3" /> Sering Sekali</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="prevButton" class="btn btn-success fs-5" onclick="prevQuestion()" disabled>Kembali</button>
+            <button type="button" id="nextButton" class="btn btn-success fs-5" onclick="nextQuestion()">Selanjutnya</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+       <!-- Section: Baru Saja Diakses -->
+<div class="recently-accessed mt-5">
+  <div class="row">
+    <div class="col-lg-12">
+      <a href="/program" class="recent-title" >
+        <h5>Tampilkan Semua</h5>
+      </a>
+    </div>
+  </div>
+</div>
+
+          <div class="row flex-nowrap overflow-auto mt-4">
+            <!-- Konten pertama -->
+            <div
+              class="col-lg-3 col-md-4 col-sm-4 d-flex align-items-start flex-column mx-0"
+              data-aos="zoom-in"
+            >
+              <img
+                src="{{url_for('static', filename='assets/img/ilustrasi/sesi-4/Ilustrasi 4.1.jpg')}}"
+                alt="Program A"
+                class="recent-icon"
+                style="width: 250px; height: 100px; margin-bottom: 20px"
+              />
+              <div class="recent-content">
+                <h4 class="recent-program-title">
+                  Perkenalan Mindfulness Untuk Mahasiswa
+                </h4>
+                <p class="recent-description">Sesi 4 - Mindfulness dalam Keseharian</p>
+              </div>
+            </div>
+           <!-- Konten kedua -->
+      <div class="col-lg-3 col-md-4 col-sm-4 d-flex align-items-start flex-column mx-0" data-aos="zoom-in"> 
+        <img src="{{url_for('static', filename='assets/img/ilustrasi/sesi-3/Ilustrasi 3.1.jpg')}}" alt="Program B" class="recent-icon" style="width: 250px; height: 100px; margin-bottom: 20px;" />
+        <div class="recent-content">
+          <h4 class="recent-program-title">Perkenalan Mindfulness Untuk Mahasiswa</h4>
+          <p class="recent-description">Sesi 3 - Mengenali Hambatan dan Mendengarkan Tubuh</p>
+          
+        </div>
+      </div>
+  
+      <!-- Konten ketiga -->
+      <div class="col-lg-3 col-md-4 col-sm-4 d-flex align-items-start flex-column mx-0" data-aos="zoom-in"> 
+        <img src="{{url_for('static', filename='assets/img/ilustrasi/sesi-2/Session 2.1.jpg')}}" alt="Program C" class="recent-icon" style="width: 250px; height: 100px; margin-bottom: 20px;" />
+        <div class="recent-content">
+          <h4 class="recent-program-title">Perkenalan Mindfulness Untuk Mahasiswa</h4>
+          <p class="recent-description">Sesi 2 - Memahami Pikiran Kamu</p>
+          
+        </div>
+      </div>
+  
+      <!-- Konten keempat -->
+      <div class="col-lg-3 col-md-4 col-sm-4 d-flex align-items-start flex-column mx-0" data-aos="zoom-in"> 
+        <img src="{{url_for('static', filename='assets/img/ilustrasi/sesi-1/Session 1.1.jpg')}}" alt="Program D" class="recent-icon" style="width: 250px; height: 100px; margin-bottom: 20px;" />
+        <div class="recent-content">
+          <h4 class="recent-program-title">Perkenalan Mindfulness Untuk Mahasiswa</h4>
+          <p class="recent-description">Sesi 1 - Menjadi Sadar</p>
+          
+        </div>
+      </div>
+          
+
+        
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      function startTest() {
+          Swal.fire({
+              title: "Hai Partisipan, sebelum cek kesehatan mental kamu perhatikan panduan berikut!",
+              text: "Baca dengan seksama dari beberapa pertanyaan yang tersedia, pilih jawaban berdasarkan apa yang kamu rasakan dalam satu minggu ini.",
+              icon: "warning",
+              confirmButtonText: "Mulai Tes",
+              confirmButtonColor: "#28a745",
+          }).then((result) => {
+              if (result.isConfirmed) {
+                var myModal = new bootstrap.Modal(document.getElementById('screeningModal'));
+                myModal.show();
+              }
+          });
+      }
+    </script>
+
+    <script>
+      const questions = [
+        { text: "1. Saya merasa sulit untuk beristirahat.", category: "Stress" },
+        { text: "2. Saya merasa rongga mulut saya kering.", category: "Anxiety" },
+        { text: "3. Saya sama sekali tidak dapat merasakan perasaan positif.", category: "Depression" },
+        { text: "4. Saya mengalami kesulitan bernapas.", category: "Anxiety" },
+        { text: "5. Saya merasa sulit berinisiatif untuk melakukan sesuatu.", category: "Depression" },
+        { text: "6. Saya cenderung menunjukkan reaksi berlebihan terhadap suatu situasi.", category: "Stress" },
+        { text: "7. Saya merasa gemetar.", category: "Anxiety" },
+        { text: "8. Saya merasa energi saya terkuras karena terlalu cemas.", category: "Stress" },
+        { text: "9. Saya merasa khawatir dengan situasi dimana saya mungkin menjadi panik.", category: "Anxiety" },
+        { text: "10. Saya merasa tidak ada lagi yang bisa saya harapkan.", category: "Depression" },
+        { text: "11. Saya merasa gelisah.", category: "Stress" },
+        { text: "12. Saya sulit untuk merasa tenang.", category: "Stress" },
+        { text: "13. Saya merasa sedih dan tertekan.", category: "Depression" },
+        { text: "14. Saya sulit untuk bersabar dalam menghadapi gangguan.", category: "Stress" },
+        { text: "15. Saya merasa hampir panik.", category: "Anxiety" },
+        { text: "16. Saya tidak bisa merasa antusias terhadap hal apapun.", category: "Depression" },
+        { text: "17. Saya merasa diri saya tidak berharga.", category: "Depression" },
+        { text: "18. Perasaan saya mudah tergugah atau tersentuh.", category: "Stress" },
+        { text: "19. Saya menyadari kondisi jantung saya.", category: "Anxiety" },
+        { text: "20. Saya merasa ketakutan tanpa alasan yang jelas.", category: "Anxiety" },
+        { text: "21. Saya merasa bahwa hidup ini tidak berarti.", category: "Depression" }
+      ];
+    
+      let currentQuestionIndex = 0;
+      const responses = [];
+      const scores = { Stress: 0, Anxiety: 0, Depression: 0 };
+    
+      function displayQuestion() {
+        const questionText = document.getElementById("questionText");
+        const questionImage = document.getElementById("questionImage");
+        const responseRadios = document.querySelectorAll('input[name="response"]');
+    
+        // Tampilkan teks dan gambar pertanyaan
+        questionText.innerText = questions[currentQuestionIndex].text;
+        questionImage.src = `static/assets/img/screening/question${currentQuestionIndex + 1}.png`;
+        questionImage.alt = `Gambar untuk pertanyaan ${currentQuestionIndex + 1}`;
+    
+        // Aktifkan atau nonaktifkan tombol "Kembali"
+        const prevButton = document.getElementById("prevButton");
+        prevButton.disabled = currentQuestionIndex === 0;
+    
+        // Perbarui teks tombol "Selanjutnya"
+        const nextButton = document.getElementById("nextButton");
+        nextButton.textContent = currentQuestionIndex === questions.length - 1 ? "Kirim" : "Selanjutnya";
+    
+        // Isi kembali jawaban yang sudah dipilih
+        responseRadios.forEach((radio, index) => {
+          radio.checked = responses[currentQuestionIndex] === index;
+        });
+      }
+    
+      function nextQuestion() {
+        const selectedResponse = document.querySelector('input[name="response"]:checked');
+        if (!selectedResponse) {
+          alert("Harap pilih jawaban sebelum melanjutkan.");
+          return;
+        }
+    
+        // Simpan jawaban yang dipilih
+        responses[currentQuestionIndex] = parseInt(selectedResponse.value, 10);
+    
+        // Tampilkan pertanyaan berikutnya atau hitung skor
+        if (currentQuestionIndex === questions.length - 1) {
+          calculateScores();
+          submitForm();
+        } else {
+          currentQuestionIndex++;
+          displayQuestion();
+        }
+      }
+    
+      function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+          currentQuestionIndex--;
+          displayQuestion();
+        }
+      }
+    
+      function calculateScores() {
+        questions.forEach((question, index) => {
+          if (responses[index] !== undefined) {
+            scores[question.category] += responses[index];
+          }
+        });
+    
+        // Kalikan setiap skor kategori dengan 2
+        for (const category in scores) {
+          scores[category] *= 2;
+        }
+      }
+    
+      function submitForm(event) {
+        if (event) event.preventDefault();
+    
+        const username = "{{ user_info.username }}";
+        const status = "done"
+        const resultText = `
+          Skor Stress: ${scores.Stress}\n
+          Skor Anxiety: ${scores.Anxiety}\n
+          Skor Depression: ${scores.Depression}`;
+          
+          
+    
+        Swal.fire({
+          title: "Hasil Skrining",
+          text: resultText,
+          icon: "info",
+          confirmButtonText: "Menuju Program",
+        }).then(() => {
+          $.ajax({
+            type: "POST",
+            url: "/save-status-screening",
+            data: { username, resultText, status },
+            success: function (response) {
+              if (response.exists) {
+                window.location.href = "/program";
+                console.log(response.result)
+              } else {
+                window.location.href = "/program";
+                console.log(response.result)
+              }
+            },
+          });
+        });
+      }
+    
+      document.addEventListener("DOMContentLoaded", displayQuestion);
+    </script>
+    
+    
+    
+    
+
+    {% include "base/footer.html" %}
+  </body>
+</html>

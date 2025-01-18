@@ -1,0 +1,86 @@
+<body class="index-page">
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div
+      class="container-fluid position-relative d-flex align-items-center justify-content-between"
+    >
+      <a href="#" class="logo d-flex align-items-center me-auto me-xl-0">
+        <img
+          src="{{url_for('static', filename='assets/img/logo_web.png')}}"
+          alt="PSIDAMAI Logo"
+        />
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li>
+            <a href="/homesignin" id="homeLink">Beranda<br /></a>
+          </li>
+          <li><a href="/program" id="programLink">Program</a></li>
+          <li><a href="/artikel" id="artikelLink">Artikel</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <a class="nav-item dropdown" style="position: right">
+        <!-- Foto Profil dengan Dropdown -->
+        <a
+          class="nav-link dropdown-toggle"
+          href="#"
+          id="profileDropdown"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <img
+            src="{{ url_for('static', filename=user_info.profilePict) }}"
+            alt="Profile"
+            class="rounded-circle"
+            style="width: 40px; height: 40px"
+          />
+        </a>
+        <ul
+          class="dropdown-menu"
+          aria-labelledby="profileDropdown"
+          style="left: 0; right: auto"
+        >
+          <li><a class="dropdown-item" href="/profile">Profil Saya</a></li>
+          <li><hr class="dropdown-divider" /></li>
+          <li>
+            <button type="button" class="dropdown-item" onclick="logout()">
+              Keluar
+            </button>
+          </li>
+        </ul>
+      </a>
+    </div>
+  </header>
+
+  <script>
+    function logout() {
+      $.ajax({
+        url: "/logout",
+        type: "DELETE",
+        success: function (response) {
+          document.cookie =
+            "mytoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          window.location.href = "/";
+        },
+        error: function (xhr, status, error) {
+          console.error(error);
+        },
+      });
+    }
+
+    // JavaScript to highlight the active navbar link
+    window.onload = function () {
+      const currentUrl = window.location.pathname;
+      const links = document.querySelectorAll("#navmenu a");
+
+      links.forEach((link) => {
+        if (link.getAttribute("href") === currentUrl) {
+          link.classList.add("active"); // Add 'active' class to the current link
+        }
+      });
+    };
+  </script>
+</body>

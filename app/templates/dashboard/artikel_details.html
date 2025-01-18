@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include "base/header.html" %}
+    <title>Artikel - PSIDAMAI</title>
+  </head>
+  <body>
+    <body class="service-details-page">
+      <header id="header" class="header d-flex align-items-center sticky-top">
+        <div
+          class="container-fluid position-relative d-flex align-items-center justify-content-between"
+        >
+          <a href="#" class="logo d-flex align-items-center me-auto me-xl-0">
+            <img
+              src="{{url_for('static', filename='assets/img/logo_web.png')}}"
+              alt="PSI Damai Logo"
+            />
+          </a>
+  
+          <nav id="navmenu" class="navmenu">
+            <i class="mobile-nav-toggle d-xl-none bi bi"></i>
+          </nav>
+  
+          <a class="btn-getstarted" href="/artikel">Kembali</a>
+        </div>
+      </header>
+
+    <main class="main">
+      <!-- Page Title -->
+      <div class="page-title">
+        <div
+          class="container d-lg-flex justify-content-between align-items-center"
+        >
+          <h1 class="mb-2 mb-lg-0"> Artikel Details</h1>
+        </div>
+      </div>
+      <!-- End Page Title -->
+
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            <!-- Blog Details Section -->
+            <section id="blog-details" class="blog-details section">
+              <div class="container">
+                <article class="article">
+                  <div class="post-img"> 
+                    <img
+                    src="{{ url_for('static', filename=article['image']) }}"
+                    alt="{{ article['title'] }}"
+                    class="img-fluid"
+                  />
+                  </div>
+
+                  <h2 class="title">
+                    {{ article['title'] }}
+                  </h2>
+
+                  <div class="meta-top">
+                    <ul>
+                      <li class="d-flex align-items-center">
+                        <i class="bi bi-person"></i>
+                        <a href="#blog-author">{{ article['author'] }}</a>
+                      </li>
+                      <li class="d-flex align-items-center">
+                        <i class="bi bi-clock"></i>
+                        <a href="blog-details.html"
+                          ><time datetime="{{ article['date'] }}">{{ article['date'] }}</time></a
+                        >
+                      </li>
+                      
+                    </ul>
+                  </div>
+                  <!-- End meta top -->
+
+                  <div class="content">
+                    <p>
+                      {{ article.konten }}
+                    </p>  
+
+                    <blockquote>
+                      <h2 class="tittle">{{ article.title_quotes }}<h2>
+                      <p>
+                        {{ article.quotes | join(', ') }}
+                      </p>
+                    </blockquote>
+
+                    <h3>{{ article.title_isi }}</h3>
+                    <p>
+                      {% for isi in article.isi %}
+                      <li>{{ isi }}</li>
+                      {% endfor %}
+                    </p>
+                    
+
+                    <h3>
+                      {{ article.title_akhir }}
+                    </h3>
+                    <p>
+                      {% for akhir in article.akhir %}
+                      <li>{{ akhir }}</li>
+                      {% endfor %}
+                    </p>
+                    <h4>Referensi</h4>
+                    <p>{{ article.referensi }}
+                      </p>
+                  </div>
+                  <!-- End post content -->
+
+                  <div class="meta-bottom">
+
+                    <i class="bi bi-tags"></i>
+                    <ul class="tags">
+                      {% for tag in article['tags'] %}
+                      <li>{{ tag }}</a></li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  <!-- End meta bottom -->
+                </article>
+              </div>
+            </section>
+            <!-- /Blog Details Section -->
+
+            <!-- Blog Author Section -->
+            <section id="blog-author" class="blog-author section">
+              <div class="container">
+                <div class="author-container d-flex align-items-center">
+                  <img
+                  src="{{ url_for('static', filename=article['penulis_foto']) }}"
+                  class="rounded-circle flex-shrink-0"
+                  alt="Penulis"
+                  />
+                  <div>
+                    <h4>{{ article['author'] }}</h4>
+                    <div class="social-links">
+                      <a href="https://x.com/DrRatihArruum"
+                        ><i class="bi bi-twitter-x"></i
+                      ></a>
+                      <a href="https://www.linkedin.com/in/ratiharruum"
+                        ><i class="bi bi-linkedin"></i
+                      ></a>
+                      <a href="https://instagram.com/dr.ratiharruum_psi"
+                        ><i class="biu bi-instagram"></i
+                      ></a>
+                      <a href="https://youtube.com/channel/UCBIb1atiiirQXBfkn7Jb86Q"
+                        ><i class="biu bi-youtube"></i
+                      ></a>
+                      <a href="mailto:ratih.arruum@gmail.com">
+                        <i class="bi bi-envelope-fill"></i>
+                      </a>
+                    </div>
+                    <p>
+                      {{ article.penutup }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <!-- /Blog Author Section -->
+          </div>
+
+            <div class="col-lg-4 sidebar">
+
+              <div class="widgets-container">
+
+                <div class="recent-posts-widget widget-item">
+
+                  <h3 class="widget-title">Artikel Lainnya</h3>
+                  {% for article in articles %}
+                  <div class="post-item d-flex">
+                    <img  src="{{ url_for('static', filename=article.image) }}" alt="" class="flex-shrink-0">
+                    <div>
+                      <h4><a
+                        href="/artikel_details/{{ article.id }}"
+                        class="text-decoration-none"
+                      >
+                        {{ article.title }}
+                      </a></h4>
+                      <time datetime="{{ article['date'] }}">{{ article['date'] }}</time>
+                    </div>
+                  </div>
+                  {% endfor%}
+                
+
+        </body>
+      </html>

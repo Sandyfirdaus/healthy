@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include "base/header.html" %}
+    <title>Home - PSIDAMAI</title>
+    <script>
+      $(document).ready(function () {
+        getTestimoni();
+      });
+
+      function getTestimoni() {
+        $.ajax({
+          type: "GET",
+          url: "/rating",
+          data: {},
+          success: function (response) {
+            let rows = response["testimonial"];
+            for (let i = 0; i < rows.length; i++) {
+              let star = rows[i]["star"];
+              let imageUrl = "/static/" + rows[i]["foto"];
+              let star_image = "⭐".repeat(star);
+              let temp_html = `<div class="swiper-slide">
+              <div class="testimonial-item">
+                 <img src="${imageUrl}" class="testimonial-img" alt="">
+                <h3>${rows[i]["namaLengkap"]}</h3>
+              <div class="stars">
+                <p>${star_image}</p>
+              </div>
+              <p>
+                <span>${rows[i]["testimonial"]}</span>
+              </p>
+              </div>
+              </div>`;
+
+              $("#list-testimonial").append(temp_html);
+            }
+          },
+        });
+      }
+
+    </script>
+  </head>
+</html>
+
+{% include "base/navbar.html" %}
+
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section">
+
+      <div class="container d-flex flex-column justify-content-end align-items-center text-center position-relative" data-aos="zoom-out" style="top: -170px;">
+    <p class="welcome-text mt-n3">Selamat Datang Di PSIDAMAI</p>
+    <p class="welcome-text1 px-3">PSIDAMAI adalah program mindfulness yang berkomitmen menyediakan layanan kesehatan mental inklusif, terjangkau, dan mudah diakses bagi dewasa muda di Indonesia.</p>
+    <p class="text-light mb-4">Jika kamu penasaran dengan kesehatan mental kamu klik tombol di bawah!</p>
+    <div class="d-flex mt-n2">
+      <a href="javascript:void(0);" class="btn-get-started scrollto" onclick="startTest()">Cek Kesehatan Mentalmu, Yuk!</a>
+    </div>
+</div>
+      <div
+  class="modal fade"
+  id="screeningModal"
+  tabindex="-1"
+  aria-labelledby="screeningModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fs-3" id="screeningModalLabel">Skrining Kesehatan Mental</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          onclick="window.location.href = '/';"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" id="screeningForm" onsubmit="submitForm(event)">
+          <!-- Tempat pertanyaan -->
+          <div id="questionContainer">
+            <img id="questionImage" src="" alt="Gambar pertanyaan" style="width: 100%; max-height: 300px; object-fit: contain; margin-bottom: 20px;" />
+            <p id="questionText" class="fs-4"></p>
+            <div>
+              <label class="fs-5"><input type="radio" name="response" value="0" /> Tidak Pernah</label><br>
+              <label class="fs-5"><input type="radio" name="response" value="1" /> Kadang-Kadang</label><br>
+              <label class="fs-5"><input type="radio" name="response" value="2" /> Lumayan Sering</label><br>
+              <label class="fs-5"><input type="radio" name="response" value="3" /> Sering Sekali</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="prevButton" class="btn btn-success fs-5" onclick="prevQuestion()" disabled>Kembali</button>
+            <button type="button" id="nextButton" class="btn btn-success fs-5" onclick="nextQuestion()">Selanjutnya</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+    </section><!-- /Hero Section -->
+
+    <!-- Featured Services Section -->
+    <section id="featured-services" class="featured-services section">
+
+      <div class="container">
+        <div class="video-container">
+            <iframe 
+                src="https://youtube.com/embed/726ye1kOmEY?si=0gxn35L0OAuJbntB" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>    
+    <div class="container my-5">
+      <div class="text-container">
+        <div data-aos="fade-left">
+          <h2 class="text-center mb-5">Tata Cara Penggunaan Website PSIDAMAI</h2>
+          <div class="steps">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Lakukan Cek Kesehatan Mental</h4>
+                <p>Mulailah dengan mengevaluasi kesehatan mentalmu melalui fitur cek yang tersedia.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Pilih Programmu</h4>
+                <p>Kami menawarkan satu program yang dirancang khusus untuk kebutuhanmu.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Klik Program Pilihanmu</h4>
+                <p>Tekan program yang tersedia untuk memulai perjalananmu.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h4>Mulai Programmu!</h4>
+                <p>Ikuti langkah-langkah dalam program tersebut untuk mencapai tujuanmu.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section><!-- /Featured Services Section -->
+
+<!-- Call To Action Section -->
+<section id="call-to-action" class="call-to-action section">
+
+  <div class="container" data-aos="zoom-out">
+
+    <div class="row g-5">
+
+      <div class="col-lg-8 col-md-6 content d-flex flex-column justify-content-center order-last order-md-first">
+        <h3>Jika anda merasa cemas atau membutuhkan bantuan, <em>kami</em>  siap mendukung anda melalui berbagai program yang tersedia.</h3>
+        <p> Jika mengalami kendala teknis atau kesulitan mengakses layanan kami, jangan ragu untuk menghubungi tim bantuan kami.</p>
+        <a class="cta-btn align-self-start" href="#contact">Hubungi Kami</a>
+      </div>
+
+      <div class="col-lg-4 col-md-6 order-first order-md-last d-flex align-items-center">
+        <div class="img">
+          <img src="{{url_for('static', filename='assets/img/cta.png')}}" alt="" class="img-fluid">
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</section><!-- /Call To Action Section -->
+
+<!-- Services Section -->
+<section id="services" class="services section">
+
+ <!-- Section Title -->
+ <div class="container section-title" data-aos="fade-up">
+  <h2><strong>Keunggulan Kami</strong></h2>
+  <p>PSIDAMAI difokuskan pada program intervensi yang lebih spesifik dan didukung oleh bukti ilmiah. </p>
+</div><!-- End Section Title -->
+
+<div class="container" data-aos="fade-up" data-aos-delay="100">
+
+  <div class="row gy-5">
+
+    <div class="col-xl-3 col-md-4" data-aos="zoom-in" data-aos-delay="200">
+      <div class="service-item">
+        <div class="img">
+          <img src="{{url_for('static', filename='assets/img/services/services-1.png')}}" class="img-fluid" alt="">
+        </div>
+        <div class="details position-relative">
+          <a  class="stretched-link">
+          </a>
+          <p>Menyediakan program
+            berupa materi dan 
+           audio yang mudah dipahami </p>
+        </div>
+      </div>
+    </div><!-- End Service Item -->
+
+    <div class="col-xl-3 col-md-4" data-aos="zoom-in" data-aos-delay="300">
+      <div class="service-item">
+        <div class="img">
+          <img src="{{url_for('static', filename='assets/img/services/services-2.png')}}" class="img-fluid" alt="">
+        </div>
+        <div class="details position-relative">
+          <a  class="stretched-link">
+          </a>
+          <p>Mengutamakan & menjamin
+            privasi dan keamanan pengguna</p>
+        </div>
+      </div>
+    </div><!-- End Service Item -->
+
+    <div class="col-xl-3 col-md-4" data-aos="zoom-in" data-aos-delay="400">
+      <div class="service-item">
+        <div class="img">
+          <img src="{{url_for('static', filename='assets/img/services/services-3.png')}}" class="img-fluid" alt="">
+        </div>
+        <div class="details position-relative">
+          <a  class="stretched-link">
+          </a>
+          <p>Menerapkan profesionalitas 
+            tertinggi dalam 
+            kenyamanan demi 
+            kepuasan pengguna</p>
+        </div>
+      </div>
+    </div><!-- End Service Item -->
+
+    <div class="col-xl-3 col-md-4" data-aos="zoom-in" data-aos-delay="500">
+      <div class="service-item">
+        <div class="img">
+          <img src="{{url_for('static', filename='assets/img/services/services-4.png')}}" class="img-fluid" alt="">
+        </div>
+        <div class="details position-relative">
+          <a class="stretched-link">
+          </a>
+          <p>Pengguna bisa memilih program yang sesuai dengan hasil tes mereka.
+            Program-program intervensi mudah diakses dan dapat dijangkau oleh banyak orang.
+            </p>
+        </div>
+      </div>
+    </div><!-- End Service Item -->
+
+<!-- About Section -->
+<section id="about" class="about section">
+
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2 class="white-text-tittle" style="color: white;">TENTANG KAMI</h2>
+  </div><!-- End Section Title -->
+
+  <div class="container" data-aos="fade-up">
+
+    <div class="row g-4 g-lg-5" data-aos="fade-up" data-aos-delay="200">
+
+      <div class="col-lg-5">
+        <div class="about-img">
+          <img id="img-informasi" src="{{url_for('static', filename='assets/img/about/informasi.png')}}" class="img-fluid d-none" alt="Informasi" data-aos="fade-up" data-aos-delay="100">
+          <img id="img-visi" src="{{url_for('static', filename='assets/img/about/visi.png')}}" class="img-fluid d-none" alt="Visi" data-aos="fade-up" data-aos-delay="200">
+          <img id="img-misi" src="{{url_for('static', filename='assets/img/about/misi.png')}}" class="img-fluid d-none" alt="Misi" data-aos="fade-up" data-aos-delay="300">
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="pt-0 pt-lg-5"> 
+
+        <!-- Tabs -->
+        <ul class="nav nav-pills mb-3">
+          <li><a class="nav-link active" data-bs-toggle="pill" href="#about-tab1" data-img="img-informasi">Informasi</a></li>
+          <li><a class="nav-link" data-bs-toggle="pill" href="#about-tab2" data-img="img-visi">Visi</a></li>
+          <li><a class="nav-link" data-bs-toggle="pill" href="#about-tab3" data-img="img-misi">Misi</a></li>
+        </ul>
+        <!-- End Tabs -->
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+
+          <div class="tab-pane fade show active white-text" id="about-tab1">
+
+            <p>PSIDAMAI adalah salah satu inisiatif penelitian di bawah Fakultas Psikologi Universitas YARSI. Kami berkomitmen untuk memajukan bidang pengobatan berbasis mindfulness melalui pendekatan digital yang disesuaikan dengan kebutuhan unik komunitas Indonesia. Penelitian kami berfokus pada pengembangan, pengujian, dan penerapan program-program inovatif berbasis mindfulness yang dapat diperluas, terjangkau, efektif, dan sesuai dengan budaya untuk individu dan komunitas di seluruh Indonesia.</p>
+
+          </div><!-- End Tab 1 Content -->
+
+          <div class="tab-pane fade white-text" id="about-tab2">
+
+            <p>Melakukan penelitian di Indonesia untuk pengembangan dan penyebaran intervensi inovatif berbasis digital dan mindfulness yang meningkatkan ketahanan mental dan mendorong hasil kesehatan mental yang positif bagi populasi Indonesia.</p>
+
+          </div><!-- End Tab 2 Content -->
+
+          <div class="tab-pane fade white-text" id="about-tab3">
+
+            <p>Penelitian dan Pengembangan: Melakukan penelitian terdepan untuk mengembangkan dan memvalidasi intervensi berbasis mindfulness digital yang ditujukan untuk mengatasi berbagai masalah kesehatan mental.
+
+              Aksesibilitas: Meningkatkan jangkauan layanan kesehatan mental di daerah-daerah terpencil dan kurang terlayani di Indonesia dengan memanfaatkan platform yang mudah diakses dan inovasi digital.
+              
+              Kolaborasi: Bekerja sama dengan institusi akademik, lembaga pemerintah, organisasi nirlaba, dan organisasi internasional untuk meningkatkan dampak dan penyebaran inovasi digital serta intervensi kesehatan mental berbasis bukti.</p>
+
+          </div><!-- End Tab 3 Content -->
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section><!-- /About Section -->
+
+<!-- Clients Section -->
+<section id="clients" class="clients section">
+
+  <div class="container" data-aos="fade-up">
+
+    <div class="row gy-4">
+
+      <div class="col-xl-3 col-md-3 col-6 client-logo">
+        <img src="{{url_for('static', filename='assets/img/clients/client-1.png')}}" class="img-fluid" alt="">
+      </div><!-- End Client Item -->
+      <div class="col-xl-3 col-md-3 col-6 client-logo">
+        <img src="{{url_for('static', filename='assets/img/clients/client-2.png')}}" class="img-fluid" alt="">
+      </div><!-- End Client Item -->
+      <div class="col-xl-3 col-md-3 col-6 client-logo">
+        <img src="{{url_for('static', filename='assets/img/clients/client-3.jpg')}}" class="img-fluid" alt="">
+      </div><!-- End Client Item -->
+      <div class="col-xl-3 col-md-3 col-6 client-logo">
+        <img src="{{url_for('static', filename='assets/img/clients/client-4.png')}}" class="img-fluid" alt="">
+      </div><!-- End Client Item -->
+      <div class="col-xl-3 col-md-3 col-6 client-logo">
+        <img src="{{url_for('static', filename='assets/img/clients/client-5.png')}}" class="img-fluid" alt="">
+      </div><!-- End Client Item -->
+      <div class="col-xl-3 col-md-3 col-6 client-logo">
+        <img src="{{url_for('static', filename='assets/img/clients/client-6.jpg')}}" class="img-fluid" alt="">
+      </div><!-- End Client Item -->
+      <div class="col-xl-3 col-md-3 col-6 client-logo">
+        <img src="{{url_for('static', filename='assets/img/clients/client-7.png')}}" class="img-fluid" alt="">
+      </div><!-- End Client Item -->
+      <div class="col-xl-3 col-md-3 col-6 client-logo">
+        <img src="{{url_for('static', filename='assets/img/clients/client-8.png')}}" class="img-fluid" alt="">
+      </div><!-- End Client Item -->
+      <div class="col-xl-3 col-md-3 col-6 client-logo">
+        <img src="{{url_for('static', filename='assets/img/clients/client-9.png')}}" class="img-fluid" alt="">
+      </div><!-- End Client Item -->
+      <div class="col-xl-3 col-md-3 col-6 client-logo">
+        <img src="{{url_for('static', filename='assets/img/clients/client-10.jpg')}}" class="img-fluid" alt="">
+      </div><!-- End Client Item -->
+      <div class="col-xl-3 col-md-3 col-6 client-logo">
+        <img src="{{url_for('static', filename='assets/img/clients/client-11.jpg')}}" class="img-fluid" alt="">
+      </div><!-- End Client Item -->
+    </div>
+
+  </div>
+
+</section><!-- /Clients Section -->
+
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="testimonials section dark-background">
+
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2><strong>Testimoni</strong></h2>
+  </div><!-- End Section Title -->
+
+  <img src="{{url_for('static', filename='assets/img/bg-testimonials.jpg')}}" class="testimonials-bg" alt="">
+
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+    <div class="swiper init-swiper">
+      <script type="application/json" class="swiper-config">
+        {
+          "loop": true,
+          "speed": 600,
+          "autoplay": {
+            "delay": 5000
+          },
+          "slidesPerView": "auto",
+          "pagination": {
+            "el": ".swiper-pagination",
+            "type": "bullets",
+            "clickable": true
+          }
+        }
+      </script>
+      <div class="swiper-wrapper" id="list-testimonial">
+
+        
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+
+  </div>
+
+</section><!-- /Testimonials Section -->
+
+
+<!-- Contact Section -->
+<section id="contact" class="contact section">
+
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Kontak Operasional</h2>
+    <p>Jika Anda memiliki pertanyaan atau merasa ada hal yang belum jelas mengenai hal teknis dari PSIDAMAI, jangan ragu untuk bertanya.</p>
+  </div><!-- End Section Title -->
+
+  <div class="container" data-aos="fade">
+
+    <div class="row gy-5 gx-lg-5">
+
+      <div class="col-lg-4">
+
+        <div class="info">
+
+          <div class="info-item d-flex">
+            <i class="bi bi-geo-alt flex-shrink-0"></i>
+            <div>
+              <h4>Lokasi:</h4>
+              <p>Jl. Letjen Suprapto No.Kav.13, RT.10/RW.5, Cemp. Putih Tim., Kec. Cemp. Putih, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10510</p>
+            </div>
+          </div><!-- End Info Item -->
+
+          <div class="info-item d-flex">
+            <i class="bi bi-envelope flex-shrink-0"></i>
+            <div>
+              <h4>Email:</h4>
+              <p>psidamai.cs@gmail.com</p>
+            </div>
+          </div><!-- End Info Item -->
+
+          <div class="info-item d-flex">
+            <i class="bi bi-phone flex-shrink-0"></i>
+            <div>
+              <h4>Telpon:</h4>
+              <p>021 4223138</p>
+            </div>
+          </div><!-- End Info Item -->
+
+        </div>
+
+      </div>
+
+      <div class="col-lg-8">
+        <form id="contactForm" role="form" class="php-email-form">
+          <input
+            type="hidden"
+            name="access_key"
+            value="5d87dce8-73c9-4cd7-92d6-b510ced52992"
+          />
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <input
+                type="text"
+                name="name"
+                class="form-control"
+                id="name"
+                placeholder="Masukkan Nama Anda"
+                required
+              />
+            </div>
+            <div class="col-md-6 form-group mt-3 mt-md-0">
+              <input
+                type="email"
+                class="form-control"
+                name="email"
+                id="email"
+                placeholder="Masukkan Email Anda"
+                required
+              />
+            </div>
+          </div>
+        
+          <div class="form-group mt-3">
+            <textarea
+              class="form-control"
+              name="message"
+              id="message"
+              placeholder="Tuliskan Pesan Anda"
+              required
+            ></textarea>
+          </div>
+          <div class="my-3">
+            <div class="loading" style="display: none">Loading...</div>
+            <div
+              class="error-message"
+              style="display: none; color: white"
+            ></div>
+            <div
+              class="sent-message"
+              style="display: none; color: white"
+            >
+              Pesan kamu sudah dikirim. Terima Kasih!
+            </div>
+          </div>
+          <div class="text-center">
+            <button type="submit" id="submitBtn">Kirim Pesan</button>
+          </div>
+        </form>
+        
+        <script>
+          document.getElementById("submitBtn").addEventListener("click", function (e) {
+            e.preventDefault(); // Mencegah reload form
+        
+            // Tampilkan loading
+            const loading = document.querySelector(".loading");
+            const errorMessage = document.querySelector(".error-message");
+            const sentMessage = document.querySelector(".sent-message");
+        
+            loading.style.display = "block";
+            errorMessage.style.display = "none";
+            sentMessage.style.display = "none";
+        
+            // Ambil data dari form
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const message = document.getElementById("message").value;
+        
+            // Validasi email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+              loading.style.display = "none";
+              errorMessage.style.display = "block";
+              errorMessage.innerText = "Masukkan alamat email yang valid.";
+              return;
+            }
+        
+            // Kirim data dengan AJAX
+            fetch("https://api.web3forms.com/submit", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                access_key: "5d87dce8-73c9-4cd7-92d6-b510ced52992",
+                name: name,
+                email: email,
+                message: message,
+              }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                loading.style.display = "none";
+                if (data.success) {
+                  sentMessage.style.display = "block";
+                  sentMessage.innerText =
+                    "Pesan kamu sudah dikirim. Terima Kasih!" || data.message;
+                } else {
+                  errorMessage.style.display = "block";
+                  errorMessage.innerText =
+                    data.message || "Terjadi kesalahan saat mengirim pesan.";
+                }
+              })
+              .catch((error) => {
+                loading.style.display = "none";
+                errorMessage.style.display = "block";
+                errorMessage.innerText =
+                  "Terjadi kesalahan pada jaringan atau server.";
+                console.error(error);
+              });
+          });
+        </script>
+        
+        
+        
+      </div><!-- End Contact Form -->
+
+    </div>
+
+  </div>
+
+</section><!-- /Contact Section -->
+
+<!-- JavaScript buat about -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const navLinks = document.querySelectorAll(".nav-link");
+    const images = document.querySelectorAll(".about-img img");
+  
+    navLinks.forEach(link => {
+      link.addEventListener("click", function () {
+        // Sembunyikan semua gambar
+        images.forEach(img => img.classList.add("d-none"));
+        
+        // Tampilkan gambar sesuai tab yang dipilih
+        const imgId = this.getAttribute("data-img");
+        const selectedImg = document.getElementById(imgId);
+        if (selectedImg) {
+          selectedImg.classList.remove("d-none");
+        }
+      });
+    });
+  
+    // Tampilkan gambar pertama saat halaman dimuat
+    document.getElementById("img-informasi").classList.remove("d-none");
+  });
+  
+
+  // Inisialisasi AOS
+  AOS.init({
+    duration: 1000, // Waktu animasi
+    once: true, // Jalankan sekali
+  });
+</script>
+<script>
+  function startTest() {
+      Swal.fire({
+          title: "Hai, sebelum cek kesehatan mental kamu perhatikan panduan berikut!",
+          text: "Baca dengan seksama dari beberapa pertanyaan yang tersedia, pilih jawaban berdasarkan apa yang kamu rasakan dalam satu minggu ini.",
+          icon: "warning",
+          confirmButtonText: "Mulai Tes",
+          confirmButtonColor: "#28a745",
+      }).then((result) => {
+          if (result.isConfirmed) {
+            var myModal = new bootstrap.Modal(document.getElementById('screeningModal'));
+            myModal.show();
+          }
+      });
+  }
+</script>
+
+<script>
+  const questions = [
+    { text: "1. Saya merasa sulit untuk beristirahat.", category: "Stress" },
+    { text: "2. Saya merasa rongga mulut saya kering.", category: "Anxiety" },
+    { text: "3. Saya sama sekali tidak dapat merasakan perasaan positif.", category: "Depression" },
+    { text: "4. Saya mengalami kesulitan bernapas.", category: "Anxiety" },
+    { text: "5. Saya merasa sulit berinisiatif untuk melakukan sesuatu.", category: "Depression" },
+    { text: "6. Saya cenderung menunjukkan reaksi berlebihan terhadap suatu situasi.", category: "Stress" },
+    { text: "7. Saya merasa gemetar.", category: "Anxiety" },
+    { text: "8. Saya merasa energi saya terkuras karena terlalu cemas.", category: "Stress" },
+    { text: "9. Saya merasa khawatir dengan situasi dimana saya mungkin menjadi panik.", category: "Anxiety" },
+    { text: "10. Saya merasa tidak ada lagi yang bisa saya harapkan.", category: "Depression" },
+    { text: "11. Saya merasa gelisah.", category: "Stress" },
+    { text: "12. Saya sulit untuk merasa tenang.", category: "Stress" },
+    { text: "13. Saya merasa sedih dan tertekan.", category: "Depression" },
+    { text: "14. Saya sulit untuk bersabar dalam menghadapi gangguan.", category: "Stress" },
+    { text: "15. Saya merasa hampir panik.", category: "Anxiety" },
+    { text: "16. Saya tidak bisa merasa antusias terhadap hal apapun.", category: "Depression" },
+    { text: "17. Saya merasa diri saya tidak berharga.", category: "Depression" },
+    { text: "18. Perasaan saya mudah tergugah atau tersentuh.", category: "Stress" },
+    { text: "19. Saya menyadari kondisi jantung saya.", category: "Anxiety" },
+    { text: "20. Saya merasa ketakutan tanpa alasan yang jelas.", category: "Anxiety" },
+    { text: "21. Saya merasa bahwa hidup ini tidak berarti.", category: "Depression" }
+  ];
+
+  let currentQuestionIndex = 0;
+  const responses = [];
+  const scores = { Stress: 0, Anxiety: 0, Depression: 0 };
+
+  function displayQuestion() {
+    const questionText = document.getElementById("questionText");
+    const questionImage = document.getElementById("questionImage");
+    const responseRadios = document.querySelectorAll('input[name="response"]');
+
+    // Tampilkan teks dan gambar pertanyaan
+    questionText.innerText = questions[currentQuestionIndex].text;
+    questionImage.src = `static/assets/img/screening/question${currentQuestionIndex + 1}.png`;
+    questionImage.alt = `Gambar untuk pertanyaan ${currentQuestionIndex + 1}`;
+
+    // Aktifkan atau nonaktifkan tombol "Kembali"
+    const prevButton = document.getElementById("prevButton");
+    prevButton.disabled = currentQuestionIndex === 0;
+
+    // Perbarui teks tombol "Selanjutnya"
+    const nextButton = document.getElementById("nextButton");
+    nextButton.textContent = currentQuestionIndex === questions.length - 1 ? "Kirim" : "Selanjutnya";
+
+    // Isi kembali jawaban yang sudah dipilih
+    responseRadios.forEach((radio, index) => {
+      radio.checked = responses[currentQuestionIndex] === index;
+    });
+  }
+
+  function nextQuestion() {
+    const selectedResponse = document.querySelector('input[name="response"]:checked');
+    if (!selectedResponse) {
+      alert("Harap pilih jawaban sebelum melanjutkan.");
+      return;
+    }
+
+    // Simpan jawaban yang dipilih
+    responses[currentQuestionIndex] = parseInt(selectedResponse.value, 10);
+
+    // Tampilkan pertanyaan berikutnya atau hitung skor
+    if (currentQuestionIndex === questions.length - 1) {
+      calculateScores();
+      submitForm();
+    } else {
+      currentQuestionIndex++;
+      displayQuestion();
+    }
+  }
+
+  function prevQuestion() {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+      displayQuestion();
+    }
+  }
+
+  function calculateScores() {
+    questions.forEach((question, index) => {
+      if (responses[index] !== undefined) {
+        scores[question.category] += responses[index];
+      }
+    });
+
+    // Kalikan setiap skor kategori dengan 2
+    for (const category in scores) {
+      scores[category] *= 2;
+    }
+  }
+
+  function submitForm(event) {
+    if (event) event.preventDefault();
+
+    const resultText = `
+      Skor Stress: ${scores.Stress}\n
+      Skor Anxiety: ${scores.Anxiety}\n
+      Skor Depression: ${scores.Depression}`;
+
+    Swal.fire({
+      title: "Hasil Skrining",
+      text: resultText,
+      icon: "info",
+      confirmButtonText: "OK",
+    }).then(() => {
+      window.location.href = "/home";
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", displayQuestion);
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</main>
+
+{% include "base/footer.html" %}
+
+   
+</body>

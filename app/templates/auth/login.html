@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Login</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='assets/css/login/style.css')}}"
+    />
+
+
+    <link
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+  rel="stylesheet"
+/>
+
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.materialdesignicons.com/3.0.39/css/materialdesignicons.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      $(document).ready(function () {
+        // Menambahkan event listener pada form
+        $(".signin-form").on("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            $(".submit").addClass("enter-hover");
+            login();
+          }
+        });
+      });
+
+      function login() {
+        let username = $("#username").val();
+        let password = $("#password").val();
+
+        if (username === "") {
+          $("#helpusername")
+            .text("Silahkan Masukan username!")
+            .removeClass("is-safe")
+            .addClass("is-danger");
+          $("#username").focus();
+          return;
+        }
+
+        if (password === "") {
+          $("#helpPassword")
+            .text("Silahkan Masukan Password!")
+            .removeClass("is-safe")
+            .addClass("is-danger");
+          $("#password").focus();
+          return;
+        }
+
+        $.ajax({
+          type: "POST",
+          url: "/login/check",
+          data: { username: username, password: password },
+          success: function (response) {
+            if (response["result"] === "success") {
+              document.cookie = "mytoken=" + response["token"] + "; path=/";
+              window.location.replace("/homesignin");
+            } else {
+              Swal.fire({
+                title: "Login Failed!",
+                text: response["msg"],
+                icon: "info",
+                confirmButtonText: "Oke",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  $("#username").val("");
+                  $("#password").val("");
+                  $(".submit").removeClass("button-green");
+                }
+              });
+            }
+          },
+        });
+      }
+
+      function forgotPassword() {
+        let username = prompt("Masukkan username Anda untuk reset password:");
+        if (username) {
+          $.ajax({
+            type: "POST",
+            url: "/send_reset_password",
+            data: { username: username },
+            success: function (response) {
+              if (response["result"] === "success") {
+                Swal.fire({
+                  title: "Permintaan Berhasil!",
+                  text: "Silahkan cek username Anda untuk instruksi reset password.",
+                  icon: "success",
+                  confirmButtonText: "Oke",
+                });
+              } else {
+                Swal.fire({
+                  title: "Gagal!",
+                  text: response["msg"],
+                  icon: "error",
+                  confirmButtonText: "Oke",
+                });
+              }
+            },
+          });
+        }
+      }
+    </script>
+  </head>
+  <body
+  class="img js-fullheight"
+  style="background-image: url(../static/assets/img/bg-login.jpg)"
+>
+  <section class="ftco-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <h2 class="heading-section">Masuk</h2>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+          <div class="login-wrap p-0">
+            <form action="#" class="signin-form">
+              <div class="form-group">
+                <input
+                  type="username"
+                  class="form-control"
+                  placeholder="Username"
+                  id="username"
+                />
+                <p id="helpusername" class="help is-hidden"></p>
+              </div>
+              <div class="form-group">
+                <input
+                  id="password"
+                  type="password"
+                  class="form-control"
+                  placeholder="Password"
+                />
+                <p id="helpPassword" class="help is-hidden"></p>
+              </div>
+
+              <!-- Kotak centang untuk menampilkan password -->
+              <div class="form-group">
+                <input
+                  type="checkbox"
+                  id="showPassword"
+                  onclick="togglePasswordVisibility()"
+                />
+                <label for="showPassword" style="color: #fff"
+                  >Tampilkan Password</label
+                >
+              </div>
+
+              <div class="form-group">
+                <button
+                  type="button"
+                  class="form-control btn btn-primary submit px-3"
+                  onclick="login()"
+                >
+                  Masuk
+                </button>
+              </div>
+
+              <div class="form-group d-md-flex justify-content-between">
+                <p>
+                  Belum punya akun?
+                  <a href="/register" style="color: #fff" class="register-btn"
+                    >Daftar</a
+                  >
+                </p>
+                <p>
+                  <a href="/forget-password" style="color: #fff"
+                    >Lupa Password?</a
+                  >
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+
+
+    <script>
+      function togglePasswordVisibility() {
+        const passwordField = document.getElementById("password");
+        const showPasswordCheckbox = document.getElementById("showPassword");
+        if (showPasswordCheckbox.checked) {
+          passwordField.type = "text";
+        } else {
+          passwordField.type = "password";
+        }
+      }
+    </script>
+
+    <script src="{{url_for('static', filename='assets/js/login/jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='assets/js/login/popper.js')}}"></script>
+    <script src="{{url_for('static', filename='assets/js//login/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename='assets/js/login/main.js')}}"></script>
+  </body>
+</html>
