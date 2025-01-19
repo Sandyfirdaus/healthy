@@ -507,21 +507,29 @@
         <script>
           document.getElementById("submitBtn").addEventListener("click", function (e) {
             e.preventDefault(); // Mencegah reload form
-        
+          
             // Tampilkan loading
             const loading = document.querySelector(".loading");
             const errorMessage = document.querySelector(".error-message");
             const sentMessage = document.querySelector(".sent-message");
-        
+          
             loading.style.display = "block";
             errorMessage.style.display = "none";
             sentMessage.style.display = "none";
-        
+          
             // Ambil data dari form
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const message = document.getElementById("message").value;
-        
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const message = document.getElementById("message").value.trim();
+          
+            // Validasi jika semua kolom wajib diisi
+            if (!name || !email || !message) {
+              loading.style.display = "none";
+              errorMessage.style.display = "block";
+              errorMessage.innerText = "Harap isi semua kolom untuk mengirim pesan.";
+              return;
+            }
+          
             // Validasi email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
@@ -530,7 +538,7 @@
               errorMessage.innerText = "Masukkan alamat email yang valid.";
               return;
             }
-        
+          
             // Kirim data dengan AJAX
             fetch("https://api.web3forms.com/submit", {
               method: "POST",
