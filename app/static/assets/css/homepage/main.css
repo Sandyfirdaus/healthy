@@ -562,9 +562,15 @@ h6 {
   font-size: 14px;
   position: relative;
 }
+.footer-clients img {
+  height: 10px; /* Sesuaikan dengan kebutuhan */
+  mix-blend-mode: multiply;
+  object-fit: contain; /* Agar logo tidak terdistorsi */
+}
+
 
 .footer .footer-top {
-  background-color: color-mix(in srgb, var(--background-color), white 5%);
+  background-color: white;
   padding-top: 50px;
 }
 
@@ -880,17 +886,17 @@ body.modal-open {
 
 .welcome-text {
   font-family: "Poppins", sans-serif;
-  font-size: 3rem;
-  color: #5bafb9;
+  font-size: 4rem;
+  color: #5BB8F8;
   text-align: center;
   margin-bottom: 20px;
-  text-shadow: 1px 1px 0 #ffffff, -1px -1px 0 #ffffff, 1px -1px 0 #ffffff,
-    -1px 1px 0 #ffffff;
+  text-shadow: 1px 1px 0 #0158CA, -1px -1px 0 #0158CA, 1px -1px 0 #0158CA,
+    -1px 1px 0 #0158CA;
 }
 
 .welcome-text1 {
   font-family: "Poppins", sans-serif;
-  font-size: 20px;
+  font-size: 30px;
   color: #ffffff;
   text-align: center;
   margin-bottom: 20px;
@@ -1251,6 +1257,46 @@ body.modal-open {
 .white-text {
   color: var(--contrast-color);
 }
+
+/*--------------------------------------------------------------
+# CARD Section
+--------------------------------------------------------------*/
+
+.custom-card {
+  border: none;
+  text-align: center;
+  background-color: #f8f9fa;
+  transition: transform 0.3s;
+}
+.custom-card:hover {
+  transform: scale(1.05);
+}
+.custom-section h2 {
+  font-family: 'Poppins', sans-serif; /* Gunakan font Poppins atau font lain */
+  font-size: 2.5rem; /* Ukuran font */
+}
+.custom-card img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 15px;
+}
+.custom-card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #000000;
+}
+.custom-card-text {
+  color: #000000;
+}
+.custom-section {
+  background: linear-gradient(to bottom, #485664, #39ce7d);
+  padding: 50px 60px;
+}
+
+
+/*--------------------------------------------------------------
+# AKHIR CARD Section
+--------------------------------------------------------------*/
 
 /*--------------------------------------------------------------
 # Clients Section
@@ -2950,6 +2996,19 @@ body.modal-open {
 /*--------------------------------------------------------------
 # Blog Author Section
 --------------------------------------------------------------*/
+/* Pastikan tulisan author tetap hitam */
+.post-author {
+  color: black !important; /* Warna teks tetap hitam */
+  font-weight: 500; /* Tambahkan ketebalan jika diperlukan */
+  margin: 0; /* Hapus margin tambahan */
+}
+
+/* Warna post-author tidak berubah saat di-hover */
+.post-item-link:hover .post-author {
+  color: black !important; /* Tetap hitam meskipun di-hover */
+}
+
+
 .blog-author {
   padding: 10px 0 40px 0;
 }
@@ -3134,6 +3193,23 @@ body.modal-open {
 .page-title {
   background-color: var(--primary-color);
 }
+
+.post-item-link:hover .post-item {
+  transform: scale(1.05); /* Membesarkan sedikit */
+  transition: transform 0.3s ease;
+  cursor: pointer; /* Menampilkan pointer saat di-hover */
+}
+
+
+/* Post hover effect */
+.post-item {
+  transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.post-item:hover {
+  transform: scale(1.05); /* Membesar saat di-hover */
+}
+
 
 .program-title {
   color: var(

@@ -50,10 +50,10 @@
     <!-- Hero Section -->
     <section id="hero" class="hero section">
 
-      <div class="container d-flex flex-column justify-content-end align-items-center text-center position-relative" data-aos="zoom-out" style="top: -170px;">
+      <div class="container d-flex flex-column justify-content-end align-items-center text-center position-relative" data-aos="zoom-out" style="top: -200px;">
     <p class="welcome-text mt-n3">Selamat Datang Di PSIDAMAI</p>
     <p class="welcome-text1 px-3">PSIDAMAI adalah program mindfulness yang berkomitmen menyediakan layanan kesehatan mental inklusif, terjangkau, dan mudah diakses bagi dewasa muda di Indonesia.</p>
-    <p class="text-light mb-4">Jika kamu penasaran dengan kesehatan mental kamu klik tombol di bawah!</p>
+    <p class="text-light fs-4 fw-bold mb-9">Jika kamu penasaran dengan kesehatan mental kamu klik tombol di bawah!</p>
     <div class="d-flex mt-n2">
       <a href="javascript:void(0);" class="btn-get-started scrollto" onclick="startTest()">Cek Kesehatan Mentalmu, Yuk!</a>
     </div>
@@ -101,55 +101,124 @@
 </div>
     </section><!-- /Hero Section -->
 
-    <!-- Featured Services Section -->
-    <section id="featured-services" class="featured-services section">
+    <!-- Services Section -->
+<section id="services" class="services section">
 
-      <div class="container">
-        <div class="video-container">
-            <iframe 
-                src="https://youtube.com/embed/726ye1kOmEY?si=0gxn35L0OAuJbntB" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-            </iframe>
-        </div>
-    </div>    
-    <div class="container my-5">
-      <div class="text-container">
-        <div data-aos="fade-left">
-          <h2 class="text-center mb-5">Tata Cara Penggunaan Website PSIDAMAI</h2>
-          <div class="steps">
-            <div class="step-item">
-              <div class="step-number">1</div>
-              <div class="step-content">
-                <h4>Lakukan Cek Kesehatan Mental</h4>
-                <p>Mulailah dengan mengevaluasi kesehatan mentalmu melalui fitur cek yang tersedia.</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="step-number">2</div>
-              <div class="step-content">
-                <h4>Pilih Programmu</h4>
-                <p>Kami menawarkan satu program yang dirancang khusus untuk kebutuhanmu.</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="step-number">3</div>
-              <div class="step-content">
-                <h4>Klik Program Pilihanmu</h4>
-                <p>Tekan program yang tersedia untuk memulai perjalananmu.</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="step-number">4</div>
-              <div class="step-content">
-                <h4>Mulai Programmu!</h4>
-                <p>Ikuti langkah-langkah dalam program tersebut untuk mencapai tujuanmu.</p>
-              </div>
-            </div>
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+   <h2><strong>Keunggulan Kami</strong></h2>
+   <p>PSIDAMAI difokuskan pada program intervensi yang lebih spesifik dan didukung oleh bukti ilmiah. </p>
+ </div><!-- End Section Title -->
+ 
+ <div class="container" data-aos="fade-up" data-aos-delay="100">
+ 
+   <div class="row gy-5">
+ 
+     <div class="col-xl-3 col-md-4" data-aos="zoom-in" data-aos-delay="200">
+       <div class="service-item">
+         <div class="img">
+           <img src="{{url_for('static', filename='assets/img/services/services-1.png')}}" class="img-fluid" alt="">
+         </div>
+         <div class="details position-relative">
+           <a  class="stretched-link">
+           </a>
+           <p>Menyediakan program
+             berupa materi dan 
+            audio yang mudah dipahami </p>
+         </div>
+       </div>
+     </div><!-- End Service Item -->
+ 
+     <div class="col-xl-3 col-md-4" data-aos="zoom-in" data-aos-delay="300">
+       <div class="service-item">
+         <div class="img">
+           <img src="{{url_for('static', filename='assets/img/services/services-2.png')}}" class="img-fluid" alt="">
+         </div>
+         <div class="details position-relative">
+           <a  class="stretched-link">
+           </a>
+           <p>Mengutamakan & menjamin
+             privasi dan keamanan pengguna</p>
+         </div>
+       </div>
+     </div><!-- End Service Item -->
+ 
+     <div class="col-xl-3 col-md-4" data-aos="zoom-in" data-aos-delay="400">
+       <div class="service-item">
+         <div class="img">
+           <img src="{{url_for('static', filename='assets/img/services/services-3.png')}}" class="img-fluid" alt="">
+         </div>
+         <div class="details position-relative">
+           <a  class="stretched-link">
+           </a>
+           <p>Menerapkan profesionalitas 
+             tertinggi dalam 
+             kenyamanan demi 
+             kepuasan pengguna</p>
+         </div>
+       </div>
+     </div><!-- End Service Item -->
+ 
+     <div class="col-xl-3 col-md-4" data-aos="zoom-in" data-aos-delay="500">
+       <div class="service-item">
+         <div class="img">
+           <img src="{{url_for('static', filename='assets/img/services/services-4.png')}}" class="img-fluid" alt="">
+         </div>
+         <div class="details position-relative">
+           <a class="stretched-link">
+           </a>
+           <p>Pengguna bisa memilih program yang sesuai dengan hasil tes mereka.
+             Program-program intervensi mudah diakses dan dapat dijangkau oleh banyak orang.
+             </p>
+         </div>
+       </div>
+     </div><!-- End Service Item -->
+
+    
+<!-- Card  Section -->
+<section class="custom-section">
+  <div class="container">
+    <h2 class="text-white text-center mb-5">Apa saja yang dapat kamu akses?</h2>
+    <div class="row g-4">
+      <!-- Card 1 -->
+      <div class="col-md-6">
+        <div class="card custom-card p-4 text-center">
+          <div class="d-flex justify-content-center">
+            <img src="{{url_for('static', filename='assets/img/programhome.png')}}" alt="Illustration 1" class="img-fluid" style="max-width: 140px;">
           </div>
+          <h5 class="custom-card-title mt-3">Program</h5>
+          <p class="custom-card-text">Kami menyediakan program mindfulness yang telah teruji klinis untuk dapat membantu kamu dalam mengatasi kesehatan mental. Jika ingin mengetahui lebih lanjut, klik tombol di bawah!
+          </p>
+          <button class="btn btn-success" onclick="showLoginAlert()">Selengkapnya</button>
         </div>
-    </section><!-- /Featured Services Section -->
+      </div>
+      <!-- Card 2 -->
+      <div class="col-md-6">
+        <div class="card custom-card p-4 text-center">
+          <div class="d-flex justify-content-center">
+            <img src="{{url_for('static', filename='assets/img/artikelhome.png')}}" alt="Illustration 2" class="img-fluid" style="max-width: 140px;">
+          </div>
+          <h5 class="custom-card-title mt-3">Artikel</h5>
+          <p class="custom-card-text">Kami memiliki beberapa artikel untuk menambah pengetahuan kamu terkait kesehatan mental. Klik tombol di bawah untuk mengakses artikel!</p>
+          <button class="btn btn-success" onclick="showLoginAlert()">Selengkapnya</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function showLoginAlert() {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Anda harus login terlebih dahulu',
+      text: 'Silakan login untuk mengakses konten ini.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#28a745' // Sesuaikan warna tombol dengan tema Anda
+    });
+  }
+</script>
+
 
 <!-- Call To Action Section -->
 <section id="call-to-action" class="call-to-action section">
@@ -176,78 +245,7 @@
 
 </section><!-- /Call To Action Section -->
 
-<!-- Services Section -->
-<section id="services" class="services section">
 
- <!-- Section Title -->
- <div class="container section-title" data-aos="fade-up">
-  <h2><strong>Keunggulan Kami</strong></h2>
-  <p>PSIDAMAI difokuskan pada program intervensi yang lebih spesifik dan didukung oleh bukti ilmiah. </p>
-</div><!-- End Section Title -->
-
-<div class="container" data-aos="fade-up" data-aos-delay="100">
-
-  <div class="row gy-5">
-
-    <div class="col-xl-3 col-md-4" data-aos="zoom-in" data-aos-delay="200">
-      <div class="service-item">
-        <div class="img">
-          <img src="{{url_for('static', filename='assets/img/services/services-1.png')}}" class="img-fluid" alt="">
-        </div>
-        <div class="details position-relative">
-          <a  class="stretched-link">
-          </a>
-          <p>Menyediakan program
-            berupa materi dan 
-           audio yang mudah dipahami </p>
-        </div>
-      </div>
-    </div><!-- End Service Item -->
-
-    <div class="col-xl-3 col-md-4" data-aos="zoom-in" data-aos-delay="300">
-      <div class="service-item">
-        <div class="img">
-          <img src="{{url_for('static', filename='assets/img/services/services-2.png')}}" class="img-fluid" alt="">
-        </div>
-        <div class="details position-relative">
-          <a  class="stretched-link">
-          </a>
-          <p>Mengutamakan & menjamin
-            privasi dan keamanan pengguna</p>
-        </div>
-      </div>
-    </div><!-- End Service Item -->
-
-    <div class="col-xl-3 col-md-4" data-aos="zoom-in" data-aos-delay="400">
-      <div class="service-item">
-        <div class="img">
-          <img src="{{url_for('static', filename='assets/img/services/services-3.png')}}" class="img-fluid" alt="">
-        </div>
-        <div class="details position-relative">
-          <a  class="stretched-link">
-          </a>
-          <p>Menerapkan profesionalitas 
-            tertinggi dalam 
-            kenyamanan demi 
-            kepuasan pengguna</p>
-        </div>
-      </div>
-    </div><!-- End Service Item -->
-
-    <div class="col-xl-3 col-md-4" data-aos="zoom-in" data-aos-delay="500">
-      <div class="service-item">
-        <div class="img">
-          <img src="{{url_for('static', filename='assets/img/services/services-4.png')}}" class="img-fluid" alt="">
-        </div>
-        <div class="details position-relative">
-          <a class="stretched-link">
-          </a>
-          <p>Pengguna bisa memilih program yang sesuai dengan hasil tes mereka.
-            Program-program intervensi mudah diakses dan dapat dijangkau oleh banyak orang.
-            </p>
-        </div>
-      </div>
-    </div><!-- End Service Item -->
 
 <!-- About Section -->
 <section id="about" class="about section">
@@ -315,51 +313,51 @@
 
 </section><!-- /About Section -->
 
-<!-- Clients Section -->
-<section id="clients" class="clients section">
+<!-- Featured Services Section -->
+<section id="featured-services" class="featured-services section">
 
-  <div class="container" data-aos="fade-up">
-
-    <div class="row gy-4">
-
-      <div class="col-xl-3 col-md-3 col-6 client-logo">
-        <img src="{{url_for('static', filename='assets/img/clients/client-1.png')}}" class="img-fluid" alt="">
-      </div><!-- End Client Item -->
-      <div class="col-xl-3 col-md-3 col-6 client-logo">
-        <img src="{{url_for('static', filename='assets/img/clients/client-2.png')}}" class="img-fluid" alt="">
-      </div><!-- End Client Item -->
-      <div class="col-xl-3 col-md-3 col-6 client-logo">
-        <img src="{{url_for('static', filename='assets/img/clients/client-3.jpg')}}" class="img-fluid" alt="">
-      </div><!-- End Client Item -->
-      <div class="col-xl-3 col-md-3 col-6 client-logo">
-        <img src="{{url_for('static', filename='assets/img/clients/client-4.png')}}" class="img-fluid" alt="">
-      </div><!-- End Client Item -->
-      <div class="col-xl-3 col-md-3 col-6 client-logo">
-        <img src="{{url_for('static', filename='assets/img/clients/client-5.png')}}" class="img-fluid" alt="">
-      </div><!-- End Client Item -->
-      <div class="col-xl-3 col-md-3 col-6 client-logo">
-        <img src="{{url_for('static', filename='assets/img/clients/client-6.jpg')}}" class="img-fluid" alt="">
-      </div><!-- End Client Item -->
-      <div class="col-xl-3 col-md-3 col-6 client-logo">
-        <img src="{{url_for('static', filename='assets/img/clients/client-7.png')}}" class="img-fluid" alt="">
-      </div><!-- End Client Item -->
-      <div class="col-xl-3 col-md-3 col-6 client-logo">
-        <img src="{{url_for('static', filename='assets/img/clients/client-8.png')}}" class="img-fluid" alt="">
-      </div><!-- End Client Item -->
-      <div class="col-xl-3 col-md-3 col-6 client-logo">
-        <img src="{{url_for('static', filename='assets/img/clients/client-9.png')}}" class="img-fluid" alt="">
-      </div><!-- End Client Item -->
-      <div class="col-xl-3 col-md-3 col-6 client-logo">
-        <img src="{{url_for('static', filename='assets/img/clients/client-10.jpg')}}" class="img-fluid" alt="">
-      </div><!-- End Client Item -->
-      <div class="col-xl-3 col-md-3 col-6 client-logo">
-        <img src="{{url_for('static', filename='assets/img/clients/client-11.jpg')}}" class="img-fluid" alt="">
-      </div><!-- End Client Item -->
+  <div class="container mt-4">
+    <div class="row align-items-start">
+        <!-- Video YouTube -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="ratio ratio-16x9">
+                <iframe 
+                    src="https://youtube.com/embed/726ye1kOmEY?si=0gxn35L0OAuJbntB" 
+                    title="YouTube video player" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+        <!-- Teks Tata Cara -->
+        <div class="col-lg-6 col-md-12">
+            <h2 class="text-primary">Tata Cara Penggunaan Website PSIDAMAI</h2>
+            <ol class="list-unstyled">
+                <li class="mb-3">
+                    <h5><strong>1. Lakukan Cek Kesehatan Mental</strong></h5>
+                    <p>Mulailah dengan mengevaluasi kesehatan mentalmu melalui fitur cek yang tersedia.</p>
+                </li>
+                <li class="mb-3">
+                    <h5><strong>2. Pilih Programmu</strong></h5>
+                    <p>Kami menawarkan satu program yang dirancang khusus untuk kebutuhanmu.</p>
+                </li>
+                <li class="mb-3">
+                    <h5><strong>3. Klik Program Pilihanmu</strong></h5>
+                    <p>Tekan program yang tersedia untuk memulai perjalananmu.</p>
+                </li>
+                <li>
+                    <h5><strong>4. Mulai Programmu!</strong></h5>
+                    <p>Ikuti langkah-langkah dalam program tersebut untuk mencapai tujuanmu.</p>
+                </li>
+            </ol>
+        </div>
     </div>
+</div>
+</section><!-- /Featured Services Section -->
 
-  </div>
 
-</section><!-- /Clients Section -->
+
+
 
 
 <!-- Testimonials Section -->

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      function login() {
+        let username = $("#username").val();
+        let password = $("#password").val();
+
+        if (username === "") {
+          $("#helpusername")
+            .text("Silahkan Masukan username!")
+            .removeClass("is-safe")
+            .addClass("is-danger");
+          $("#username").focus();
+          return;
+        }
+
+        if (username != "") {
+          $("#helpusername")
+            .text("")
+            .removeClass("is-safe")
+            .addClass("is-danger");
+        }
+
+        if (password === "") {
+          $("#helpPassword")
+            .text("Silahkan Masukan Password!")
+            .removeClass("is-safe")
+            .addClass("is-danger");
+          $("#password").focus();
+          return;
+        }
+
+        if (password != "") {
+          $("#helpPassword")
+            .text("")
+            .removeClass("is-safe")
+            .addClass("is-danger");
+        }
+
+        $.ajax({
+          type: "POST",
+          url: "/login-admin/check",
+          data: { username: username, password: password },
+          success: function (response) {
+            if (response["result"] === "success") {
+              Swal.fire({
+                title: "Login Berhasil!",
+                text: "Anda berhasil login!",
+                icon: "success",
+                confirmButtonText: "Oke",
+              }).then((result) => {
+                document.cookie = "mytoken=" + response["token"] + "; path=/";
+                window.location.replace("/dashboard");
+              });
+            } else {
+              Swal.fire({
+                title: "Login Failed!",
+                text: response["msg"],
+                icon: "info",
+                confirmButtonText: "Oke",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  $("#username").val("");
+                  $("#password").val("");
+                  $(".submit").removeClass("button-green");
+                }
+              });
+            }
+          },
+        });
+      }
+    </script>
+  </head>
+  <body
+    class="bg-light d-flex justify-content-center align-items-center"
+    style="height: 100vh"
+  >
+    <div class="card shadow p-4" style="width: 24rem">
+      <h3 class="text-center">Admin Login</h3>
+      <form action="/admin/login" method="POST">
+        <div class="mb-3">
+          <label for="username" class="form-label">username</label>
+          <input
+            type="username"
+            class="form-control"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+          />
+          <p id="helpusername" class="help is-hidden"></p>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+          />
+          <p id="helpPassword" class="help is-hidden"></p>
+        </div>
+        <button type="button" class="btn btn-primary w-100" onclick="login()">
+          Login
+        </button>
+        <div class="text-center mt-3">
+          <a href="register.html">Don't have an account? Register here</a>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

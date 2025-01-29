@@ -41,7 +41,7 @@ articles = [
         "image": "assets/img/artikel/artikel4.jpg",
         "category": "Mindfulness, Psychology, Stress, Mahasiswa",
         "title": "Mahasiswa dan Stres: Tantangan yang Sering Dialamil",
-        "author_image": "assets/img/authors/penulis.jpg",
+        "author_image": "assets/img/authors/penulis1.jpg",
         "author": "Ratih Arruum Listiyandini",
         "date": "2022-08-30",
         "content_url": "/artikel/4"

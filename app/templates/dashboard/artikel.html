@@ -24,35 +24,33 @@
           <div class="row gy-5">
             {% for article in articles %}
             <div class="col-lg-4" data-aos="flip-up">
-              <article>
-                <div class="post-img">
-                  <img
-                    src="{{ url_for('static', filename=article.image) }}"
-                    alt="{{ article.title }}"
-                    class="img-fluid"
-                  />
-                </div>
-                <p class="post-category">{{ article.category }}</p>
-                <h2 class="title">
-                  <a
-                    href="/artikel_details/{{ article.id }}"
-                    class="text-decoration-none"
-                  >
-                    {{ article.title }}
-                  </a>
-                </h2>
-                <div class="d-flex align-items-center">
-                  <img
-                    src="{{ url_for('static', filename=article.author_image) }}"
-                    alt="{{ article.author }}"
-                    class="img-fluid post-author-img flex-shrink-0"
-                  />
-                  <div class="post-meta">
-                    <p class="post-author">{{ article.author }}</p>
-                    <p class="post-date">{{ article.date }}</p>
+              <a
+                href="/artikel_details/{{ article.id }}"
+                class="post-item-link text-decoration-none"
+              >
+                <article class="post-item">
+                  <div class="post-img">
+                    <img
+                      src="{{ url_for('static', filename=article.image) }}"
+                      alt="{{ article.title }}"
+                      class="img-fluid"
+                    />
                   </div>
-                </div>
-              </article>
+                  <p class="post-category">{{ article.category }}</p>
+                  <h2 class="title">{{ article.title }}</h2>
+                  <div class="d-flex align-items-center">
+                    <img
+                      src="{{ url_for('static', filename=article.author_image) }}"
+                      alt="{{ article.author }}"
+                      class="img-fluid post-author-img flex-shrink-0"
+                    />
+                    <div class="post-meta">
+                      <p class="post-author">{{ article.author }}</p>
+                      <p class="post-date">{{ article.date }}</p>
+                    </div>
+                  </div>
+                </article>
+              </a>
             </div>
             {% endfor %}
           </div>
