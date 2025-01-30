@@ -139,7 +139,7 @@
                     </td>
                     <td>${item.tanggal}</td>
                     <td>${item.waktu}</td>
-                    <td><button type="button" onclick="deleteScreening('${item.username}', '${item.materi}')">Delete</button></td>
+                    <td><button type="button" onclick="deleteMateri('${item.username}', '${item.materi}')">Delete</button></td>
                   </tr>
                     `;
               $("#table_materi").append(tableRowMateri);
@@ -166,7 +166,7 @@
         });
       }
 
-      function deleteScreening(username, materi) {
+      function deleteMateri(username, materi) {
         $.ajax({
           type: "POST",
           url: "/delete-materi",
