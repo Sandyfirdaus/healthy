@@ -1095,22 +1095,7 @@ body.modal-open {
 # Featured Services Section
 --------------------------------------------------------------*/
 
-.video-container {
-  flex: 1;
-  min-width: 300px;
-}
-.video-container iframe {
-  width: 100%;
-  height: 300px;
-}
-.text-container {
-  flex: 1;
-  min-width: 300px;
-}
-.text-container h2 {
-  color: teal;
-  margin-bottom: 10px;
-}
+
 #services .section-title h2 {
   color: #0cb280;
 }
@@ -1256,6 +1241,77 @@ body.modal-open {
 
 .white-text {
   color: var(--contrast-color);
+}
+
+/*--------------------------------------------------------------
+# Tata cara
+--------------------------------------------------------------*/
+.guide-container {
+  background: #f8fbff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  width: 120%; 
+  max-width: 640px; 
+}
+
+.guide-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #39ce7d;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.guide-title span {
+  color: #555;
+}
+
+.guide-list {
+  list-style: none;
+  padding: 0;
+}
+
+.guide-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; 
+  background: white;
+  padding: 6px 10px; 
+  border-radius: 6px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.step-number {
+  background: #39ce7d;
+  color: white;
+  font-size: 15px; 
+  font-weight: bold;
+  width: 27px; 
+  height: 27px; 
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.step-content {
+  background: #E0F7FA; 
+  padding:15px;
+  border-radius: 5px;
+}
+
+.step-content h5 {
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: 2px; 
+}
+
+.step-content p {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
 }
 
 /*--------------------------------------------------------------
