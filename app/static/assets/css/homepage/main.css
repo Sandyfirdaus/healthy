@@ -885,12 +885,29 @@ body.modal-open {
   background-size: cover;
 }
 
+.logohome {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  z-index: 10; /* Pastikan logo di atas elemen lain */
+}
+
+.logohome img {
+  width: 120px;
+  height: auto;
+}
+
+.container {
+  position: relative;
+  top: 5px;
+}
+
 .welcome-text {
   font-family: "Poppins", sans-serif;
   font-size: 4rem;
   color: #F5F5DC;
-  text-align: center;
-  margin-bottom: 20px;
+  margin-top: -10px;
   text-shadow: 1px 1px 0 #F5F5DC, -1px -1px 0 #F5F5DC, 1px -1px 0 #F5F5DC,
     -1px 1px 0 #F5F5DC;
 }
@@ -899,186 +916,91 @@ body.modal-open {
   font-family: "Poppins", sans-serif;
   font-size: 30px;
   color: #ffffff;
-  text-align: center;
-  margin-bottom: 20px;
   font-weight: 600;
+  padding: 0 20px;
 }
 
-.small-justify {
-  font-size: 10px;
-  text-align: justify;
+.text-light {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
 }
 
-#hero .container {
-  height: 100vh;
-  color: var(--contrast-color);
-  padding-bottom: 5px;
+.btn-get-started {
+  font-size: 1rem;
+  padding: 10px 20px;
+  background-color: #A4D17A; /* Warna tombol */
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
 }
 
-.hero .btn-get-started {
-  color: var(--contrast-color);
-  background:#A4D17A ;
-  font-family: var(--heading-font);
-  font-weight: 400;
-  font-size: 15px;
-  letter-spacing: 1px;
-  display: inline-block;
-  padding: 10px 28px;
-  border-radius: 4px;
-  transition: 0.5s;
-}
-
-.hero .btn-get-started:hover {
+.btn-get-started {
   color: var(--contrast-color);
   background: #88C070;
 }
 
-.hero .btn-watch-video {
-  font-size: 16px;
-  transition: 0.5s;
-  margin-left: 25px;
-  color: var(--contrast-color);
-  font-weight: 500;
+/* Responsif untuk layar kecil (mobile) */
+@media (max-width: 767px) {
+  .logohome img {
+    width: 80px; /* Logo lebih kecil di mobile */
+  }
+
+  .welcome-text {
+    font-size: 1.8rem; /* Ukuran font lebih kecil */
+    margin-top: 10px; /* Sesuaikan margin */
+  }
+
+  .welcome-text1 {
+    font-size: 1rem; /* Ukuran font lebih kecil */
+    padding: 0 10px; /* Sesuaikan padding */
+  }
+
+  .text-light {
+    font-size: 1.2rem; /* Ukuran font lebih kecil */
+    margin-bottom: 15px; /* Sesuaikan margin */
+  }
+
+  .btn-get-started {
+    font-size: 0.9rem; /* Ukuran font tombol lebih kecil */
+    padding: 8px 16px; /* Sesuaikan padding tombol */
+  }
 }
 
-.hero .btn-watch-video i {
-  color: var(--accent-color);
-  font-size: 32px;
-  transition: 0.3s;
-  line-height: 0;
-  margin-right: 8px;
+/* Responsif untuk layar sedang (tablet) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .welcome-text {
+    font-size: 2rem; /* Ukuran font untuk tablet */
+  }
+
+  .welcome-text1 {
+    font-size: 1.1rem; /* Ukuran font untuk tablet */
+  }
+
+  .text-light {
+    font-size: 1.3rem; /* Ukuran font untuk tablet */
+  }
+
+  .btn-get-started {
+    font-size: 1rem; /* Ukuran font tombol untuk tablet */
+  }
 }
 
-.hero .btn-watch-video:hover {
-  color: var(--accent-color);
-}
-
-.hero .btn-watch-video:hover i {
-  color: color-mix(in srgb, var(--accent-color), transparent 15%);
-}
-
-.hero .animated {
-  margin-bottom: 60px;
-  animation: up-down 2s ease-in-out infinite alternate-reverse both;
-}
-
-
-.text-container h2 {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--heading-color);
-  text-align: center;
-}
-
-.steps {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  position: relative;
-  margin: 20px 0;
-}
-
-.step-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  position: relative;
-}
-
-.step-number {
-  background-color: var(--accent-color);
-  color: #fff;
-  font-size: 18px;
-  font-weight: bold;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.step-content {
-  background-color: #e6f7f8; /* Warna biru muda sesuai tema website */
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  flex: 1;
-}
-
-.step-content h4 {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: var(--heading-color);
-}
-
-.step-content p {
-  font-size: 14px;
-  color: var(--text-color);
-  line-height: 1.6;
-}
-
-.steps::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 20px;
-  width: 2px;
-  height: 100%;
-  background-color: var(--accent-color);
-  z-index: 0;
-}
-
-.step-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 20px;
-  width: 2px;
-  height: 100%;
-  background-color: var(--accent-color);
-  z-index: -1;
-}
-
-.step-item:last-child::before {
-  height: 0; /* Menghilangkan garis pada elemen terakhir */
-}
-
+/* Responsif untuk layar besar (desktop) */
 @media (min-width: 992px) {
-  .hero .animated {
-    max-width: 45%;
-  }
-}
-
-@media (max-width: 991px) {
-  .hero .animated {
-    max-width: 60%;
-  }
-}
-
-@media (max-width: 575px) {
-  .hero .animated {
-    max-width: 80%;
-  }
-}
-
-@media (max-width: 640px) {
-  .hero h1 {
-    font-size: 28px;
-    line-height: 36px;
+  .welcome-text {
+    font-size: 2.5rem; /* Ukuran font untuk desktop */
   }
 
-  .hero p {
-    font-size: 18px;
-    line-height: 24px;
-    margin-bottom: 30px;
+  .welcome-text1 {
+    font-size: 1.2rem; /* Ukuran font untuk desktop */
   }
 
-  .hero .btn-get-started,
-  .hero .btn-watch-video {
-    font-size: 13px;
+  .text-light {
+    font-size: 1.5rem; /* Ukuran font untuk desktop */
+  }
+
+  .btn-get-started {
+    font-size: 1.2rem; /* Ukuran font tombol untuk desktop */
   }
 }
 
