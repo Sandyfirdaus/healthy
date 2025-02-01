@@ -4,44 +4,36 @@ from pymongo import MongoClient
 
 def create_app():
     app = Flask(__name__)
-
     app.config.from_object(Config)
-     
-    # MONGODB
+    
+    # Initialize MongoDB
     client = MongoClient(app.config['MONGODB_URI'])
     app.db = client[app.config['DBNAME']]
     
-    from .routes.home import home_
-    app.register_blueprint(home_)
-
-    from .routes.homesignin import homesignin_
-    app.register_blueprint(homesignin_)
-
-    from .routes.auth import auth_
-    app.register_blueprint(auth_)
+    # Import and register Blueprints
+    from .routes import (
+        home, artikeldepan, artikeldepan_details, homesignin, auth, auth_admin,
+        dashboard, program, program_content, program_details, artikel,
+        artikel_details, profile
+    )
     
-    from .routes.auth_admin import auth_admin_
-    app.register_blueprint(auth_admin_)
+    blueprints = [
+        home.home_,
+        artikeldepan.artikeldepan_,
+        artikeldepan_details.artikeldepan_details_,
+        homesignin.homesignin_,
+        auth.auth_,
+        auth_admin.auth_admin_,
+        dashboard.dashboard_,
+        program.program_,
+        program_content.program_content_,
+        program_details.program_details_,
+        artikel.artikel_,
+        artikel_details.artikel_details_,
+        profile.profile_
+    ]
     
-    from .routes.dashboard import dashboard_
-    app.register_blueprint(dashboard_)
-
-    from .routes.program import program_
-    app.register_blueprint(program_)
+    for blueprint in blueprints:
+        app.register_blueprint(blueprint)
     
-    from .routes.program_content import program_content_
-    app.register_blueprint(program_content_)
-    
-    from .routes.program_details import program_details_
-    app.register_blueprint(program_details_)
-    
-    from .routes.artikel import artikel_
-    app.register_blueprint(artikel_)
-    
-    from .routes.artikel_details import artikel_details_
-    app.register_blueprint(artikel_details_)
-    
-    from .routes.profile import profile_
-    app.register_blueprint(profile_)
-
     return app
