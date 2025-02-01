@@ -942,7 +942,7 @@ body.modal-open {
 /* Responsif untuk layar kecil (mobile) */
 @media (max-width: 767px) {
   .logohome img {
-    width: 80px; /* Logo lebih kecil di mobile */
+    width: 70px; /* Logo lebih kecil di mobile */
   }
 
   .welcome-text {
