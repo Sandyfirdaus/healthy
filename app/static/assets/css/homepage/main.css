@@ -1816,24 +1816,35 @@ body.modal-open {
 # Homesignin Section
 --------------------------------------------------------------*/
 .note-icon {
-  position: fixed;
-  right: 20px;
-  font-size: 24px;
-  background: #39ce7d;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  position: absolute; /* Posisi relatif terhadap parent (navbar) */
+  top: 20%; /* Naik ke tengah-tengah navbar */
+  left: 20px; /* Jarak dari kanan */
+  transform: translateY(-70%); /* Menggeser ikon ke atas setengah dari tingginya */
+  font-size: 24px; /* Ukuran ikon */
+  background: #39ce7d; /* Warna latar belakang */
+  color: #fff; /* Warna teks */
+  border: none; /* Tanpa border */
+  border-radius: 50%; /* Bentuk bulat */
+  width: 50px; /* Lebar */
+  height: 50px; /* Tinggi */
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  z-index: 1000;
+  cursor: pointer; /* Pointer saat dihover */
+  z-index: 1000; /* Z-index untuk tumpukan */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Bayangan untuk efek depth */
+  transition: background 0.3s ease; /* Transisi halus untuk hover */
 }
 
 .note-icon:hover {
-  background: #218838;
+  background: #218838; /* Warna latar belakang saat dihover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bayangan lebih tebal saat dihover */
+}
+
+.profile-dropdown {
+  position: relative;
+  z-index: 1001; /* Pastikan z-index lebih tinggi dari ikon catatan */
+  /* Gaya lainnya untuk dropdown */
 }
 
 .program-box {
@@ -1925,6 +1936,42 @@ body.modal-open {
   color: #5baaa5;
 }
 */
+
+/*--------------------------------------------------------------
+# navbar masuk Section
+--------------------------------------------------------------*/
+/* CSS untuk tampilan mobile */
+@media (max-width: 1199.98px) {
+  .header {
+    justify-content: space-between; /* Membuat ruang antara logo dan elemen di kanan */
+  }
+
+  .navmenu {
+    order: 2; /* Mengatur urutan navmenu */
+  }
+
+  .mobile-nav-toggle {
+    order: 3; /* Mengatur urutan ikon bi-list */
+    margin-left: auto; /* Geser ikon bi-list ke kanan */
+  }
+
+  .nav-item.dropdown {
+    order: 1; /* Mengatur urutan dropdown profil */
+    margin-left: auto; /* Geser dropdown profil ke kanan */
+  }
+
+  .nav-link.dropdown-toggle {
+    margin-left: 10px; /* Jarak antara ikon bi-list dan foto profil */
+  }
+}
+
+
+
+
+
+/*--------------------------------------------------------------
+# navbar masuk Section
+--------------------------------------------------------------*/
 
 /*--------------------------------------------------------------
 # Pricing Section

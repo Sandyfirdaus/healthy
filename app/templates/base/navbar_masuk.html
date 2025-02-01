@@ -21,8 +21,7 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="nav-item dropdown" style="position: right">
-        <!-- Foto Profil dengan Dropdown -->
+      <div class="nav-item dropdown">
         <a
           class="nav-link dropdown-toggle"
           href="#"
@@ -44,6 +43,9 @@
           style="left: 0; right: auto"
         >
           <li><a class="dropdown-item" href="/profile">Profil Saya</a></li>
+          <li>
+            <a class="dropdown-item" href="/forget-password">Ubah Password</a>
+          </li>
           <li><hr class="dropdown-divider" /></li>
           <li>
             <button type="button" class="dropdown-item" onclick="logout()">
@@ -51,7 +53,7 @@
             </button>
           </li>
         </ul>
-      </a>
+      </div>
     </div>
   </header>
 
@@ -71,21 +73,17 @@
       });
     }
 
-    // JavaScript to highlight the active navbar link
     window.onload = function () {
       const currentUrl = window.location.pathname;
       const links = document.querySelectorAll("#navmenu a");
 
       links.forEach((link) => {
         if (link.getAttribute("href") === currentUrl) {
-          link.classList.add("active"); // Add 'active' class to the current link
+          link.classList.add("active");
         }
       });
     };
 
-    /**
-     * Mobile nav toggle
-     */
     const mobileNavToggleBtn = document.querySelector(".mobile-nav-toggle");
 
     function mobileNavToogle() {
@@ -95,9 +93,6 @@
     }
     mobileNavToggleBtn.addEventListener("click", mobileNavToogle);
 
-    /**
-     * Hide mobile nav on same-page/hash links
-     */
     document.querySelectorAll("#navmenu a").forEach((navmenu) => {
       navmenu.addEventListener("click", () => {
         if (document.querySelector(".mobile-nav-active")) {
@@ -106,9 +101,6 @@
       });
     });
 
-    /**
-     * Toggle mobile nav dropdowns
-     */
     document
       .querySelectorAll(".navmenu .toggle-dropdown")
       .forEach((navmenu) => {
