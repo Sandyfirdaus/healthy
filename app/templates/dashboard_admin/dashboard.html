@@ -21,7 +21,10 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
       /* Layout dasar */
@@ -240,6 +243,9 @@
             <button class="btn btn-success mb-3" id="downloadBtn">
               Download PDF
             </button>
+            <button class="btn btn-success mb-3" id="downloadExcelScreening">
+              Download Excel
+            </button>
             <table class="table table-striped">
               <thead class="table-primary">
                 <tr>
@@ -268,8 +274,11 @@
         <div id="statusDetails" class="table-container" style="display: none">
           <div class="card shadow-sm p-3">
             <h5 class="card-title">Status Details</h5>
-            <button class="btn btn-success mb-3" id="downloadBtn">
+            <button class="btn btn-success mb-3" id="download">
               Download PDF
+            </button>
+            <button class="btn btn-success mb-3" id="downloadExcelDetails">
+              Download Excel
             </button>
             <table class="table table-striped">
               <thead class="table-success">
@@ -301,31 +310,143 @@
     </div>
 
     <script>
-      function showTable(tableId) {
-        document
-          .querySelectorAll(".table-container")
-          .forEach((el) => (el.style.display = "none"));
-        document.getElementById(
-          `status${tableId.charAt(0).toUpperCase() + tableId.slice(1)}`
-        ).style.display = "block";
+      function showTable(table) {
+        if (table === "screening") {
+          $("#statusScreening").show();
+          $("#statusDetails").hide();
+        } else if (table === "details") {
+          $("#statusScreening").hide();
+          $("#statusDetails").show();
+        }
       }
-      showTable("screening"); // Tampilkan tabel screening secara default
+    </script>
 
+    <script>
+      function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Judul Laporan
+        doc.setFontSize(18);
+        doc.text("Laporan Status Screening PSIDAMAI", 14, 15);
+
+        // Ambil tabel data
+        let data = [];
+        $("#table_screening tr").each(function () {
+          let row = [];
+          $(this)
+            .find("th, td")
+            .each(function () {
+              row.push($(this).text().trim());
+            });
+          data.push(row);
+        });
+
+        // Tambahkan tabel ke PDF
+        doc.autoTable({
+          head: [
+            ["No", "Username", "Skor Stress", "Skor Anxiety", "Skor Depresi"],
+          ],
+          body: data.slice(0), // Hindari mengambil header tabel lagi
+          startY: 25,
+        });
+
+        // Unduh file PDF
+        doc.save("status_screening_PSIDAMAI_partisipan.pdf");
+      }
+
+      // Tambahkan event listener ke tombol download
       document
         .getElementById("downloadBtn")
-        .addEventListener("click", function () {
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF();
+        .addEventListener("click", downloadPDF);
+    </script>
 
-          // Menangkap konten untuk dimasukkan ke dalam PDF
-          doc.html(document.querySelector(".main-content"), {
-            callback: function (doc) {
-              doc.save("admin_dashboard.pdf");
-            },
-            margin: [10, 10, 10, 10],
-            x: 10,
-            y: 10,
+    <script>
+      function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Judul Laporan
+        doc.setFontSize(18);
+        doc.text("Laporan Status Details PSIDAMAI", 14, 15);
+
+        // Ambil tabel data
+        let data = [];
+        document.querySelectorAll("#table_materi tr").forEach((row) => {
+          let rowData = [];
+          row.querySelectorAll("td").forEach((cell, index) => {
+            if (index !== 6) {
+              // Skip column "Hapus" (index 6)
+              rowData.push(cell.innerText.trim());
+            }
           });
+          data.push(rowData);
+        });
+
+        // Tambahkan tabel ke PDF
+        doc.autoTable({
+          head: [
+            ["Username", "Program", "Materi", "Status", "Tanggal", "Waktu"],
+          ],
+          body: data.slice(0), // Menyertakan seluruh baris
+          startY: 25,
+        });
+
+        // Unduh file PDF
+        doc.save("status_details_PSIDAMAI.pdf");
+      }
+
+      // Tambahkan event listener ke tombol download
+      document
+        .getElementById("download")
+        .addEventListener("click", downloadPDF);
+    </script>
+
+    <script>
+      function downloadExcel(tableId, filename, headers) {
+        let table = document.getElementById(tableId);
+        let clonedTable = table.cloneNode(true);
+
+        // Hapus kolom terakhir (hapus)
+        for (let row of clonedTable.rows) {
+          row.deleteCell(-1);
+        }
+
+        let wb = XLSX.utils.book_new();
+        let ws = XLSX.utils.table_to_sheet(clonedTable);
+
+        // Tambahkan header secara manual
+        XLSX.utils.sheet_add_aoa(ws, [headers], { origin: "A1" });
+
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+        XLSX.writeFile(wb, filename);
+      }
+
+      // Tambahkan event listener untuk tombol download Excel
+      document
+        .getElementById("downloadExcelScreening")
+        .addEventListener("click", function () {
+          downloadExcel("table_screening", "status_screening_PSIDAMAI.xlsx", [
+            "No",
+            "Username",
+            "Skor Stress",
+            "Skor Anxiety",
+            "Skor Depresi",
+          ]);
+        });
+
+      document
+        .getElementById("downloadExcelDetails")
+        .addEventListener("click", function () {
+          downloadExcel("table_materi", "status_details_PSIDAMAI.xlsx", [
+            "Username",
+            "Program",
+            "Materi",
+            "Status",
+            "Tanggal",
+            "Waktu",
+          ]);
+          body: data.slice(0), // Menyertakan seluruh baris
         });
     </script>
 

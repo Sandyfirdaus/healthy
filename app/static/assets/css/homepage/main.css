@@ -853,6 +853,7 @@ section,
 /*--------------------------------------------------------------
 # Hero Section
 --------------------------------------------------------------*/
+
 .modal-content {
     border-radius: 15px;
     box-shadow: 0 40px 15px rgba(0, 0, 0, 0.2);
@@ -887,11 +888,11 @@ body.modal-open {
 .welcome-text {
   font-family: "Poppins", sans-serif;
   font-size: 4rem;
-  color: #5BB8F8;
+  color: #F5F5DC;
   text-align: center;
   margin-bottom: 20px;
-  text-shadow: 1px 1px 0 #0158CA, -1px -1px 0 #0158CA, 1px -1px 0 #0158CA,
-    -1px 1px 0 #0158CA;
+  text-shadow: 1px 1px 0 #F5F5DC, -1px -1px 0 #F5F5DC, 1px -1px 0 #F5F5DC,
+    -1px 1px 0 #F5F5DC;
 }
 
 .welcome-text1 {
@@ -916,7 +917,7 @@ body.modal-open {
 
 .hero .btn-get-started {
   color: var(--contrast-color);
-  background:#5BB8F8;
+  background:#A4D17A ;
   font-family: var(--heading-font);
   font-weight: 400;
   font-size: 15px;
@@ -929,7 +930,7 @@ body.modal-open {
 
 .hero .btn-get-started:hover {
   color: var(--contrast-color);
-  background: #0158CA;
+  background: #88C070;
 }
 
 .hero .btn-watch-video {
@@ -1251,7 +1252,7 @@ body.modal-open {
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  width: 120%; 
+  width: 50%; 
   max-width: 640px; 
 }
 
@@ -1314,6 +1315,31 @@ body.modal-open {
   margin: 0;
 }
 
+/* Mobile Responsive Layout */
+@media (max-width: 768px) {
+  .guide-container {
+    background: #f8fbff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+    width: 92%; 
+  }
+  .guide-list li {
+    flex-direction: column; /* Ubah ke kolom */
+    align-items: center; /* Rata tengah */
+    text-align: center; /* Teks di tengah */
+    width: 110%; 
+  }
+
+  .step-number {
+    margin: 0 0 10px 0; /* Margin di bawah angka */
+  }
+
+  .step-content {
+    text-align: center; /* Pastikan teks juga di tengah */
+    padding: 15px; /* Beri lebih banyak ruang */
+  }
+}
 /*--------------------------------------------------------------
 # CARD Section
 --------------------------------------------------------------*/

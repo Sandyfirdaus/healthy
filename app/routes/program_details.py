@@ -836,7 +836,7 @@ materi_data = {
                     {"time": 95, "text": "Rasanya menjadi lebih mudah dan tidak begitu membebani untuk menggunakannya dalam kehidupan aku sehari-hari."}
             ]
             },
-            {"src": "assets/audio/sesi 4/4.5 Damai.mp3", "image": "assets/img/ilustrasi/sesi-4/Ilustrasi 4.5.jpg",
+            {"src": "assets/audio/sesi 4/4.5 Lisa.mp3", "image": "assets/img/ilustrasi/sesi-4/Ilustrasi 4.5.jpg",
              "transkrip": [
                     {"time": 0, "text": "Dan aku berlatih untuk memfokuskan perhatian penuh "},
                     {"time": 4, "text": "Dan menjadi lebih terlibat dalam apa yang sedang aku lakukan sepanjang hari..."},
