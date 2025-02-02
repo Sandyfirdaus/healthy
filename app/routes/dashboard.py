@@ -11,13 +11,26 @@ def login_admin():
     myToken = request.cookies.get("mytoken")
     SECRET_KEY = current_app.config['SECRET_KEY']
     try:
+        # Decode JWT token
         payload = jwt.decode(myToken, SECRET_KEY, algorithms=["HS256"])
-        user_info = current_app.db.users.find_one({"username": payload["id"]})
-        return render_template('dashboard_admin/dashboard.html', user_info=user_info)
+        
+        # Cari user info berdasarkan username yang ada di payload
+        user_info = current_app.db.users_admin.find_one({"username": payload["id"]})
+
+        # Cek jika user_info ada dan username-nya sesuai dengan 'admin.psidamai'
+        if user_info and user_info.get('username') == 'admin.psidamai':
+            return render_template('dashboard_admin/dashboard.html', user_info=user_info)
+        else:
+            # Jika username bukan admin.psidamai, redirect ke halaman login
+            return redirect(url_for("auth_admin.login_admin"))
+        
     except jwt.ExpiredSignatureError:
+        # Token sudah expired, redirect ke halaman login
         return redirect(url_for("auth_admin.login_admin"))
     except jwt.exceptions.DecodeError:
+        # Jika token tidak valid
         return redirect(url_for("auth_admin.login_admin"))
+
     
 
 @dashboard_.route('/get-data', methods=['GET'])
