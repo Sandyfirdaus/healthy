@@ -88,6 +88,7 @@
                 text: response["msg"],
                 icon: "info",
                 confirmButtonText: "Oke",
+                confirmButtonColor: '#39ce7d'
               }).then((result) => {
                 if (result.isConfirmed) {
                   $("#username").val("");
@@ -114,6 +115,7 @@
                   text: "Silahkan cek username Anda untuk instruksi reset password.",
                   icon: "success",
                   confirmButtonText: "Oke",
+                  confirmButtonColor: '#39ce7d'
                 });
               } else {
                 Swal.fire({
@@ -121,6 +123,7 @@
                   text: response["msg"],
                   icon: "error",
                   confirmButtonText: "Oke",
+                  confirmButtonColor: '#39ce7d'
                 });
               }
             },

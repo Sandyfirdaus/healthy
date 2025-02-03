@@ -219,7 +219,7 @@
       title: 'Anda harus login terlebih dahulu',
       text: 'Silakan login untuk mengakses konten ini.',
       confirmButtonText: 'OK',
-      confirmButtonColor: '#28a745' // Sesuaikan warna tombol dengan tema Anda
+      confirmButtonColor: '#39ce7d' // Sesuaikan warna tombol dengan tema Anda
     });
   }
 </script>
@@ -637,7 +637,7 @@
           text: "Baca dengan seksama dari beberapa pertanyaan yang tersedia, pilih jawaban berdasarkan apa yang kamu rasakan dalam satu minggu ini.",
           icon: "warning",
           confirmButtonText: "Mulai Tes",
-          confirmButtonColor: "#28a745",
+          confirmButtonColor: '#39ce7d',
       }).then((result) => {
           if (result.isConfirmed) {
             var myModal = new bootstrap.Modal(document.getElementById('screeningModal'));
@@ -752,7 +752,8 @@
       title: "Hasil Skrining",
       text: resultText,
       icon: "info",
-      confirmButtonText: "OK",
+      confirmButtonText: "OKE",
+      confirmButtonColor: '#39ce7d'
     }).then(() => {
       window.location.href = "/home";
     });

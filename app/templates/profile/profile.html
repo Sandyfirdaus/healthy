@@ -18,7 +18,8 @@
               title: "File tidak ditemukan",
               text: "Silakan pilih file terlebih dahulu.",
               icon: "warning",
-              confirmButtonText: "Ok",
+              confirmButtonText: "Oke",
+              confirmButtonColor: '#39ce7d'
           });
           return;
       }
@@ -30,7 +31,8 @@
               title: "Tipe file tidak valid",
               text: "Hanya file dengan format .jpeg, .jpg, atau .png yang diperbolehkan.",
               icon: "error",
-              confirmButtonText: "Ok",
+              confirmButtonText: "Oke",
+              confirmButtonColor: '#39ce7d'
           });
           return;
       }
@@ -52,7 +54,8 @@
                   title: "Berhasil",
                   text: "Foto profil berhasil diperbarui.",
                   icon: "success",
-                  confirmButtonText: "Ok",
+                  confirmButtonText: "Oke",
+                  confirmButtonColor: '#39ce7d'
               }).then((result) => {
                   if (result.isConfirmed) {
                       window.location.reload(); // Refresh halaman
@@ -64,7 +67,8 @@
                   title: "Gagal memperbarui",
                   text: "Terjadi kesalahan saat memperbarui foto profil. Silakan coba lagi.",
                   icon: "error",
-                  confirmButtonText: "Ok",
+                  confirmButtonText: "Oke",
+                  confirmButtonColor: '#39ce7d'
               });
           }
       });
@@ -116,6 +120,7 @@
                         text: `Testimoni berhasi ditambahkan`,
                         icon: "success",
                         confirmButtonText: "Oke",
+                        confirmButtonColor: '#39ce7d'
                       }).then((result) => {
                         if (result.isConfirmed) {
                           window.location.reload();
@@ -161,6 +166,7 @@
                       title: "Testimoni Berhasil",
                       text: "Testimoni berhasil diedit",
                       icon: "success",
+                      confirmButtonColor: '#39ce7d'
                   }).then((result) => {
                       if (result.isConfirmed) {
                           window.location.reload();
