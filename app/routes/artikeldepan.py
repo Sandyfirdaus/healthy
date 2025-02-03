@@ -69,5 +69,4 @@ articles = [
 
 @artikeldepan_.route('/artikeldepan')
 def artikeldepan():
-    # Langsung menampilkan halaman artikeldepan tanpa memeriksa token login
     return render_template('dashboard/artikeldepan.html', articles=articles)

@@ -1245,12 +1245,14 @@ body.modal-open {
     border-radius: 10px;
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
     width: 92%; 
+    margin: 0 auto; /* Membuat elemen berada di tengah */
+    text-align: center; /* Jika ingin teks di dalamnya juga berada di tengah */
   }
   .guide-list li {
     flex-direction: column; /* Ubah ke kolom */
     align-items: center; /* Rata tengah */
     text-align: center; /* Teks di tengah */
-    width: 110%; 
+    width: 100%; 
   }
 
   .step-number {
@@ -1260,6 +1262,40 @@ body.modal-open {
   .step-content {
     text-align: center; /* Pastikan teks juga di tengah */
     padding: 15px; /* Beri lebih banyak ruang */
+  }
+}
+
+/* iPad Responsive Layout */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .guide-container {
+    width: 100%; /* Lebar container lebih besar untuk iPad */
+    max-width: 800px; /* Maksimum lebar container */
+  }
+
+  .guide-list li {
+    flex-direction: row; /* Tetap dalam satu baris */
+    align-items: flex-start; /* Align items ke kiri */
+    text-align: left; /* Teks rata kiri */
+    width: 100%; /* Lebar penuh */
+  }
+
+  .step-number {
+    margin-right: 15px; /* Jarak antara angka dan konten */
+    margin-bottom: 0; /* Hilangkan margin bawah */
+  }
+
+  .step-content {
+    text-align: left; /* Teks rata kiri */
+    padding: 15px; /* Padding yang cukup */
+    width: 100%; /* Lebar penuh */
+  }
+
+  .step-content h5 {
+    font-size: 18px; /* Ukuran font sedikit lebih besar */
+  }
+
+  .step-content p {
+    font-size: 15px; /* Ukuran font sedikit lebih besar */
   }
 }
 /*--------------------------------------------------------------
