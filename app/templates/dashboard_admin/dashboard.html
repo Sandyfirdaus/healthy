@@ -98,6 +98,36 @@
         margin-left: 200px;
         width: calc(100% - 200px);
       }
+
+      @media (max-width: 768px) {
+        .card .d-flex {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        
+        .card .d-flex div {
+          margin-top: 10px;
+        }
+    
+        .btn {
+          margin-left: 0; /* Remove any margin between buttons */
+        }
+    
+        .btn:first-child {
+          margin-right: 15px; /* Add margin to the right of the first button */
+        }
+      
+
+    .table-container {
+      padding-left: 10px;  /* Add padding to move table left */
+      padding-right: 10px; /* Prevent too much space on right */
+    }
+
+    .table {
+      margin-left: -10px; /* Move the table to the left */
+      width: 100%;
+    }
+  }
     </style>
 
     <script>
@@ -236,78 +266,80 @@
       </div>
 
       <!-- Main Content -->
-      <div class="main-content">
-        <div id="statusScreening" class="table-container">
-          <div class="card shadow-sm p-3">
-            <h5 class="card-title">Status Screening</h5>
-            <button class="btn btn-success mb-3" id="downloadBtn">
-              Download PDF
-            </button>
-            <button class="btn btn-success mb-3" id="downloadExcelScreening">
-              Download Excel
-            </button>
-            <table class="table table-striped">
-              <thead class="table-primary">
-                <tr>
-                  <th>No</th>
-                  <th>Username</th>
-                  <th>Skor Stress</th>
-                  <th>Skor Anxiety</th>
-                  <th>Skor Depresi</th>
-                  <th>Hapus</th>
-                </tr>
-              </thead>
-              <tbody id="table_screening">
-                <tr>
-                  <td>1</td>
-                  <td>Shandy</td>
-                  <td>1</td>
-                  <td>2</td>
-                  <td>3</td>
-                  <td><button class="btn btn-danger btn-sm">Delete</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div id="statusDetails" class="table-container" style="display: none">
-          <div class="card shadow-sm p-3">
-            <h5 class="card-title">Status Details</h5>
-            <button class="btn btn-success mb-3" id="download">
-              Download PDF
-            </button>
-            <button class="btn btn-success mb-3" id="downloadExcelDetails">
-              Download Excel
-            </button>
-            <table class="table table-striped">
-              <thead class="table-success">
-                <tr>
-                  <th>Username</th>
-                  <th>Program</th>
-                  <th>Materi</th>
-                  <th>Status</th>
-                  <th>Tanggal</th>
-                  <th>Waktu</th>
-                  <th>Hapus</th>
-                </tr>
-              </thead>
-              <tbody id="table_materi">
-                <tr>
-                  <td>john_doe</td>
-                  <td>Program A</td>
-                  <td>Materi 1</td>
-                  <td>Completed</td>
-                  <td>2025-01-20</td>
-                  <td>9:00 AM</td>
-                  <td><button class="btn btn-danger btn-sm">Delete</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+<!-- Main Content -->
+<div class="main-content">
+  <div id="statusScreening" class="table-container">
+    <div class="card shadow-sm p-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="card-title">Status Screening</h5>
+        <div>
+          <button class="btn btn-success mx-1" id="downloadBtn">Download PDF</button>
+          <button class="btn btn-success mx-1" id="downloadExcelScreening">Download Excel</button>
         </div>
       </div>
+      <table class="table table-striped">
+        <thead class="table-primary">
+          <tr>
+            <th>No</th>
+            <th>Username</th>
+            <th>Skor Stress</th>
+            <th>Skor Anxiety</th>
+            <th>Skor Depresi</th>
+            <th>Hapus</th>
+          </tr>
+        </thead>
+        <tbody id="table_screening">
+          <tr>
+            <td>1</td>
+            <td>Shandy</td>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td><button class="btn btn-danger btn-sm">Delete</button></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  </div>
+
+  <div id="statusDetails" class="table-container" style="display: none">
+    <div class="card shadow-sm p-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="card-title">Status Details</h5>
+        <div>
+          <button class="btn btn-success mx-1" id="download">Download PDF</button>
+          <button class="btn btn-success mx-1" id="downloadExcelDetails">Download Excel</button>
+        </div>
+      </div>
+      <table class="table table-striped">
+        <thead class="table-success">
+          <tr>
+            <th>Username</th>
+            <th>Program</th>
+            <th>Materi</th>
+            <th>Status</th>
+            <th>Tanggal</th>
+            <th>Waktu</th>
+            <th>Hapus</th>
+          </tr>
+        </thead>
+        <tbody id="table_materi">
+          <tr>
+            <td>john_doe</td>
+            <td>Program A</td>
+            <td>Materi 1</td>
+            <td>Completed</td>
+            <td>2025-01-20</td>
+            <td>9:00 AM</td>
+            <td><button class="btn btn-danger btn-sm">Delete</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
 
     <script>
       function showTable(table) {
@@ -403,55 +435,71 @@
     </script>
 
     <script>
-      function downloadExcel(tableId, filename, headers) {
-        let table = document.getElementById(tableId);
-        let clonedTable = table.cloneNode(true);
-    
-        // Hapus kolom terakhir jika ingin, atau hapus bagian ini jika tidak ingin menghapus kolom
-         for (let row of clonedTable.rows) {
-           row.deleteCell(-1);
-         }
-    
-        // Buat workbook dan worksheet
-        let wb = XLSX.utils.book_new();
-        let ws = XLSX.utils.table_to_sheet(clonedTable);
-    
-        // Tambahkan header secara manual di baris pertama
-        XLSX.utils.sheet_add_aoa(ws, [headers], { origin: "A1" });
-    
-        // Append sheet ke workbook
-        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-    
-        // Download file
-        XLSX.writeFile(wb, filename);
-    }
-    
-    // Tambahkan event listener untuk tombol download Excel
-    document
-        .getElementById("downloadExcelScreening")
-        .addEventListener("click", function () {
+      document.addEventListener("DOMContentLoaded", function () {
+        function downloadExcel(tableId, filename, headers) {
+          let table = document.getElementById(tableId);
+          let clonedTable = table.cloneNode(true);
+
+          // Hapus kolom terakhir jika ada kolom hapus
+          for (let row of clonedTable.rows) {
+            if (row.cells.length > headers.length) {
+              row.deleteCell(-1);
+            }
+          }
+
+          // Ambil data dari tabel secara langsung
+          let data = [];
+          let rows = clonedTable.getElementsByTagName("tr");
+
+          for (let i = 0; i < rows.length; i++) {
+            let rowData = [];
+            let cells = rows[i].getElementsByTagName("td");
+
+            if (cells.length === 0) {
+              cells = rows[i].getElementsByTagName("th"); // Tambahkan header ke dalam data
+            }
+
+            for (let j = 0; j < headers.length; j++) {
+              rowData.push(cells[j] ? cells[j].innerText : "");
+            }
+            data.push(rowData);
+          }
+
+          // Buat workbook dan worksheet
+          let wb = XLSX.utils.book_new();
+          let ws = XLSX.utils.aoa_to_sheet([headers, ...data.slice(0)]);
+
+          // Tambahkan worksheet ke dalam workbook
+          XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+          // Simpan file Excel
+          XLSX.writeFile(wb, filename);
+        }
+
+        document
+          .getElementById("downloadExcelScreening")
+          .addEventListener("click", function () {
             downloadExcel("table_screening", "status_screening_PSIDAMAI.xlsx", [
-                "No",
-                "Username",
-                "Skor Stress",
-                "Skor Anxiety",
-                "Skor Depresi",
+              "Username",
+              "Skor Stress",
+              "Skor Anxiety",
+              "Skor Depresi",
             ]);
-        });
-    
-    document
-        .getElementById("downloadExcelDetails")
-        .addEventListener("click", function () {
+          });
+
+        document
+          .getElementById("downloadExcelDetails")
+          .addEventListener("click", function () {
             downloadExcel("table_materi", "status_details_PSIDAMAI.xlsx", [
-                "Username",
-                "Program",
-                "Materi",
-                "Status",
-                "Tanggal",
-                "Waktu",
+              "Username",
+              "Program",
+              "Materi",
+              "Status",
+              "Tanggal",
+              "Waktu",
             ]);
-        });
-    
+          });
+      });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

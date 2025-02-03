@@ -1245,8 +1245,8 @@ body.modal-open {
     border-radius: 10px;
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
     width: 92%; 
-    margin: 0 auto; /* Membuat elemen berada di tengah */
-    text-align: center; /* Jika ingin teks di dalamnya juga berada di tengah */
+    margin: 0 auto; 
+    text-align: center;
   }
   .guide-list li {
     flex-direction: column; /* Ubah ke kolom */
@@ -1849,14 +1849,14 @@ body.modal-open {
 }
 
 /*--------------------------------------------------------------
-# Homesignin Section
+Homesignin Section
 --------------------------------------------------------------*/
 .note-icon {
   position: absolute; /* Posisi relatif terhadap parent (navbar) */
   top: 20%; /* Naik ke tengah-tengah navbar */
-  left: 20px; /* Jarak dari kanan */
+  left: 10px; /* Jarak dari kanan */
   transform: translateY(-70%); /* Menggeser ikon ke atas setengah dari tingginya */
-  font-size: 24px; /* Ukuran ikon */
+  font-size: 22px; /* Ukuran ikon */
   background: #39ce7d; /* Warna latar belakang */
   color: #fff; /* Warna teks */
   border: none; /* Tanpa border */
@@ -1875,6 +1875,34 @@ body.modal-open {
 .note-icon:hover {
   background: #218838; /* Warna latar belakang saat dihover */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bayangan lebih tebal saat dihover */
+}
+@media (max-width: 768px) {
+  navbar {
+    position: relative; /* Pastikan navbar punya posisi relatif agar elemen di dalamnya bisa mengatur posisi */
+    padding: 10px;
+  }
+
+  /* Menyesuaikan posisi dan ukuran ikon pada mobile */
+  .note-icon {
+    right: 10px; /* Menempatkan ikon di sebelah kanan */
+    left: auto; /* Menghilangkan pengaturan left */
+    top: 20%;  /* Mengatur posisi vertikal lebih tinggi */
+    width: 40px; /* Ukuran ikon lebih kecil */
+    height: 40px; /* Ukuran ikon lebih kecil */
+    font-size: 18px; /* Ukuran font lebih kecil */
+  }
+}
+
+/* iPad Responsive Layout */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .note-icon {
+    right: 10px; /* Menempatkan ikon di sebelah kanan */
+    left: auto; /* Menghilangkan pengaturan left */
+    top: 20%;  /* Mengatur posisi vertikal lebih tinggi */
+    width: 40px; /* Ukuran ikon lebih kecil */
+    height: 40px; /* Ukuran ikon lebih kecil */
+    font-size: 18px; /* Ukuran font lebih kecil */
+  }
 }
 
 .profile-dropdown {
