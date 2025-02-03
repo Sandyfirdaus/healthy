@@ -1852,37 +1852,37 @@ body.modal-open {
 Homesignin Section
 --------------------------------------------------------------*/
 .note-icon {
-  position: absolute; /* Posisi relatif terhadap parent (navbar) */
-  top: 20%; /* Naik ke tengah-tengah navbar */
-  left: 10px; /* Jarak dari kanan */
-  transform: translateY(-70%); /* Menggeser ikon ke atas setengah dari tingginya */
-  font-size: 22px; /* Ukuran ikon */
-  background: #39ce7d; /* Warna latar belakang */
-  color: #fff; /* Warna teks */
-  border: none; /* Tanpa border */
-  border-radius: 50%; /* Bentuk bulat */
-  width: 50px; /* Lebar */
-  height: 50px; /* Tinggi */
+  position: absolute; 
+  top: 20%; 
+  left: 10px; 
+  transform: translateY(-70%); 
+  font-size: 22px; 
+  background: #39ce7d; 
+  color: #fff; 
+  border: none; 
+  border-radius: 50%; 
+  width: 50px; 
+  height: 50px; 
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer; /* Pointer saat dihover */
-  z-index: 1000; /* Z-index untuk tumpukan */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Bayangan untuk efek depth */
-  transition: background 0.3s ease; /* Transisi halus untuk hover */
+  cursor: pointer; 
+  z-index: 1000; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  transition: background 0.3s ease; 
 }
 
 .note-icon:hover {
-  background: #218838; /* Warna latar belakang saat dihover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bayangan lebih tebal saat dihover */
+  background: #218838; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
+
+/* Menyesuaikan posisi dan ukuran ikon pada mobile */
 @media (max-width: 768px) {
   navbar {
-    position: relative; /* Pastikan navbar punya posisi relatif agar elemen di dalamnya bisa mengatur posisi */
+    position: relative; 
     padding: 10px;
   }
-
-  /* Menyesuaikan posisi dan ukuran ikon pada mobile */
   .note-icon {
     right: 10px; /* Menempatkan ikon di sebelah kanan */
     left: auto; /* Menghilangkan pengaturan left */
