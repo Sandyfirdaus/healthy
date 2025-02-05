@@ -18,8 +18,7 @@
               title: "File tidak ditemukan",
               text: "Silakan pilih file terlebih dahulu.",
               icon: "warning",
-              confirmButtonText: "Oke",
-              confirmButtonColor: '#39ce7d'
+              confirmButtonText: "Ok",
           });
           return;
       }
@@ -31,8 +30,7 @@
               title: "Tipe file tidak valid",
               text: "Hanya file dengan format .jpeg, .jpg, atau .png yang diperbolehkan.",
               icon: "error",
-              confirmButtonText: "Oke",
-              confirmButtonColor: '#39ce7d'
+              confirmButtonText: "Ok",
           });
           return;
       }
@@ -54,8 +52,7 @@
                   title: "Berhasil",
                   text: "Foto profil berhasil diperbarui.",
                   icon: "success",
-                  confirmButtonText: "Oke",
-                  confirmButtonColor: '#39ce7d'
+                  confirmButtonText: "Ok",
               }).then((result) => {
                   if (result.isConfirmed) {
                       window.location.reload(); // Refresh halaman
@@ -67,8 +64,7 @@
                   title: "Gagal memperbarui",
                   text: "Terjadi kesalahan saat memperbarui foto profil. Silakan coba lagi.",
                   icon: "error",
-                  confirmButtonText: "Oke",
-                  confirmButtonColor: '#39ce7d'
+                  confirmButtonText: "Ok",
               });
           }
       });
@@ -120,7 +116,6 @@
                         text: `Testimoni berhasi ditambahkan`,
                         icon: "success",
                         confirmButtonText: "Oke",
-                        confirmButtonColor: '#39ce7d'
                       }).then((result) => {
                         if (result.isConfirmed) {
                           window.location.reload();
@@ -166,7 +161,6 @@
                       title: "Testimoni Berhasil",
                       text: "Testimoni berhasil diedit",
                       icon: "success",
-                      confirmButtonColor: '#39ce7d'
                   }).then((result) => {
                       if (result.isConfirmed) {
                           window.location.reload();
@@ -283,7 +277,7 @@
                           <div class="col-sm-12 d-flex justify-content-between align-items-center">
                               <div class="d-flex align-items-center">
                                   <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
-                                  <p class="mb-0 small">Perkenalan Mindfulness Untuk Mahasiswa :</p>
+                                  <p class="mb-0">Perkenalan Mindfulness Untuk Mahasiswa :</p>
                               </div>
                               <div id="statusEndRoll">
                               </div>
