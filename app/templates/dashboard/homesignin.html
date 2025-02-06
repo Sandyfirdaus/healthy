@@ -369,14 +369,9 @@
             type: "POST",
             url: "/save-status-screening",
             data: { username, resultText, status },
-            success: function (response) {
-              if (response.exists) {
-                window.location.href = "/program";
+            success: function (response) {;
                 console.log(response.result)
-              } else {
                 window.location.href = "/program";
-                console.log(response.result)
-              }
             },
           });
         });

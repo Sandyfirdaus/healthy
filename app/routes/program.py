@@ -27,9 +27,10 @@ def save_status_screening():
 
     exists = bool(current_app.db.status_screening.find_one({"username": username}))
     if exists:
+        current_app.db.status_screening.update_one({"username": username}, {"$set": doc})
         return jsonify({
             "exists": exists,
-            "result": "Sudah Pernah Screening",
+            "result": "Update",
         })
     else:
         current_app.db.status_screening.insert_one(doc)
