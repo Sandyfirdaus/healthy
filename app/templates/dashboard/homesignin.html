@@ -361,7 +361,7 @@
     
         Swal.fire({
           title: "Hasil Skrining",
-          text: resultText,
+          html: `<p style="font-size: 17px;">${resultText}</p>`,
           icon: "info",
           confirmButtonText: "Menuju Program",
         }).then(() => {

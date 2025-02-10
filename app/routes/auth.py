@@ -74,11 +74,11 @@ def logout():
         response = {"message": "Invalid token"}
         return jsonify(response), 401
 
-@auth_.route('/forget-password')
+@auth_.route('/ubah-password')
 def forget_password():
-    return render_template('auth/forget-password.html')
+    return render_template('auth/ubah-password.html')
 
-@auth_.route('/forget-password-check', methods=["POST"])
+@auth_.route('/ubah-password-check', methods=["POST"])
 def forget_password_check():
     username = request.form['username']
     password = request.form['password']
