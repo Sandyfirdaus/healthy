@@ -573,6 +573,7 @@
                   sentMessage.style.display = "block";
                   sentMessage.innerText =
                     "Pesan kamu sudah dikirim. Terima Kasih!" || data.message;
+                    document.getElementById("contactForm").reset();
                 } else {
                   errorMessage.style.display = "block";
                   errorMessage.innerText =
