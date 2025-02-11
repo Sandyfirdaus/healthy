@@ -76,7 +76,7 @@ def logout():
 
 @auth_.route('/ubah-password')
 def forget_password():
-    return render_template('auth/ubah-password.html')
+    return render_template('auth/ubah_password.html')
 
 @auth_.route('/ubah-password-check', methods=["POST"])
 def forget_password_check():
