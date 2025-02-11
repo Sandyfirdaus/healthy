@@ -82,9 +82,14 @@ def forget_password():
 def forget_password_check():
     username = request.form['username']
     password = request.form['password']
-    password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
+    pw_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
+    newPassword = request.form["newPassword"]
+    password_hash = hashlib.sha256(newPassword.encode('utf-8')).hexdigest()
 
-    exists = bool(current_app.db.users.find_one({"username": username}))
+    exists = current_app.db.users.find_one({
+        "username": username,
+        "password": pw_hash
+    })
     if exists:
         current_app.db.users.update_one(
             {"username": username},
@@ -92,4 +97,4 @@ def forget_password_check():
         )
         return jsonify({'result': 'success', 'msg': 'Password successfully changed!'})
 
-    return jsonify({'result': 'failed', 'msg': 'Email does not match!'})
+    return jsonify({'result': 'failed', 'msg': 'Email or password does not match!'})
