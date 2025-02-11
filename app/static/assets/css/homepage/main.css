@@ -928,15 +928,15 @@ body.modal-open {
 .btn-get-started {
   font-size: 1rem;
   padding: 10px 20px;
-  background-color: #A4D17A; /* Warna tombol */
-  color: white;
+  color: var(--contrast-color);
+  background: var(--accent-color);
   border-radius: 5px;
   text-decoration: none;
 }
 
-.btn-get-started {
+.btn-get-started:hover{
+  background: color-mix(in srgb, var(--accent-color) 90%, black 15%);
   color: var(--contrast-color);
-  background: #88C070;
 }
 
 /* Responsif untuk layar kecil (mobile) */
