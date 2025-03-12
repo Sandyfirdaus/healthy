@@ -40,6 +40,34 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <style>
+        .swal-wide {
+            width: 350px !important;
+            padding: 20px !important;
+        }
+        
+        .swal2-input-custom {
+            width: 100% !important;
+            margin: 5px 0 !important;
+            padding: 8px 12px !important;
+            border: 1px solid #ddd !important;
+            border-radius: 4px !important;
+            font-size: 14px !important;
+        }
+        
+        .swal2-input {
+            box-shadow: none !important;
+            border: 1px solid #ddd !important;
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+        }
+        
+        .swal2-input:focus {
+            border-color: #39ce7d !important;
+            box-shadow: 0 0 0 0.2rem rgba(57, 206, 125, 0.25) !important;
+        }
+    </style>
+
     <script>
       $(document).ready(function () {
         // Menambahkan event listener pada form
@@ -102,33 +130,81 @@
       }
 
       function forgotPassword() {
-        let username = prompt("Masukkan username Anda untuk reset password:");
-        if (username) {
-          $.ajax({
-            type: "POST",
-            url: "/send_reset_password",
-            data: { username: username },
-            success: function (response) {
-              if (response["result"] === "success") {
-                Swal.fire({
-                  title: "Permintaan Berhasil!",
-                  text: "Silahkan cek username Anda untuk instruksi reset password.",
-                  icon: "success",
-                  confirmButtonText: "Oke",
-                  confirmButtonColor: '#39ce7d'
-                });
-              } else {
-                Swal.fire({
-                  title: "Gagal!",
-                  text: response["msg"],
-                  icon: "error",
-                  confirmButtonText: "Oke",
-                  confirmButtonColor: '#39ce7d'
-                });
+        Swal.fire({
+          title: 'Lupa Password',
+          html: `
+            <div style="text-align: left; padding: 0 10px;">
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <input 
+                        type="text" 
+                        id="username-forgot" 
+                        class="swal2-input" 
+                        placeholder="Username"
+                        style="margin: 5px 0; width: 100%;"
+                    >
+                </div>
+                <div class="form-group">
+                    <input 
+                        type="email" 
+                        id="email-forgot" 
+                        class="swal2-input" 
+                        placeholder="Email"
+                        style="margin: 5px 0; width: 100%;"
+                    >
+                </div>
+            </div>
+        `,
+          showCancelButton: true,
+          confirmButtonText: 'Kirim',
+          cancelButtonText: 'Batal',
+          confirmButtonColor: '#39ce7d',
+          showLoaderOnConfirm: true,
+          customClass: {
+            popup: 'swal-wide',
+            input: 'swal2-input-custom'
+          },
+          preConfirm: () => {
+            const username = document.getElementById('username-forgot').value;
+            const email = document.getElementById('email-forgot').value;
+            
+            if (!username || !email) {
+                Swal.showValidationMessage('Username dan email harus diisi');
+                return false;
+            }
+            
+            return $.ajax({
+              type: "POST",
+              url: "/forgot_password",
+              data: { 
+                  username: username,
+                  email: email 
               }
-            },
-          });
-        }
+            })
+            .then(response => {
+                console.log('Response:', response);
+                if (response.result === 'error') {
+                    throw new Error(response.msg)
+                }
+                return response
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.showValidationMessage(
+                    error.responseJSON ? error.responseJSON.msg : error.message
+                )
+            })
+          },
+          allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+          if (result.isConfirmed && result.value.result === 'success') {
+            Swal.fire({
+              title: 'Berhasil!',
+              text: 'Link reset password telah dikirim ke email Anda',
+              icon: 'success',
+              confirmButtonColor: '#39ce7d'
+            })
+          }
+        })
       }
     </script>
   </head>
@@ -146,6 +222,13 @@
       <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
           <div class="login-wrap p-0">
+            {% if reset_error %}
+            <div class="alert alert-danger text-center mb-4">
+                {{ reset_error }}
+                <br>
+                <a href="#" onclick="forgotPassword()" class="alert-link">Klik di sini untuk meminta link baru</a>
+            </div>
+            {% endif %}
             <form action="#" class="signin-form">
               <div class="form-group">
                 <input
@@ -188,18 +271,27 @@
                 </button>
               </div>
 
-              <div class="form-group d-md-flex justify-content-between">
-                <p>
-                  Belum punya akun?
-                  <a href="/register" style="color: #fff" class="register-btn"
-                    >Daftar</a
-                  >
-                </p>
-                <p>
-                  <a href="/ubah-password" style="color: #fff"
-                    >Ubah Password?</a
-                  >
-                </p>
+              <div class="form-group">
+                <div class="w-100">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                      <span style="color: #fff">Belum punya akun?</span>
+                      <a href="/register" style="color: #fff; margin-left: 5px" class="register-btn">
+                        Daftar
+                      </a>
+                    </div>
+                    <div>
+                      <a href="/ubah-password" style="color: #fff">
+                        Ubah Password
+                      </a>
+                    </div>
+                  </div>
+                  <div class="text-left">
+                    <a href="#" onclick="forgotPassword()" style="color: #fff">
+                      Lupa Password?
+                    </a>
+                  </div>
+                </div>
               </div>
             </form>
           </div>

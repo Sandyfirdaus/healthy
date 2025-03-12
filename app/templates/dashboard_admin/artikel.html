@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Articles - PSIDAMAI</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      :root {
+        --sidebar-color: #198754;
+        --secondary-color: #00b8d4;
+        --accent-color: #ff4081;
+        --background-color: #f5f5f5;
+        --text-color: #333333;
+      }
+
+      body {
+        background-color: var(--background-color);
+      }
+
+      .sidebar {
+        background-color: var(--sidebar-color);
+        min-height: 100vh;
+        padding: 20px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar a {
+        color: white;
+        text-decoration: none;
+        display: block;
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+      }
+
+      .sidebar a:hover,
+      .sidebar a.active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .sidebar-brand {
+        font-size: 1.5rem;
+        color: white;
+        padding: 10px;
+        margin-bottom: 20px;
+      }
+
+      .article-card {
+        border: none;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .article-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .article-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .article-content {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+      }
+
+      .article-details {
+        margin-left: 15px;
+        flex-grow: 1;
+      }
+
+      .article-details h5 {
+        color: var(--text-color);
+        margin-bottom: 5px;
+      }
+
+      .article-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-success {
+        background-color: var(--sidebar-color);
+        border: none;
+        padding: 8px 20px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-success:hover {
+        background-color: #146c43;
+        transform: translateY(-2px);
+      }
+
+      .btn-danger {
+        background-color: var(--accent-color);
+        border: none;
+      }
+
+      .btn-outline-primary {
+        color: var(--secondary-color);
+        border-color: var(--secondary-color);
+      }
+
+      .btn-outline-primary:hover {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+      }
+
+      .btn-outline-danger {
+        color: var(--accent-color);
+        border-color: var(--accent-color);
+      }
+
+      .btn-outline-danger:hover {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+      }
+
+      .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-body {
+        padding: 25px;
+      }
+
+      .article-category {
+        color: var(--secondary-color);
+        font-size: 0.875rem;
+        margin-bottom: 3px;
+      }
+      .author-image {
+        width: 30px; /* Ukuran kecil */
+        height: 30px;
+        border-radius: 50%; /* Agar bentuknya bulat */
+        object-fit: cover; /* Agar tidak terdistorsi */
+        margin-right: 8px; /* Jarak dengan nama */
+        vertical-align: middle; /* Sejajar dengan teks */
+      }
+
+      /* Tambahan style untuk form */
+      .form-label {
+        color: var(--text-color);
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+
+      .form-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+      }
+
+      .upload-area {
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+
+      .upload-area:hover {
+        border-color: var(--secondary-color);
+      }
+    </style>
+
+    <script>
+      $(document).ready(function () {
+        $.ajax({
+          type: "GET",
+          url: "/get-artikel",
+          success: function (response) {
+            console.log(response.data_artikel);
+            $("#articleList").empty();
+            data = response.data_artikel;
+            data.forEach((item, index) => {
+              let imagePath = `../../static/${item.artikelPict}`; // Path gambar yang benar
+              let authorImagePath = `../../static/${item.authorPict}`; // Path gambar author
+
+              let articleList = `
+                        <div class="article-card">
+                            <div class="article-content">
+                                <img src="${imagePath}" alt="Article thumbnail" class="article-image"/>
+                                <div class="article-details">
+                                    <h5>${item.title}</h5>
+                                    <p class="article-category mb-1">${item.kategori}</p>
+                                    <p class="text-muted mb-0">
+                                        <img src="${authorImagePath}" class="author-image" alt="Author Image"/> 
+                                        ${item.author}
+                                    </p>
+                                    <small class="text-muted">${item.date}</small>
+                                </div>
+                                <div class="article-actions">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="detailArtikel('${item.title}')">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteArtikel('${item.title}')">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+              $("#articleList").append(articleList);
+            });
+          },
+          error: function (xhr, status, error) {
+            console.error("Error:", error);
+          },
+        });
+      });
+
+      function detailArtikel(title) {
+        $.ajax({
+          url: `/detail-artikel/${title}`,
+          type: "GET",
+          success: function (response) {
+            console.log(response);
+            $("#id_title").val(response.article.title);
+            $("#editTitle").val(response.article.title);
+            $("#editKategori").val(response.article.kategori);
+            $("#editAuthor").val(response.article.author);
+            $("#editDate").val(response.article.date);
+            $("#editKonten").val(response.article.konten);
+            $("#editArtikelModal").modal("show");
+          },
+          error: function (xhr) {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal",
+              text: "Data kegiatan tidak ditemukan.",
+              confirmButtonText: "Tutup",
+            });
+          },
+        });
+      }
+
+      function addArtikel() {
+        let title = $("#title").val();
+        let kategori = $("#kategori").val();
+        let author = $("#author").val();
+        let date = $("#date").val();
+        let konten = $("#konten").val();
+        let fileInput = $("#foto")[0].files[0];
+        let fileAuthor = $("#fotoAuthor")[0].files[0];
+
+        let formData = new FormData();
+        formData.append("filePict", fileInput);
+        formData.append("fileAuthor", fileAuthor);
+        formData.append("title", title);
+        formData.append("kategori", kategori);
+        formData.append("author", author);
+        formData.append("date", date);
+        formData.append("konten", konten);
+
+        $.ajax({
+          type: "POST",
+          url: "/add-artikel",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            Swal.fire({
+              title: "Berhasil",
+              text: "Artikel berhasil ditambahkan!",
+              icon: "success",
+              confirmButtonText: "Oke",
+            }).then(() => window.location.reload());
+          },
+        });
+      }
+
+      function editArtikel() {
+        let title = $("#id_title").val();
+        let new_title = $("#editTitle").val();
+        let kategori = $("#editKategori").val();
+        let author = $("#editAuthor").val();
+        let date = $("#editDate").val();
+        let konten = $("#editKonten").val();
+        let fileInput = $("#editFoto")[0].files[0];
+        let fileAuthor = $("#editFotoAuthor")[0].files[0];
+
+        let formData = new FormData();
+        formData.append("title", title);
+        formData.append("filePict", fileInput);
+        formData.append("fileAuthor", fileAuthor);
+        formData.append("new_title", new_title);
+        formData.append("kategori", kategori);
+        formData.append("author", author);
+        formData.append("date", date);
+        formData.append("konten", konten);
+
+        $.ajax({
+          type: "POST",
+          url: `/edit-artikel`,
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            Swal.fire({
+              title: "Berhasil",
+              text: "Artikel berhasil diubah!",
+              icon: "success",
+              confirmButtonText: "Oke",
+            }).then(() => window.location.reload());
+          },
+        });
+      }
+
+      function deleteArtikel(title) {
+        $.ajax({
+          type: "POST",
+          url: "/delete-artikel",
+          data: { title: title },
+          success: function (response) {
+            Swal.fire({
+              title: "Berhasil",
+              text: "Artikel berhasil dihapus!",
+              icon: "success",
+              confirmButtonText: "Oke",
+            }).then(() => window.location.reload());
+          },
+        });
+      }
+
+      function logout() {
+        $.ajax({
+          url: "/logout",
+          type: "DELETE",
+          success: function (response) {
+            document.cookie =
+              "mytoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/login-admin";
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+          },
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        {% include "base/sidebar.html" %}
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Dashboard</h2>
+            <button
+              class="btn btn-danger"
+              onclick="logout()"
+            >
+              Logout
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div
+                class="d-flex justify-content-between align-items-center mb-4"
+              >
+                <h3>Article Details</h3>
+                <button class="btn btn-success">Add Article</button>
+              </div>
+
+              <!-- Article List -->
+              <div class="article-list" id="articleList">
+                <!-- Article Item 1 -->
+                <div class="article-card">
+                  <div class="article-content">
+                    <img
+                      src="https://via.placeholder.com/80"
+                      alt="Article thumbnail"
+                      class="article-image"
+                    />
+                    <div class="article-details">
+                      <h5>Apa Itu Mindfulness?</h5>
+                      <p class="article-category mb-1">Kesehatan Mental</p>
+                      <p class="text-muted mb-0">Nama Penulis</p>
+                      <small class="text-muted">04-11-2024</small>
+                    </div>
+                    <div class="article-actions">
+                      <button class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-pencil"></i> Edit
+                      </button>
+                      <button class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-trash"></i> Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Edit Article -->
+    <div class="modal fade" id="editArtikelModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Article</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-muted mb-4">
+              Please provide the following details to add a new article.
+            </p>
+
+            <form id="addArticleForm">
+              <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editTitle"
+                  placeholder="Fill in relevant sentences for your new article title"
+                />
+                <div class="form-text">Write the title of your article.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Category</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editKategori"
+                  placeholder="Enter the category for your article"
+                />
+                <div class="form-text">Type the category for your article.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Author</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editAuthor"
+                  placeholder="Write the name of the author of the article"
+                />
+                <div class="form-text">Write the author's name.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Date</label>
+                <input type="date" class="form-control" id="editDate" />
+                <div class="form-text">
+                  Please fill in the date according to write.
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Cover Image</label>
+                <input type="file" class="form-control" id="editFoto" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Image Author</label>
+                <input type="file" class="form-control" id="editFotoAuthor" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="editArtikel()"
+            >
+              Edit Article
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Add Article -->
+    <div class="modal fade" id="addArticleModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add New Article</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-muted mb-4">
+              Please provide the following details to add a new article.
+            </p>
+
+            <form id="addArticleForm">
+              <div class="mb-3">
+                <label class="form-label">Title</label>
+                <p id="id_title" class="help is-hidden"></p>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="title"
+                  placeholder="Fill in relevant sentences for your new article title"
+                />
+                <div class="form-text">Write the title of your article.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Category</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="kategori"
+                  placeholder="Enter the category for your article"
+                />
+                <div class="form-text">Type the category for your article.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Author</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="author"
+                  placeholder="Write the name of the author of the article"
+                />
+                <div class="form-text">Write the author's name.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Date</label>
+                <input type="date" class="form-control" id="date" />
+                <div class="form-text">
+                  Please fill in the date according to write.
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Cover Image</label>
+                <input type="file" class="form-control" id="foto" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Image Author</label>
+                <input type="file" class="form-control" id="fotoAuthor" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="addArtikel()"
+            >
+              Create New Article
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Tambahan script untuk menangani modal -->
+    <script>
+      // Menambahkan event listener ke tombol Add Article
+      document
+        .querySelector(".btn-success")
+        .addEventListener("click", function () {
+          var modal = new bootstrap.Modal(
+            document.getElementById("addArticleModal")
+          );
+          modal.show();
+        });
+
+      // Menangani drag & drop
+      const dropZone = document.getElementById("dropZone");
+
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+      });
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, highlight, false);
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+      });
+
+      function highlight(e) {
+        dropZone.classList.add("border-primary");
+      }
+
+      function unhighlight(e) {
+        dropZone.classList.remove("border-primary");
+      }
+
+      dropZone.addEventListener("drop", handleDrop, false);
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+      }
+
+      function handleFiles(files) {
+        [...files].forEach(uploadFile);
+      }
+
+      function uploadFile(file) {
+        // Handle file upload here
+        console.log("File uploaded:", file.name);
+      }
+    </script>
+  </body>
+</html>

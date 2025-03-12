@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Screening - PSIDAMAI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --sidebar-color: #198754;
+            --secondary-color: #00B8D4;
+            --accent-color: #FF4081;
+            --background-color: #F5F5F5;
+            --text-color: #333333;
+        }
+
+        body {
+            background-color: var(--background-color);
+        }
+
+        .sidebar {
+            background-color: var(--sidebar-color);
+            min-height: 100vh;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .sidebar-brand {
+            font-size: 1.5rem;
+            color: white;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "/get-screening",
+                success: function (response) {
+                    console.log("Data screening:", response.data_screening);
+                    $("#table_screening").empty();
+                    
+                    let dataScreening = response.data_screening;
+                    dataScreening.forEach((item, index) => {
+                        let scores = item.scoreScreening.match(/\d+/g);
+                        let [stress, anxiety, depression] = scores ? scores : [0, 0, 0];
+                        
+                        // Gunakan nilai default jika undefined
+                        let tanggal = item.tanggal || "Tidak ada data";
+                        let jam = item.jam || "Tidak ada data";
+                        let email = item.email || "Tidak ada data";
+
+                        let tableRowScreening = `
+                            <tr>
+                                <th>${index + 1}</th>
+                                <td>${item.username}</td>
+                                <td>${email}</td>
+                                <td>${stress}</td>
+                                <td>${anxiety}</td>
+                                <td>${depression}</td>
+                                <td>${tanggal}</td>
+                                <td>${jam}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteScreening('${item.username}', '${tanggal}', '${jam}')">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                        $("#table_screening").append(tableRowScreening);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: "Gagal memuat data screening.",
+                        confirmButtonText: "Tutup",
+                    });
+                }
+            });
+        });
+
+        function deleteScreening(username, tanggal, jam) {
+            $.ajax({
+                type: "POST",
+                url: "/delete-screening",
+                data: { username: username, tanggal: tanggal, jam: jam },
+                success: function (response) {
+                    Swal.fire({
+                        title: "Hapus berhasil!",
+                        text: response["msg"],
+                        icon: "success",
+                        confirmButtonText: "Oke",
+                    }).then((result) => {
+                        window.location.reload();
+                    });
+                },
+            });
+        }
+        function logout() {
+            $.ajax({
+              url: "/logout",
+              type: "DELETE",
+              success: function (response) {
+                document.cookie =
+                  "mytoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = "/login-admin";
+              },
+              error: function (xhr, status, error) {
+                console.error(error);
+              },
+            });
+          }
+    </script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            {% include "base/sidebar.html" %}
+
+            <!-- Main Content -->
+            <div class="col-md-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Dashboard</h2>
+                    <button class="btn btn-danger" onclick="logout()">Logout</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <h3>Status Screening</h3>
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Skor Stres</th>
+                                        <th>Skor Anxiety</th>
+                                        <th>Skor Depresi</th>
+                                        <th>Tanggal</th>
+                                        <th>Waktu</th>
+                                        <th>Hapus</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table_screening">
+                                    <tr>
+                                        <td>1</td>
+                                        <td>User1</td>
+                                        <td>user1@example.com</td>
+                                        <td>5</td>
+                                        <td>7</td>
+                                        <td>3</td>
+                                        <td>2025-02-20</td>
+                                        <td>11:00 AM</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm">Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

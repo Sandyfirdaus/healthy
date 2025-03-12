@@ -23,13 +23,13 @@
             {% for article in articles %}
             <div class="col-lg-4" data-aos="flip-up">
               <a
-                href="/artikeldepan_details/{{ article.id }}"
+                href="/artikeldepan_details/{{ article.title }}"
                 class="post-item-link text-decoration-none"
               >
                 <article class="post-item">
                   <div class="post-img">
                     <img
-                      src="{{ url_for('static', filename=article.image) }}"
+                      src="{{ url_for('static', filename=article.artikelPict) }}"
                       alt="{{ article.title }}"
                       class="img-fluid"
                     />
@@ -38,7 +38,7 @@
                   <h2 class="title">{{ article.title }}</h2>
                   <div class="d-flex align-items-center">
                     <img
-                      src="{{ url_for('static', filename=article.author_image) }}"
+                      src="{{ url_for('static', filename=article.authorPict) }}"
                       alt="{{ article.author }}"
                       class="img-fluid post-author-img flex-shrink-0"
                     />

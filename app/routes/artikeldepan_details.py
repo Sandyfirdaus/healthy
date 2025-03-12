@@ -226,10 +226,9 @@ articles = {
 }
 
 
-@artikeldepan_details_.route('/artikeldepan_details/<int:article_id>')  # Change to article_id here
-def artikel_detail(article_id):  # Also change to article_id here
-    article_id = str(article_id)
-    article = articles.get(article_id)
+@artikeldepan_details_.route('/artikeldepan_details/<title>')  # Change to article_id here
+def artikel_detail(title):  # Also change to article_id here
+    article = current_app.db.artikel.find_one({'title': title}, {'_id' : False})
 
     if article:
         return render_template("dashboard/artikeldepan_details.html", article=article)

@@ -351,31 +351,55 @@
         if (event) event.preventDefault();
     
         const username = "{{ user_info.username }}";
-        const status = "done"
-        const resultText = `
-          Skor Stress: ${scores.Stress}\n
-          Skor Anxiety: ${scores.Anxiety}\n
-          Skor Depression: ${scores.Depression}`;
-          
-          
-    
+        const status = "done";
+        const resultText = `${scores.Stress}, ${scores.Anxiety}, ${scores.Depression}`;
+        
+        // Dapatkan tanggal dan waktu saat ini
+        const now = new Date();
+        const tanggal = now.getDate().toString().padStart(2, '0') + '-' + 
+                       (now.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                       now.getFullYear();
+        const jam = now.getHours().toString().padStart(2, '0') + ':' + 
+                   now.getMinutes().toString().padStart(2, '0');
+
         Swal.fire({
-          title: "Hasil Skrining",
-          html: `<p style="font-size: 17px;">${resultText}</p>`,
-          icon: "info",
-          confirmButtonText: "Menuju Program",
+            title: "Hasil Skrining",
+            html: `<p style="font-size: 17px;">
+                Skor Stress: ${scores.Stress}<br>
+                Skor Anxiety: ${scores.Anxiety}<br>
+                Skor Depression: ${scores.Depression}
+            </p>`,
+            icon: "info",
+            confirmButtonText: "Menuju Program",
         }).then(() => {
-          $.ajax({
-            type: "POST",
-            url: "/save-status-screening",
-            data: { username, resultText, status },
-            success: function (response) {;
-                console.log(response.result)
-                window.location.href = "/program";
-            },
-          });
+            $.ajax({
+                type: "POST",
+                url: "/save-status-screening",
+                data: { 
+                    username: username, 
+                    resultText: resultText, 
+                    status: status,
+                    tanggal: tanggal,
+                    jam: jam
+                },
+                success: function (response) {
+                    console.log("Response:", response);
+                    window.location.href = "/program";
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: "Gagal menyimpan hasil screening.",
+                        confirmButtonText: "Tutup"
+                    });
+                }
+            });
         });
       }
+
+      
     
       document.addEventListener("DOMContentLoaded", displayQuestion);
     </script>

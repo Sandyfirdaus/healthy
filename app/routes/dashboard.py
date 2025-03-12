@@ -40,7 +40,7 @@ def get_data():
     return jsonify({"data_screening":data_screening, "data_materi": data_materi})
 
 @dashboard_.route('/delete-screening', methods=['POST'])
-def delete_screening():
+def delete_scressening():
     username = request.form['username']
     current_app.db.status_screening.delete_one({'username': username})
     return jsonify({'msg': 'Data screening berhasil dihapus!'})

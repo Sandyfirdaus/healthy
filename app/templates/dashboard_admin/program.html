@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Programs - PSIDAMAI</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      :root {
+        --sidebar-color: #198754;
+        --secondary-color: #00b8d4;
+        --accent-color: #ff4081;
+        --background-color: #f5f5f5;
+        --text-color: #333333;
+      }
+
+      body {
+        background-color: var(--background-color);
+      }
+
+      .sidebar {
+        background-color: var(--sidebar-color);
+        min-height: 100vh;
+        padding: 20px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar a {
+        color: white;
+        text-decoration: none;
+        display: block;
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+      }
+
+      .sidebar a:hover,
+      .sidebar a.active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .sidebar-brand {
+        font-size: 1.5rem;
+        color: white;
+        padding: 10px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-body {
+        padding: 25px;
+      }
+
+      .program-card {
+        border: none;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+      }
+
+      .program-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .program-content {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+      }
+
+      .program-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .program-details {
+        margin-left: 15px;
+        flex-grow: 1;
+      }
+
+      .program-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-success {
+        background-color: var(--sidebar-color);
+        border: none;
+        padding: 8px 20px;
+      }
+
+      .btn-success:hover {
+        background-color: #146c43;
+      }
+
+      .program-title {
+        color: var(--text-color);
+        transition: color 0.2s ease;
+      }
+
+      .program-title:hover {
+        color: var(--sidebar-color);
+      }
+
+      .program-details {
+        width: 100%;
+        padding-right: 15px;
+      }
+
+      .program-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+      }
+    </style>
+
+    <script>
+      $(document).ready(function () {
+        $.ajax({
+          type: "GET",
+          url: "/get-program",
+          success: function (response) {
+            console.log(response.data_program);
+            $("#programList").empty();
+            let data = response.data_program;
+            data.forEach((item, index) => {
+              let imagePath = `../../static/${item.coverImage}`;
+
+              let programList = `
+                        <div class="program-card">
+                            <div class="program-content">
+                                <img src="${imagePath}" alt="Program thumbnail" class="program-image"/>
+                                <div class="program-details">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a href="/add-materi/${item.title}" class="program-title text-decoration-none">
+                                            <h5 class="mb-0">${item.title}</h5>
+                                        </a>
+                                        <div class="program-actions">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="editProgram('${item.title}')">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteProgram('${item.title}')">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+              $("#programList").append(programList);
+            });
+          },
+          error: function (xhr, status, error) {
+            console.error("Error:", error);
+          },
+        });
+      });
+
+      function editProgram(title) {
+        // Prevent click event from bubbling up to parent elements
+        event.stopPropagation();
+        
+        $.ajax({
+          url: `/detail-program/${title}`,
+          type: "GET",
+          success: function (response) {
+            console.log(response);
+            $("#id_title").val(title);
+            $("#editTitle").val(title);
+            var modal = new bootstrap.Modal(
+              document.getElementById("editProgramModal")
+            );
+            modal.show();
+          },
+          error: function (xhr) {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal",
+              text: "Data program tidak ditemukan.",
+              confirmButtonText: "Tutup",
+            });
+          },
+        });
+      }
+
+      // Fungsi untuk menyimpan perubahan edit
+      function saveEditProgram() {
+        let title = $("#id_title").val();
+        let new_title = $("#editTitle").val();
+        let fileInput = $("#editCoverImage")[0].files[0];
+        
+        let formData = new FormData();
+        formData.append("title", title);
+        formData.append("new_title", new_title);
+        
+        if (fileInput) {
+          formData.append("filePict", fileInput);
+        }
+        
+        $.ajax({
+          type: "POST",
+          url: "/edit-program",
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (response) {
+            var modal = bootstrap.Modal.getInstance(
+              document.getElementById("editProgramModal")
+            );
+            modal.hide();
+            
+            Swal.fire({
+              title: "Berhasil",
+              text: "Program berhasil diubah!",
+              icon: "success",
+              confirmButtonText: "Oke",
+            }).then(() => window.location.reload());
+          },
+          error: function (xhr) {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal",
+              text: "Gagal mengubah program.",
+              confirmButtonText: "Tutup",
+            });
+          },
+        });
+      }
+
+      function showAddModal() {
+        // Reset form
+        $("#addProgramForm")[0].reset();
+        // Show modal
+        var modal = new bootstrap.Modal(
+          document.getElementById("addProgramModal")
+        );
+        modal.show();
+      }
+
+      function addProgram() {
+        let title = $("#title").val();
+        let fileInput = $("#coverImage")[0].files[0];
+
+        if (!title) {
+          Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: "Judul program harus diisi!",
+            confirmButtonText: "Tutup",
+          });
+          return;
+        }
+
+        if (!fileInput) {
+          Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: "Cover image harus dipilih!",
+            confirmButtonText: "Tutup",
+          });
+          return;
+        }
+
+        let formData = new FormData();
+        formData.append("fileCover", fileInput);
+        formData.append("title", title);
+
+        $.ajax({
+          type: "POST",
+          url: "/add-program",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            Swal.fire({
+              title: "Berhasil",
+              text: "Program berhasil ditambahkan!",
+              icon: "success",
+              confirmButtonText: "Oke",
+            }).then(() => window.location.reload());
+          },
+          error: function (xhr) {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal",
+              text: "Gagal menambahkan program.",
+              confirmButtonText: "Tutup",
+            });
+          },
+        });
+      }
+
+      function deleteProgram(title) {
+        // Prevent click event from bubbling up to parent elements
+        event.stopPropagation();
+        
+        Swal.fire({
+          title: "Apakah anda yakin?",
+          text: "Program akan dihapus permanen!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Ya, hapus!",
+          cancelButtonText: "Batal",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              type: "POST",
+              url: "/delete-program",
+              data: { title: title },
+              success: function (response) {
+                Swal.fire({
+                  title: "Berhasil",
+                  text: "Program berhasil dihapus!",
+                  icon: "success",
+                  confirmButtonText: "Oke",
+                }).then(() => window.location.reload());
+              },
+              error: function (xhr) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Gagal",
+                  text: "Gagal menghapus program.",
+                  confirmButtonText: "Tutup",
+                });
+              },
+            });
+          }
+        });
+      }
+      function logout() {
+        $.ajax({
+          url: "/logout",
+          type: "DELETE",
+          success: function (response) {
+            document.cookie =
+              "mytoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/login-admin";
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+          },
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        {% include "base/sidebar.html" %}
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Dashboard</h2>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div
+                class="d-flex justify-content-between align-items-center mb-4"
+              >
+                <h3>Program Details</h3>
+                <button class="btn btn-success" onclick="showAddModal()">
+                  Add Program
+                </button>
+              </div>
+
+              <!-- Program List -->
+              <div class="program-list" id="programList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- edit program -->
+    <div class="modal fade" id="editProgramModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Program</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="editProgramForm">
+              <input type="hidden" id="id_title" />
+              <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editTitle"
+                  placeholder="Program title"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Cover Image</label>
+                <input type="file" class="form-control" id="editCoverImage" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="saveEditProgram()"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Program Modal -->
+    <div class="modal fade" id="addProgramModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add New Program</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-muted mb-4">
+              Please provide the following details to add a new program.
+            </p>
+
+            <form id="addProgramForm">
+              <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="title"
+                  placeholder="Fill in program title"
+                />
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label">Cover Image</label>
+                <input type="file" class="form-control" id="coverImage" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="addProgram()"
+            >
+              Create New Program
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Menangani drag & drop
+      const dropZone = document.getElementById("dropZone");
+
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+      });
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, highlight, false);
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+      });
+
+      function highlight(e) {
+        dropZone.classList.add("border-primary");
+      }
+
+      function unhighlight(e) {
+        dropZone.classList.remove("border-primary");
+      }
+
+      dropZone.addEventListener("drop", handleDrop, false);
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+      }
+
+      function handleFiles(files) {
+        [...files].forEach(uploadFile);
+      }
+
+      function uploadFile(file) {
+        // Handle file upload here
+        console.log("File uploaded:", file.name);
+      }
+    </script>
+  </body>
+</html>

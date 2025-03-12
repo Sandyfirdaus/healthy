@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tambah Materi - PSIDAMAI</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      :root {
+        --sidebar-color: #198754;
+        --secondary-color: #00b8d4;
+        --accent-color: #ff4081;
+        --background-color: #f5f5f5;
+        --text-color: #333333;
+      }
+
+      body {
+        background-color: var(--background-color);
+      }
+
+      .sidebar {
+        background-color: var(--sidebar-color);
+        min-height: 100vh;
+        padding: 20px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar a {
+        color: white;
+        text-decoration: none;
+        display: block;
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+      }
+
+      .sidebar a:hover,
+      .sidebar a.active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .sidebar-brand {
+        font-size: 1.5rem;
+        color: white;
+        padding: 10px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-body {
+        padding: 25px;
+      }
+
+      .materi-card {
+        border: none;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+      }
+
+      .materi-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .materi-content {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+      }
+
+      .materi-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .materi-details {
+        margin-left: 15px;
+        flex-grow: 1;
+      }
+
+      .materi-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-success {
+        background-color: var(--sidebar-color);
+        border: none;
+        padding: 8px 20px;
+      }
+
+      .btn-success:hover {
+        background-color: #146c43;
+      }
+
+      .modal-dialog {
+        max-width: 700px;
+      }
+
+      .modal-body {
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+
+      .form-control {
+        margin-bottom: 10px;
+      }
+
+      textarea.form-control {
+        min-height: 100px;
+      }
+    </style>
+
+    <script>
+      const programTitle = "{{ program_title }}";
+
+      $(document).ready(function () {
+        // Clear file previews when edit modal is closed
+        $('#editMateriModal').on('hidden.bs.modal', function () {
+          $("#currentCoverImage").empty();
+          $("#currentAudioFiles").empty();
+          $("#currentIllustrations").empty();
+          $("#editMateriForm")[0].reset();
+        });
+        
+        $.ajax({
+          type: "GET",
+          url: `/get-program-materi/${programTitle}`,
+          success: function (response) {
+            console.log(response.data_materi);
+            $("#materiList").empty();
+            let data = response.data_materi;
+            data.forEach((item, index) => {
+              let imagePath;
+              
+              // Check if the cover image is a full path or just a filename
+              if (item.coverImage) {
+                if (item.coverImage === 'default_cover.jpg') {
+                  // If it's the default cover
+                  imagePath = `/static/assets/img/materi/default_cover.jpg`;
+                } else if (item.coverImage.includes('/')) {
+                  // If it's a full path
+                  imagePath = `/static/${item.coverImage}`;
+                } else {
+                  // If it's just a filename (legacy data)
+                  imagePath = `/static/assets/img/materi/${item.coverImage}`;
+                }
+              } else {
+                // Fallback to default
+                imagePath = `/static/assets/img/materi/default_cover.jpg`;
+              }
+
+              let materiList = `
+                        <div class="materi-card" onclick="viewMateriDetails('${item.title}')">
+                            <div class="materi-content">
+                                <img src="${imagePath}" alt="materi thumbnail" class="materi-image" 
+                                     onerror="this.onerror=null; this.src='/static/assets/img/materi/default_cover.jpg'"/>
+                                <div class="materi-details">
+                                    <h5>${item.title}</h5>
+                                    <p>${item.description || ''}</p>
+                                </div>
+                                <div class="materi-actions">
+                                    <button class="btn btn-outline-info btn-sm" onclick="viewMateriDetails('${item.title}'); event.stopPropagation();">
+                                        <i class="bi bi-eye"></i> Lihat Detail
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="detailMateri('${item.title}'); event.stopPropagation();">
+                                        <i class="bi bi-pencil"></i> Ubah
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteMateri('${item.title}'); event.stopPropagation();">
+                                        <i class="bi bi-trash"></i> Hapus
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+              $("#materiList").append(materiList);
+            });
+          },
+          error: function (xhr, status, error) {
+            console.error("Error:", error);
+          },
+        });
+      });
+
+      function detailMateri(title) {
+        $.ajax({
+          url: `/detail-materi/${title}`,
+          type: "GET",
+          success: function (response) {
+            console.log(response);
+            const materi = response.materi;
+            
+            // Populate form fields
+            $("#id_title").val(title);
+            $("#editTitle").val(title);
+            
+            // Populate other fields if they exist in the response
+            if (materi) {
+              $("#editDescription").val(materi.description || '');
+              $("#editJournal").val(materi.journal || '');
+              
+              // Show existing file information
+              // Cover image
+              if (materi.coverImage) {
+                let coverImagePath;
+                
+                // Check if the cover image is a full path or just a filename
+                if (materi.coverImage === 'default_cover.jpg') {
+                  // If it's the default cover
+                  coverImagePath = `/static/assets/img/materi/default_cover.jpg`;
+                } else if (materi.coverImage.includes('/')) {
+                  // If it's a full path
+                  coverImagePath = `/static/${materi.coverImage}`;
+                } else {
+                  // If it's just a filename (legacy data)
+                  coverImagePath = `/static/assets/img/materi/${materi.coverImage}`;
+                }
+                
+                $("#currentCoverImage").html(`
+                  <div class="mb-2">
+                    <p class="mb-1">Gambar sampul saat ini:</p>
+                    <img src="${coverImagePath}" alt="Cover Image" class="img-thumbnail" style="max-height: 100px"
+                         onerror="this.onerror=null; this.src='/static/assets/img/materi/default_cover.jpg'">
+                    <input type="hidden" id="existingCoverImage" value="${materi.coverImage}">
+                  </div>
+                `);
+              }
+              
+              // Summary PDF
+              if (materi.summary_pdf) {
+                const pdfPath = `/static/${materi.summary_pdf}`;
+                $("#currentSummaryPdf").html(`
+                  <div class="mb-2">
+                    <p class="mb-1">Ringkasan PDF saat ini:</p>
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-file-pdf fs-4 me-2 text-danger"></i>
+                      <span>${materi.summary_pdf.split('/').pop()}</span>
+                      <a href="${pdfPath}" target="_blank" class="btn btn-sm btn-outline-primary ms-2">Lihat</a>
+                    </div>
+                    <input type="hidden" id="existingSummaryPdf" value="${materi.summary_pdf}">
+                  </div>
+                `);
+              }
+              
+              // Audio relaxation files
+              if (materi.relaxation_audios && materi.relaxation_audios.length > 0) {
+                let audioHtml = '<p class="mb-1">Audio relaksasi saat ini:</p><ul class="list-group mb-2">';
+                materi.relaxation_audios.forEach((audio, index) => {
+                  audioHtml += `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      Audio ${index + 1}: ${audio.split('/').pop()}
+                      <audio controls style="max-width: 200px">
+                        <source src="/static/${audio}" type="audio/mpeg">
+                        Browser Anda tidak mendukung pemutaran audio.
+                      </audio>
+                      <input type="hidden" id="existingAudioRelaxation${index + 1}" value="${audio}">
+                    </li>
+                  `;
+                });
+                audioHtml += '</ul>';
+                $("#currentAudioFiles").html(audioHtml);
+              }
+              
+              // Learning audios
+              if (materi.learning_audios && materi.learning_audios.length > 0) {
+                let learningAudioHtml = '<p class="mb-1">Audio pembelajaran saat ini:</p><ul class="list-group mb-2">';
+                materi.learning_audios.forEach((audio, index) => {
+                  const subtitle = materi.audio_subtitles && materi.audio_subtitles[index] ? materi.audio_subtitles[index] : '';
+                  learningAudioHtml += `
+                    <li class="list-group-item">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Audio Pembelajaran ${index + 1}: ${audio.split('/').pop()}</span>
+                        <audio controls style="max-width: 200px">
+                          <source src="/static/${audio}" type="audio/mpeg">
+                          Browser Anda tidak mendukung pemutaran audio.
+                        </audio>
+                      </div>
+                      ${subtitle ? `<div class="small text-muted">Subtitle: ${subtitle.substring(0, 100)}${subtitle.length > 100 ? '...' : ''}</div>` : ''}
+                      <input type="hidden" class="existingLearningAudio" value="${audio}">
+                      <input type="hidden" class="existingAudioSubtitle" value="${subtitle}">
+                    </li>
+                  `;
+                });
+                learningAudioHtml += '</ul>';
+                $("#currentLearningAudios").html(learningAudioHtml);
+              }
+              
+              // Illustrations
+              if (materi.illustrations && materi.illustrations.length > 0) {
+                let illustrationsHtml = '<p class="mb-1">Ilustrasi saat ini:</p><div class="row mb-2">';
+                materi.illustrations.forEach((illustration, index) => {
+                  illustrationsHtml += `
+                    <div class="col-md-4 mb-2">
+                      <div class="card">
+                        <img src="/static/${illustration}" alt="Illustration ${index + 1}" class="card-img-top" style="height: 100px; object-fit: cover;">
+                        <div class="card-body p-2">
+                          <p class="card-text small">Ilustrasi ${index + 1}</p>
+                        </div>
+                      </div>
+                      <input type="hidden" class="existingIllustration" value="${illustration}">
+                    </div>
+                  `;
+                });
+                illustrationsHtml += '</div>';
+                $("#currentIllustrations").html(illustrationsHtml);
+              }
+            }
+            
+            var modal = new bootstrap.Modal(
+              document.getElementById("editMateriModal")
+            );
+            modal.show();
+          },
+          error: function (xhr) {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal",
+              text: "Data materi tidak ditemukan.",
+              confirmButtonText: "Tutup",
+            });
+          },
+        });
+      }
+
+      function showAddModal() {
+        // Reset form
+        $("#addMateriForm")[0].reset();
+        
+        // Show modal
+        var modal = new bootstrap.Modal(
+          document.getElementById("addMateriModal")
+        );
+        modal.show();
+      }
+
+      function addMateri() {
+        // Validasi form
+        if (!validateAddMateriForm()) {
+          return;
+        }
+        
+        // Tampilkan loading
+        Swal.fire({
+          title: 'Sedang Memproses',
+          html: 'Mohon tunggu, sedang mengunggah file...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+        
+        let formData = new FormData();
+        
+        // Basic info
+        formData.append("title", $("#title").val());
+        formData.append("description", $("#description").val());
+        formData.append("program_title", programTitle);
+        
+        // Cover image for thumbnail
+        if ($("#coverImage")[0].files[0]) {
+          formData.append("coverImage", $("#coverImage")[0].files[0]);
+        }
+        
+        // PDF dan Google Docs link
+        if ($("#summaryPdf")[0].files[0]) {
+          formData.append("summaryPdf", $("#summaryPdf")[0].files[0]);
+        }
+        formData.append("journalLink", $("#journalLink").val());
+        
+        // Relaxation audios
+        if ($("#audioRelaxation1")[0].files[0]) {
+          formData.append("audioRelaxation1", $("#audioRelaxation1")[0].files[0]);
+        }
+        if ($("#audioRelaxation2")[0].files[0]) {
+          formData.append("audioRelaxation2", $("#audioRelaxation2")[0].files[0]);
+        }
+        
+        // Learning audios dan subtitles
+        const learningAudios = document.getElementsByName('learningAudio[]');
+        const audioSubtitles = document.getElementsByName('audioSubtitle[]');
+        
+        learningAudios.forEach((audio, index) => {
+          if (audio.files[0]) {
+            formData.append(`learningAudio_${index}`, audio.files[0]);
+            formData.append(`audioSubtitle_${index}`, audioSubtitles[index].value);
+          }
+        });
+        
+        // Illustrations
+        const illustrations = document.getElementsByName('illustration[]');
+        illustrations.forEach((ill, index) => {
+          if (ill.files[0]) {
+            formData.append(`illustration_${index}`, ill.files[0]);
+          }
+        });
+
+        console.log("Mengirim data materi...");
+        
+        $.ajax({
+          type: "POST",
+          url: `/add-materi/${programTitle}`,
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            Swal.close();
+            Swal.fire({
+              title: "Berhasil",
+              text: "Materi berhasil ditambahkan!",
+              icon: "success",
+              confirmButtonText: "Oke",
+            }).then(() => window.location.reload());
+          },
+          error: function (xhr, status, error) {
+            Swal.close();
+            console.error("Error:", xhr.responseText);
+            let errorMsg = "Gagal menambahkan materi.";
+            
+            try {
+              const response = JSON.parse(xhr.responseText);
+              if (response.msg) {
+                errorMsg = response.msg;
+              }
+            } catch (e) {
+              console.error("Error parsing response:", e);
+            }
+            
+            Swal.fire({
+              icon: "error",
+              title: "Gagal",
+              text: errorMsg,
+              confirmButtonText: "Tutup",
+            });
+          },
+          timeout: 60000 // 60 detik timeout
+        });
+      }
+
+      function validateAddMateriForm() {
+        // Validasi judul
+        if (!$("#title").val()) {
+          Swal.fire({
+            icon: "error",
+            title: "Validasi Gagal",
+            text: "Judul materi wajib diisi!",
+            confirmButtonText: "Tutup",
+          });
+          return false;
+        }
+        
+        // Validasi cover image
+        if (!$("#coverImage")[0].files[0]) {
+          Swal.fire({
+            icon: "warning",
+            title: "Perhatian",
+            text: "Gambar sampul tidak dipilih. Gambar default akan digunakan.",
+            confirmButtonText: "Lanjutkan",
+            showCancelButton: true,
+            cancelButtonText: "Batal"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Lanjutkan dengan gambar default
+              return true;
+            }
+            return false;
+          });
+          return false;
+        }
+        
+        return true;
+      }
+
+      function editMateri() {
+        console.log("Attempting to edit materi");
+        
+        let title = $("#id_title").val();
+        if (!title) {
+          Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: "Judul materi tidak ditemukan.",
+            confirmButtonText: "Tutup",
+          });
+          return;
+        }
+        
+        let formData = new FormData();
+        formData.append("title", title);
+        formData.append("program_title", programTitle);
+        formData.append("description", $("#editDescription").val());
+        formData.append("journal", $("#editJournal").val());
+        
+        // Add existing cover image info if available
+        const existingCoverImage = $("#existingCoverImage").val();
+        if (existingCoverImage) {
+          formData.append("existingCoverImage", existingCoverImage);
+        }
+
+        // Add existing summary PDF info if available
+        const existingSummaryPdf = $("#existingSummaryPdf").val();
+        if (existingSummaryPdf) {
+          formData.append("existingSummaryPdf", existingSummaryPdf);
+        }
+
+        console.log("Form data prepared:", {
+          title: title,
+          program_title: programTitle,
+          description: $("#editDescription").val(),
+          journal: $("#editJournal").val(),
+          existingCoverImage: existingCoverImage,
+          existingSummaryPdf: existingSummaryPdf
+        });
+
+        // Handle files
+        // Cover image
+        let coverImage = $("#editCoverImage")[0].files;
+        if (coverImage.length > 0) {
+          console.log("Cover image to upload:", coverImage[0].name);
+          formData.append("coverImage", coverImage[0]);
+        }
+
+        // Summary PDF
+        let summaryPdf = $("#editSummaryPdf")[0].files;
+        if (summaryPdf.length > 0) {
+          console.log("Summary PDF to upload:", summaryPdf[0].name);
+          formData.append("summaryPdf", summaryPdf[0]);
+        }
+
+        // Audio Relaxation
+        let audioRelaxation1 = $("#editAudioRelaxation1")[0].files;
+        let audioRelaxation2 = $("#editAudioRelaxation2")[0].files;
+        
+        if (audioRelaxation1.length > 0 || audioRelaxation2.length > 0) {
+          console.log("Audio relaxation files to upload");
+          formData.append("replaceAudio", "true");
+          
+          if (audioRelaxation1.length > 0) {
+            formData.append("audioRelaxation1", audioRelaxation1[0]);
+          } else if ($("#existingAudioRelaxation1").val()) {
+            formData.append("keepExistingAudioRelaxation1", $("#existingAudioRelaxation1").val());
+          }
+          
+          if (audioRelaxation2.length > 0) {
+            formData.append("audioRelaxation2", audioRelaxation2[0]);
+          } else if ($("#existingAudioRelaxation2").val()) {
+            formData.append("keepExistingAudioRelaxation2", $("#existingAudioRelaxation2").val());
+          }
+        } else {
+          // Keep existing audio files
+          formData.append("keepExistingAudio", "true");
+          
+          // Add existing audio file paths if available
+          if ($("#existingAudioRelaxation1").val()) {
+            formData.append("existingAudioRelaxation1", $("#existingAudioRelaxation1").val());
+          }
+          if ($("#existingAudioRelaxation2").val()) {
+            formData.append("existingAudioRelaxation2", $("#existingAudioRelaxation2").val());
+          }
+        }
+
+        // Learning Audios
+        let learningAudios = document.getElementsByName('editLearningAudio[]');
+        let audioSubtitles = document.getElementsByName('editAudioSubtitle[]');
+        let hasNewLearningAudios = false;
+        
+        for (let i = 0; i < learningAudios.length; i++) {
+          if (learningAudios[i].files.length > 0) {
+            hasNewLearningAudios = true;
+            break;
+          }
+        }
+        
+        if (hasNewLearningAudios) {
+          console.log("Learning audio files to upload");
+          formData.append("replaceLearningAudios", "true");
+          
+          for (let i = 0; i < learningAudios.length; i++) {
+            if (learningAudios[i].files.length > 0) {
+              formData.append(`learningAudio_${i}`, learningAudios[i].files[0]);
+              formData.append(`audioSubtitle_${i}`, audioSubtitles[i].value || '');
+            }
+          }
+        } else {
+          // Keep existing learning audio files
+          formData.append("keepExistingLearningAudios", "true");
+          
+          // Add existing learning audio file paths if available
+          const existingLearningAudios = document.getElementsByClassName('existingLearningAudio');
+          const existingAudioSubtitles = document.getElementsByClassName('existingAudioSubtitle');
+          
+          for (let i = 0; i < existingLearningAudios.length; i++) {
+            formData.append(`existingLearningAudio_${i}`, existingLearningAudios[i].value);
+            formData.append(`existingAudioSubtitle_${i}`, existingAudioSubtitles[i].value || '');
+          }
+        }
+
+        // Illustrations
+        let illustrationFiles = document.getElementsByName('editIllustration[]');
+        let hasNewIllustrations = false;
+        
+        for (let i = 0; i < illustrationFiles.length; i++) {
+          if (illustrationFiles[i].files.length > 0) {
+            hasNewIllustrations = true;
+            break;
+          }
+        }
+        
+        if (hasNewIllustrations) {
+          console.log("Illustration files to upload");
+          formData.append("replaceIllustrations", "true");
+          
+          for (let i = 0; i < illustrationFiles.length; i++) {
+            if (illustrationFiles[i].files.length > 0) {
+              formData.append(`illustration_${i}`, illustrationFiles[i].files[0]);
+            }
+          }
+        } else {
+          // Keep existing illustrations
+          formData.append("keepExistingIllustrations", "true");
+          
+          // Add existing illustration file paths if available
+          const existingIllustrations = document.getElementsByClassName('existingIllustration');
+          
+          for (let i = 0; i < existingIllustrations.length; i++) {
+            formData.append(`existingIllustration_${i}`, existingIllustrations[i].value);
+          }
+        }
+
+        // Show loading state
+        Swal.fire({
+          title: "Sedang Memproses",
+          text: "Menyimpan perubahan...",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        $.ajax({
+          type: "POST",
+          url: "/edit-materi",
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            console.log("Edit success response:", response);
+            Swal.fire({
+              title: "Berhasil",
+              text: "Materi berhasil diubah!",
+              icon: "success",
+              confirmButtonText: "Oke",
+            }).then(() => window.location.reload());
+          },
+          error: function (xhr, status, error) {
+            console.error("Edit error:", xhr.responseText, status, error);
+            
+            let errorMessage = "Gagal mengubah materi.";
+            
+            try {
+              // Try to parse the error response
+              const errorResponse = JSON.parse(xhr.responseText);
+              if (errorResponse && errorResponse.msg) {
+                errorMessage = errorResponse.msg;
+              }
+            } catch (e) {
+              // If parsing fails, use the error parameter
+              if (error) {
+                errorMessage += " Error: " + error;
+              }
+            }
+            
+            Swal.fire({
+              icon: "error",
+              title: "Gagal",
+              text: errorMessage,
+              confirmButtonText: "Tutup",
+            });
+          },
+          // Add timeout to prevent hanging requests
+          timeout: 60000 // 60 seconds
+        });
+      }
+
+      function deleteMateri(title) {
+        console.log("Attempting to delete materi:", title, "from program:", programTitle);
+        
+        Swal.fire({
+          title: "Apakah anda yakin?",
+          text: "Materi akan dihapus permanen!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Ya, hapus!",
+          cancelButtonText: "Batal",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Show loading state
+            Swal.fire({
+              title: "Sedang Memproses",
+              text: "Menghapus materi...",
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              }
+            });
+            
+            $.ajax({
+              type: "POST",
+              url: "/delete-materi",
+              data: { 
+                title: title,
+                program_title: programTitle 
+              },
+              success: function (response) {
+                console.log("Delete success response:", response);
+                Swal.fire({
+                  title: "Berhasil",
+                  text: response.msg || "Materi berhasil dihapus!",
+                  icon: "success",
+                  confirmButtonText: "Oke",
+                }).then(() => window.location.reload());
+              },
+              error: function (xhr, status, error) {
+                console.error("Delete error:", xhr.responseText, status, error);
+                
+                let errorMessage = "Gagal menghapus materi.";
+                
+                try {
+                  // Try to parse the error response
+                  const errorResponse = JSON.parse(xhr.responseText);
+                  if (errorResponse && errorResponse.msg) {
+                    errorMessage = errorResponse.msg;
+                  }
+                } catch (e) {
+                  // If parsing fails, use the error parameter
+                  if (error) {
+                    errorMessage += " Error: " + error;
+                  }
+                }
+                
+                Swal.fire({
+                  icon: "error",
+                  title: "Gagal",
+                  text: errorMessage,
+                  confirmButtonText: "Tutup",
+                });
+              },
+              // Add timeout to prevent hanging requests
+              timeout: 30000, // 30 seconds
+              // Ensure data is sent as form data
+              contentType: 'application/x-www-form-urlencoded; charset=UTF-8'
+            });
+          }
+        });
+      }
+      function logout() {
+        $.ajax({
+          url: "/logout",
+          type: "DELETE",
+          success: function (response) {
+            document.cookie =
+              "mytoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/login-admin";
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+          },
+        });
+      }
+
+      function handleAudioUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+        
+        // Check file type
+        const validTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a', 'audio/x-m4a', 'audio/aac', 'audio/mp4'];
+        if (!validTypes.includes(file.type)) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Format Tidak Didukung',
+            text: 'Format audio tidak didukung. Gunakan format MP3, WAV, OGG, atau M4A.',
+            confirmButtonText: 'Tutup'
+          });
+          input.value = ''; // Reset input
+          return;
+        }
+        
+        // Check file size (max 10MB)
+        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+        if (file.size > maxSize) {
+          Swal.fire({
+            icon: 'error',
+            title: 'File Terlalu Besar',
+            text: 'Ukuran file maksimal adalah 10MB.',
+            confirmButtonText: 'Tutup'
+          });
+          input.value = ''; // Reset input
+          return;
+        }
+        
+        const audioGroup = input.closest('.audio-input-group');
+        const subtitleTextarea = audioGroup.querySelector('textarea');
+        const progressBar = audioGroup.querySelector('.progress');
+        const progressBarInner = progressBar.querySelector('.progress-bar');
+        
+        // Reset and show progress bar
+        progressBar.classList.remove('d-none');
+        progressBarInner.style.width = '10%';
+        subtitleTextarea.value = "Sedang mengkonversi audio ke teks...";
+        
+        const formData = new FormData();
+        formData.append('audio', file);
+        
+        // Tampilkan status
+        Swal.fire({
+          title: 'Memproses Audio',
+          html: 'Sedang mengkonversi audio ke teks. Proses ini mungkin memerlukan waktu beberapa menit tergantung ukuran file.',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+        
+        // Kirim request untuk konversi audio ke teks
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minute timeout
+        
+        fetch('/convert-audio-to-text', {
+          method: 'POST',
+          body: formData,
+          signal: controller.signal
+        })
+        .then(response => {
+          progressBarInner.style.width = '50%';
+          clearTimeout(timeoutId);
+          if (!response.ok) {
+            return response.json().then(data => {
+              throw new Error(data.error || `HTTP error! status: ${response.status}`);
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          progressBarInner.style.width = '100%';
+          
+          if (data.success) {
+            // Tampilkan teks di textarea
+            subtitleTextarea.value = data.text;
+            
+            // Sembunyikan progress bar setelah selesai
+            setTimeout(() => {
+              progressBar.classList.add('d-none');
+            }, 1000);
+            
+            // Tutup loading
+            Swal.close();
+            
+            // Tampilkan notifikasi sukses
+            Swal.fire({
+              icon: 'success',
+              title: 'Konversi Berhasil',
+              text: 'Audio berhasil dikonversi menjadi teks.',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          } else {
+            handleAudioError(data.error || 'Terjadi kesalahan saat memproses audio', subtitleTextarea, progressBar);
+          }
+        })
+        .catch(error => {
+          clearTimeout(timeoutId);
+          if (error.name === 'AbortError') {
+            handleAudioError('Waktu pemrosesan habis. Coba gunakan file audio yang lebih kecil atau dengan kualitas yang lebih baik.', subtitleTextarea, progressBar);
+          } else {
+            handleAudioError(error.message || 'Terjadi kesalahan saat memproses audio', subtitleTextarea, progressBar);
+          }
+        });
+      }
+      
+      function handleAudioError(errorMessage, subtitleTextarea, progressBar) {
+        // Sembunyikan progress bar
+        progressBar.classList.add('d-none');
+        
+        // Reset textarea
+        subtitleTextarea.value = "";
+        
+        // Tutup loading
+        Swal.close();
+        
+        // Tampilkan error
+        Swal.fire({
+          icon: 'error',
+          title: 'Konversi Gagal',
+          text: errorMessage || 'Terjadi kesalahan saat memproses audio',
+          confirmButtonText: 'Tutup'
+        });
+      }
+
+      function addIllustrationInput() {
+        const container = document.getElementById('illustrationContainer');
+        const inputGroups = container.getElementsByClassName('illustration-input-group');
+        
+        if (inputGroups.length < 9) {
+          const newGroup = document.createElement('div');
+          newGroup.className = 'illustration-input-group mb-2';
+          newGroup.innerHTML = `
+            <div class="d-flex gap-2">
+              <input type="file" class="form-control" name="illustration[]" accept="image/*" />
+              <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeIllustrationInput(this)">-</button>
+            </div>
+          `;
+          container.appendChild(newGroup);
+        }
+      }
+
+      function removeIllustrationInput(btn) {
+        btn.closest('.illustration-input-group').remove();
+      }
+      
+      // Functions for edit modal
+      function addEditAudioInput() {
+        const container = document.getElementById('editAudioContainer');
+        const inputGroups = container.getElementsByClassName('audio-input-group');
+        
+        if (inputGroups.length < 9) {
+          const newGroup = document.createElement('div');
+          newGroup.className = 'audio-input-group mb-2';
+          newGroup.innerHTML = `
+            <div class="d-flex gap-2">
+              <input type="file" class="form-control" name="editLearningAudio[]" accept="audio/*" onchange="handleAudioUpload(this)" />
+              <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeEditAudioInput(this)">-</button>
+            </div>
+            <textarea class="form-control mt-2" name="editAudioSubtitle[]" placeholder="Subtitle akan di-generate otomatis saat audio diupload"></textarea>
+            <div class="progress mt-2 d-none">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+            </div>
+          `;
+          container.appendChild(newGroup);
+        }
+      }
+
+      function removeEditAudioInput(btn) {
+        btn.closest('.audio-input-group').remove();
+      }
+
+      function addEditIllustrationInput() {
+        const container = document.getElementById('editIllustrationContainer');
+        const inputGroups = container.getElementsByClassName('illustration-input-group');
+        
+        if (inputGroups.length < 9) {
+          const newGroup = document.createElement('div');
+          newGroup.className = 'illustration-input-group mb-2';
+          newGroup.innerHTML = `
+            <div class="d-flex gap-2">
+              <input type="file" class="form-control" name="editIllustration[]" accept="image/*" />
+              <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeEditIllustrationInput(this)">-</button>
+            </div>
+          `;
+          container.appendChild(newGroup);
+        }
+      }
+
+      function removeEditIllustrationInput(btn) {
+        btn.closest('.illustration-input-group').remove();
+      }
+
+      // Function to view materi details
+      function viewMateriDetails(title) {
+        window.location.href = `/materi-details/${programTitle}/${encodeURIComponent(title)}`;
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        {% include "base/sidebar.html" %}
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Dashboard</h2>
+            <button class="btn btn-danger" onclick="logout()">Keluar</button>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div
+                class="d-flex justify-content-between align-items-center mb-4"
+              >
+                <h3>Materi</h3>
+                <button class="btn btn-success" onclick="showAddModal()">
+                  Tambah Materi
+                </button>
+              </div>
+
+              <!-- Daftar Materi -->
+              <div class="materi-list" id="materiList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ubah Materi -->
+    <div class="modal fade" id="editMateriModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Ubah Materi</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-muted mb-4">
+              Silakan ubah detail berikut untuk memperbarui materi.
+            </p>
+            
+            <form id="editMateriForm">
+              <input type="hidden" id="id_title" />
+              <div class="mb-3">
+                <label class="form-label">Judul Sesi</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editTitle"
+                  placeholder="Judul materi"
+                  readonly
+                />
+                <small class="text-muted">
+                  Judul tidak dapat diubah
+                </small>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Deskripsi</label>
+                <textarea 
+                  class="form-control" 
+                  id="editDescription" 
+                  rows="3" 
+                  placeholder="Deskripsi materi"
+                ></textarea>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Gambar Sampul</label>
+                <div id="currentCoverImage"></div>
+                <input type="file" class="form-control" id="editCoverImage" accept="image/*" />
+                <small class="text-muted">
+                  Unggah file baru hanya jika ingin mengganti yang sudah ada
+                </small>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Ringkasan Materi (PDF)</label>
+                <div id="currentSummaryPdf"></div>
+                <input type="file" class="form-control" id="editSummaryPdf" accept=".pdf" />
+                <small class="text-muted">
+                  Unggah file baru hanya jika ingin mengganti yang sudah ada
+                </small>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Link Jurnal Latihan (Google Docs)</label>
+                <input 
+                  type="url" 
+                  class="form-control" 
+                  id="editJournal" 
+                  placeholder="https://docs.google.com/..."
+                  pattern="https://docs\.google\.com/.*"
+                />
+                <small class="text-muted">
+                  Masukkan link Google Docs yang sudah di-share dengan akses view
+                </small>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Audio Relaksasi</label>
+                <div id="currentAudioFiles"></div>
+                <div class="row">
+                  <div class="col-md-6 mb-2">
+                    <label class="form-label">Audio Relaksasi 1</label>
+                    <input type="file" class="form-control" id="editAudioRelaxation1" accept="audio/*" />
+                  </div>
+                  <div class="col-md-6 mb-2">
+                    <label class="form-label">Audio Relaksasi 2</label>
+                    <input type="file" class="form-control" id="editAudioRelaxation2" accept="audio/*" />
+                  </div>
+                </div>
+                <small class="text-muted">
+                  Unggah file baru hanya jika ingin mengganti yang sudah ada
+                </small>
+              </div>
+              
+              <div class="mb-4">
+                <label class="form-label">Audio Pembelajaran (1-9)</label>
+                <div id="currentLearningAudios"></div>
+                <div id="editAudioContainer">
+                  <div class="audio-input-group mb-2">
+                    <div class="d-flex gap-2">
+                      <input type="file" class="form-control" name="editLearningAudio[]" accept="audio/*" onchange="handleAudioUpload(this)" />
+                      <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeEditAudioInput(this)">-</button>
+                    </div>
+                    <textarea class="form-control mt-2" name="editAudioSubtitle[]" placeholder="Subtitle akan di-generate otomatis saat audio diupload"></textarea>
+                    <div class="progress mt-2 d-none">
+                      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-outline-success btn-sm mt-2" onclick="addEditAudioInput()">+ Tambah Audio</button>
+                <small class="text-muted d-block mt-1">
+                  Unggah file baru hanya jika ingin mengganti yang sudah ada
+                </small>
+              </div>
+              
+              <div class="mb-4">
+                <label class="form-label">Foto Ilustrasi (1-9)</label>
+                <div id="currentIllustrations"></div>
+                <div id="editIllustrationContainer">
+                  <div class="illustration-input-group mb-2">
+                    <div class="d-flex gap-2">
+                      <input type="file" class="form-control" name="editIllustration[]" accept="image/*" />
+                      <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeEditIllustrationInput(this)">-</button>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-outline-success btn-sm mt-2" onclick="addEditIllustrationInput()">+ Tambah Ilustrasi</button>
+                <small class="text-muted d-block mt-1">
+                  Unggah file baru hanya jika ingin mengganti yang sudah ada
+                </small>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="editMateri()"
+            >
+              Simpan Perubahan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tambah Materi Modal -->
+    <div class="modal fade" id="addMateriModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Tambah Materi Baru untuk {{ program_title }}</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-muted mb-4">
+              Silakan isi detail berikut untuk menambahkan materi baru.
+            </p>
+
+            <form id="addMateriForm">
+              <div class="mb-3">
+                <label class="form-label">Judul Sesi</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="title" 
+                  placeholder="Contoh: Sesi 1 - Menjadi Sadar"
+                />
+                <small class="text-muted">
+                  Format: Sesi [Nomor] - [Judul Sesi]
+                </small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Deskripsi</label>
+                <textarea class="form-control" id="description" rows="3" placeholder="Deskripsi materi"></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Gambar Sampul</label>
+                <input type="file" class="form-control" id="coverImage" accept="image/*" />
+                <small class="text-muted">
+                  Gambar ini akan digunakan sebagai thumbnail materi
+                </small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Ringkasan Materi (PDF)</label>
+                <input type="file" class="form-control" id="summaryPdf" accept=".pdf" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Link Jurnal Latihan (Google Docs)</label>
+                <input 
+                  type="url" 
+                  class="form-control" 
+                  id="journalLink" 
+                  placeholder="https://docs.google.com/..."
+                  pattern="https://docs\.google\.com/.*"
+                />
+                <small class="text-muted">
+                  Masukkan link Google Docs yang sudah di-share dengan akses view
+                </small>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Audio Relaksasi 1</label>
+                <input type="file" class="form-control" id="audioRelaxation1" accept="audio/*" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Audio Relaksasi 2</label>
+                <input type="file" class="form-control" id="audioRelaxation2" accept="audio/*" />
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label">Audio Pembelajaran (1-9)</label>
+                <div id="audioContainer">
+                  <div class="audio-input-group mb-2">
+                    <div class="d-flex gap-2">
+                      <input type="file" class="form-control" name="learningAudio[]" accept="audio/*" onchange="handleAudioUpload(this)" />
+                      <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeAudioInput(this)">-</button>
+                    </div>
+                    <textarea class="form-control mt-2" name="audioSubtitle[]" placeholder="Subtitle akan di-generate otomatis saat audio diupload"></textarea>
+                    <div class="progress mt-2 d-none">
+                      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-outline-success btn-sm mt-2" onclick="addAudioInput()">+ Tambah Audio</button>
+                <small class="text-muted d-block mt-1">Upload file audio untuk mendapatkan subtitle otomatis. Proses konversi mungkin memerlukan waktu beberapa menit.</small>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label">Foto Ilustrasi (1-9)</label>
+                <div id="illustrationContainer">
+                  <div class="illustration-input-group mb-2">
+                    <div class="d-flex gap-2">
+                      <input type="file" class="form-control" name="illustration[]" accept="image/*" />
+                      <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeIllustrationInput(this)">-</button>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-outline-success btn-sm mt-2" onclick="addIllustrationInput()">+ Tambah Ilustrasi</button>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Batal
+            </button>
+            <button type="button" class="btn btn-success" onclick="addMateri()">
+              Buat Materi Baru
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Menangani drag & drop
+      const dropZone = document.getElementById("dropZone");
+
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+      });
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, highlight, false);
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+      });
+
+      function highlight(e) {
+        dropZone.classList.add("border-primary");
+      }
+
+      function unhighlight(e) {
+        dropZone.classList.remove("border-primary");
+      }
+
+      dropZone.addEventListener("drop", handleDrop, false);
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+      }
+
+      function handleFiles(files) {
+        [...files].forEach(uploadFile);
+      }
+
+      function uploadFile(file) {
+        // Handle file upload here
+        console.log("File uploaded:", file.name);
+      }
+
+      function addAudioInput() {
+        const container = document.getElementById('audioContainer');
+        const inputGroups = container.getElementsByClassName('audio-input-group');
+        
+        if (inputGroups.length < 9) {
+          const newGroup = document.createElement('div');
+          newGroup.className = 'audio-input-group mb-2';
+          newGroup.innerHTML = `
+            <div class="d-flex gap-2">
+              <input type="file" class="form-control" name="learningAudio[]" accept="audio/*" onchange="handleAudioUpload(this)" />
+              <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeAudioInput(this)">-</button>
+            </div>
+            <textarea class="form-control mt-2" name="audioSubtitle[]" placeholder="Subtitle akan di-generate otomatis saat audio diupload"></textarea>
+            <div class="progress mt-2 d-none">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+            </div>
+          `;
+          container.appendChild(newGroup);
+        }
+      }
+
+      function removeAudioInput(btn) {
+        btn.closest('.audio-input-group').remove();
+      }
+
+      function addIllustrationInput() {
+        const container = document.getElementById('illustrationContainer');
+        const inputGroups = container.getElementsByClassName('illustration-input-group');
+        
+        if (inputGroups.length < 9) {
+          const newGroup = document.createElement('div');
+          newGroup.className = 'illustration-input-group mb-2';
+          newGroup.innerHTML = `
+            <div class="d-flex gap-2">
+              <input type="file" class="form-control" name="illustration[]" accept="image/*" />
+              <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeIllustrationInput(this)">-</button>
+            </div>
+          `;
+          container.appendChild(newGroup);
+        }
+      }
+
+      function removeIllustrationInput(btn) {
+        btn.closest('.illustration-input-group').remove();
+      }
+      
+      // Functions for edit modal
+      function addEditAudioInput() {
+        const container = document.getElementById('editAudioContainer');
+        const inputGroups = container.getElementsByClassName('audio-input-group');
+        
+        if (inputGroups.length < 9) {
+          const newGroup = document.createElement('div');
+          newGroup.className = 'audio-input-group mb-2';
+          newGroup.innerHTML = `
+            <div class="d-flex gap-2">
+              <input type="file" class="form-control" name="editLearningAudio[]" accept="audio/*" onchange="handleAudioUpload(this)" />
+              <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeEditAudioInput(this)">-</button>
+            </div>
+            <textarea class="form-control mt-2" name="editAudioSubtitle[]" placeholder="Subtitle akan di-generate otomatis saat audio diupload"></textarea>
+            <div class="progress mt-2 d-none">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+            </div>
+          `;
+          container.appendChild(newGroup);
+        }
+      }
+
+      function removeEditAudioInput(btn) {
+        btn.closest('.audio-input-group').remove();
+      }
+
+      function addEditIllustrationInput() {
+        const container = document.getElementById('editIllustrationContainer');
+        const inputGroups = container.getElementsByClassName('illustration-input-group');
+        
+        if (inputGroups.length < 9) {
+          const newGroup = document.createElement('div');
+          newGroup.className = 'illustration-input-group mb-2';
+          newGroup.innerHTML = `
+            <div class="d-flex gap-2">
+              <input type="file" class="form-control" name="editIllustration[]" accept="image/*" />
+              <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeEditIllustrationInput(this)">-</button>
+            </div>
+          `;
+          container.appendChild(newGroup);
+        }
+      }
+
+      function removeEditIllustrationInput(btn) {
+        btn.closest('.illustration-input-group').remove();
+      }
+    </script>
+  </body>
+</html>

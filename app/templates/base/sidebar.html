@@ -1,0 +1,7 @@
+<div class="col-md-2 sidebar">
+    <div class="sidebar-brand">Admin PSIDAMAI</div>
+    <a href="/screening" {% if request.path == '/screening' %}class="active"{% endif %}>Status Screening</a>
+    <a href="/details" {% if request.path == '/details' %}class="active"{% endif %}>Status Details</a>
+    <a href="/view-artikel" {% if request.path == '/view-artikel' %}class="active"{% endif %}>Add Articles</a>
+    <a href="/view-program" {% if request.path == '/view-program' %}class="active"{% endif %}>Add Programs</a>
+</div>

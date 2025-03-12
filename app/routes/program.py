@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, current_app, Blueprint, jsonify, redirect, url_for
 import jwt
+from datetime import datetime
 
 program_ = Blueprint('program', __name__)
 
@@ -18,26 +19,40 @@ def program():
 
 @program_.route('/save-status-screening', methods=["POST"])
 def save_status_screening():
-    username = request.form['username']
-    scoreScreening = request.form['resultText']
-    doc = {
-        "username": username,
-        "scoreScreening": scoreScreening
-    }
+    try:
+        username = request.form['username']
+        scoreScreening = request.form['resultText']
+        tanggal = request.form['tanggal']
+        jam = request.form['jam']
+        
+        # Dapatkan email user dari database users
+        user = current_app.db.users.find_one({"username": username})
+        email = user.get('email') if user else None
+        
+        # Buat dokumen baru untuk setiap screening
+        doc = {
+            "username": username,
+            "email": email,
+            "scoreScreening": scoreScreening,
+            "tanggal": tanggal,
+            "jam": jam,
+            "timestamp": datetime.now()  # Tambahkan timestamp untuk pengurutan
+        }
 
-    exists = bool(current_app.db.status_screening.find_one({"username": username}))
-    if exists:
-        current_app.db.status_screening.update_one({"username": username}, {"$set": doc})
-        return jsonify({
-            "exists": exists,
-            "result": "Update",
-        })
-    else:
+        # Selalu insert dokumen baru
         current_app.db.status_screening.insert_one(doc)
+        
         return jsonify({
-            "exists": exists,
             "result": "Success",
+            "tanggal": tanggal,
+            "jam": jam
         })
+    except Exception as e:
+        print("Error saving screening:", str(e))
+        return jsonify({
+            "result": "Error",
+            "message": "Gagal menyimpan data screening"
+        }), 500
 
 @program_.route('/check-status-screening', methods=["POST"])
 def check_status_screening():

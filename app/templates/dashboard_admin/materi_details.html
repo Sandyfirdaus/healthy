@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ materi.title }} - PSIDAMAI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --sidebar-color: #198754;
+            --secondary-color: #00b8d4;
+            --accent-color: #ff4081;
+            --background-color: #f5f5f5;
+            --text-color: #333333;
+        }
+
+        body {
+            background-color: var(--background-color);
+        }
+
+        .sidebar {
+            background-color: var(--sidebar-color);
+            min-height: 100vh;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .sidebar-brand {
+            font-size: 1.5rem;
+            color: white;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .header-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .btn-success {
+            background-color: var(--sidebar-color);
+            border: none;
+            padding: 8px 20px;
+        }
+
+        .btn-success:hover {
+            background-color: #146c43;
+        }
+
+        .section-title {
+            border-bottom: 2px solid var(--sidebar-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: var(--sidebar-color);
+        }
+
+        .audio-player {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .illustration-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle-text {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .back-button {
+            margin-bottom: 20px;
+        }
+
+        .pdf-preview {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            {% include "base/sidebar.html" %}
+
+            <!-- Main Content -->
+            <div class="col-md-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Detail Materi</h2>
+                    <div>
+                        <button class="btn btn-outline-primary me-2" onclick="window.location.href='/add-materi/{{ program_title }}'">
+                            <i class="bi bi-arrow-left"></i> Kembali
+                        </button>
+                        <button class="btn btn-danger" onclick="logout()">Keluar</button>
+                    </div>
+                </div>
+
+                <!-- Header Card -->
+                <div class="card">
+                    <img src="{{ cover_image_path }}" class="header-image" alt="{{ materi.title }}" onerror="this.onerror=null; this.src='/static/assets/img/materi/default_cover.jpg'">
+                    <div class="card-body">
+                        <h1 class="card-title">{{ materi.title }}</h1>
+                        <p class="card-text fs-5">{{ materi.description or 'Tidak ada deskripsi' }}</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-8">
+                        <!-- Ringkasan Materi -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="section-title">Ringkasan Materi</h3>
+                                {% if pdf_path %}
+                                <iframe src="{{ pdf_path }}" class="pdf-preview"></iframe>
+                                <div class="mt-3">
+                                    <a href="{{ pdf_path }}" class="btn btn-outline-primary" target="_blank">
+                                        <i class="bi bi-file-earmark-pdf"></i> Buka PDF
+                                    </a>
+                                    <a href="{{ pdf_path }}" class="btn btn-outline-success" download>
+                                        <i class="bi bi-download"></i> Unduh PDF
+                                    </a>
+                                </div>
+                                {% else %}
+                                <p class="text-muted">Tidak ada file PDF ringkasan materi</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Audio Pembelajaran -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="section-title">Audio Pembelajaran</h3>
+                                {% if learning_audio_data %}
+                                <div class="accordion" id="learningAudioAccordion">
+                                    {% for audio in learning_audio_data %}
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="heading{{ loop.index }}">
+                                            <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="{{ 'true' if loop.first else 'false' }}" aria-controls="collapse{{ loop.index }}">
+                                                Audio Pembelajaran {{ loop.index }}: {{ audio.filename }}
+                                            </button>
+                                        </h2>
+                                        <div id="collapse{{ loop.index }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#learningAudioAccordion">
+                                            <div class="accordion-body">
+                                                <audio controls class="audio-player">
+                                                    <source src="{{ audio.path }}" type="audio/mpeg">
+                                                    Browser Anda tidak mendukung pemutaran audio.
+                                                </audio>
+                                                {% if audio.subtitle %}
+                                                <div class="subtitle-text">
+                                                    <h5>Subtitle:</h5>
+                                                    <p>{{ audio.subtitle }}</p>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <p class="text-muted">Tidak ada audio pembelajaran</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-md-4">
+                        <!-- Link Jurnal -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="section-title">Jurnal Latihan</h3>
+                                {% if materi.journal %}
+                                <a href="{{ materi.journal }}" class="btn btn-outline-primary w-100" target="_blank">
+                                    <i class="bi bi-journal-text"></i> Buka Jurnal Latihan
+                                </a>
+                                {% else %}
+                                <p class="text-muted">Tidak ada link jurnal latihan</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Audio Relaksasi -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="section-title">Audio Relaksasi</h3>
+                                {% if relaxation_audio_paths %}
+                                {% for audio_path in relaxation_audio_paths %}
+                                <div class="mb-3">
+                                    <p class="mb-1">Audio Relaksasi {{ loop.index }}:</p>
+                                    <audio controls class="audio-player">
+                                        <source src="{{ audio_path }}" type="audio/mpeg">
+                                        Browser Anda tidak mendukung pemutaran audio.
+                                    </audio>
+                                </div>
+                                {% endfor %}
+                                {% else %}
+                                <p class="text-muted">Tidak ada audio relaksasi</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Ilustrasi -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="section-title">Ilustrasi</h3>
+                                {% if illustration_paths %}
+                                <div id="illustrationCarousel" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        {% for img_path in illustration_paths %}
+                                        <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                            <img src="{{ img_path }}" class="d-block w-100 illustration-img" alt="Ilustrasi {{ loop.index }}">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#illustrationCarousel" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#illustrationCarousel" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                                <div class="mt-3 text-center">
+                                    <p>{{ illustration_paths|length }} ilustrasi</p>
+                                </div>
+                                {% else %}
+                                <p class="text-muted">Tidak ada ilustrasi</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function logout() {
+            $.ajax({
+                url: "/logout",
+                type: "DELETE",
+                success: function (response) {
+                    document.cookie = "mytoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    window.location.href = "/login-admin";
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                },
+            });
+        }
+
+        // Debugging untuk memeriksa path gambar dan file
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Cover image path:', '{{ cover_image_path }}');
+            console.log('PDF path:', '{{ pdf_path }}');
+            
+            {% if learning_audio_data %}
+            console.log('Learning audio data:');
+            {% for audio in learning_audio_data %}
+            console.log('  Audio {{ loop.index }}:', '{{ audio.path }}');
+            {% endfor %}
+            {% endif %}
+            
+            {% if relaxation_audio_paths %}
+            console.log('Relaxation audio paths:');
+            {% for path in relaxation_audio_paths %}
+            console.log('  Path {{ loop.index }}:', '{{ path }}');
+            {% endfor %}
+            {% endif %}
+            
+            {% if illustration_paths %}
+            console.log('Illustration paths:');
+            {% for path in illustration_paths %}
+            console.log('  Path {{ loop.index }}:', '{{ path }}');
+            {% endfor %}
+            {% endif %}
+        });
+    </script>
+</body>
+</html> 

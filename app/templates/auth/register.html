@@ -51,9 +51,15 @@
         return regExp.test(asValue);
       }
 
+      function is_email(email) {
+        var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return regex.test(email);
+      }
+
       function daftar() {
         let namaLengkap = $("#namaLengkap").val();
         let username = $("#username").val();
+        let email = $("#email").val();
         let password = $("#password").val();
         let konfirmasiPassword = $("#konfirmasiPassword").val();
 
@@ -83,6 +89,23 @@
           return;
         } else {
           $("#helpusername").text("").removeClass("is-danger");
+        }
+
+        // Validasi Email
+        if (email === "") {
+          $("#helpEmail")
+            .text("Silahkan Masukan Email!")
+            .addClass("is-danger");
+          $("#email").focus();
+          return;
+        } else if (!is_email(email)) {
+          $("#helpEmail")
+            .text("Format email tidak valid!")
+            .addClass("is-danger");
+          $("#email").focus();
+          return;
+        } else {
+          $("#helpEmail").text("").removeClass("is-danger");
         }
 
         // Validasi Password
@@ -119,13 +142,25 @@
         $.ajax({
           type: "POST",
           url: "/register/save",
-          data: { namaLengkap, username, password },
+          data: { 
+            namaLengkap: namaLengkap, 
+            username: username, 
+            email: email,
+            password: password 
+          },
           success: function (response) {
             if (response["exists"]) {
-              $("#helpusername")
-                .text("Username telah digunakan!")
-                .addClass("is-danger");
-              $("#username").focus();
+              if (response["field"] === "username") {
+                $("#helpusername")
+                  .text("Username telah digunakan!")
+                  .addClass("is-danger");
+                $("#username").focus();
+              } else if (response["field"] === "email") {
+                $("#helpEmail")
+                  .text("Email telah terdaftar!")
+                  .addClass("is-danger");
+                $("#email").focus();
+              }
             } else {
               Swal.fire({
                 title: "Register Berhasil",
@@ -183,6 +218,15 @@
                     id="username"
                   />
                   <p id="helpusername" class="help is-hidden"></p>
+                </div>
+                <div class="form-group">
+                  <input
+                    type="email"
+                    class="form-control"
+                    placeholder="Email"
+                    id="email"
+                  />
+                  <p id="helpEmail" class="help is-hidden"></p>
                 </div>
                 <div class="form-group">
                   <input
