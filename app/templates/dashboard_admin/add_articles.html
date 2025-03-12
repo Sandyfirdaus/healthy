@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        /* Layout dasar */
+        .wrapper {
+          display: flex;
+          flex-direction: row; /* Menyusun sidebar dan konten utama berdampingan */
+          min-height: 100vh;
+        }
+  
+        /* Navbar */
+        .navbar {
+          background: #007bff;
+          color: white;
+          z-index: 1000; /* Pastikan navbar tetap di atas konten */
+        }
+  
+        /* Sidebar */
+        .sidebar {
+          width: 60px;
+          min-width: 60px;
+          height: 100vh; /* Sidebar sepanjang halaman */
+          background: #ffffff;
+          box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+          padding-top: 1rem;
+          transition: width 0.3s ease;
+          position: sticky; /* Membuat sidebar tetap nempel saat scroll */
+          top: 56px; /* Jarak dari navbar */
+          bottom: 0;
+          z-index: 999; /* Pastikan sidebar di atas konten utama */
+        }
+  
+        /* Sidebar Hover */
+        .sidebar:hover {
+          width: 200px;
+        }
+  
+        .sidebar .nav-link {
+          white-space: nowrap;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          padding: 10px;
+          color: #333;
+          text-decoration: none;
+        }
+  
+        .sidebar .nav-link i {
+          font-size: 1.5rem;
+          margin-right: 10px;
+        }
+  
+        .sidebar:hover .nav-link span {
+          display: inline;
+        }
+  
+        .sidebar .nav-link span {
+          display: none;
+        }
+  
+        /* Konten utama */
+        .main-content {
+          flex-grow: 1;
+          margin-left: 60px;
+          padding: 20px;
+          transition: margin-left 0.3s ease;
+          width: calc(100% - 60px);
+          margin-top: 56px; /* Sesuaikan dengan tinggi navbar */
+        }
+  
+        .sidebar:hover ~ .main-content {
+          margin-left: 200px;
+          width: calc(100% - 200px);
+        }
+  
+        @media (max-width: 768px) {
+          .card .d-flex {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+          
+          .card .d-flex div {
+            margin-top: 10px;
+          }
+      
+          .btn {
+            margin-left: 0; /* Remove any margin between buttons */
+          }
+      
+          .btn:first-child {
+            margin-right: 15px; /* Add margin to the right of the first button */
+          }
+        
+  
+      .table-container {
+        padding-left: 10px;  /* Add padding to move table left */
+        padding-right: 10px; /* Prevent too much space on right */
+      }
+  
+      .table {
+        margin-left: -10px; /* Move the table to the left */
+        width: 100%;
+      }
+    }
+  </head>
+  <body>
+    {% include "base/sidebar.html" %}
+
+    <!-- Articles Table -->
+    <div id="articlesSection" class="d-none">
+      <div class="container">
+        <div class="card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5>Article Details</h5>
+            <button
+              class="btn btn-success"
+              data-bs-toggle="modal"
+              data-bs-target="#addArticleModal"
+            >
+              Add Article
+            </button>
+          </div>
+
+          <div class="article-item">
+            <div class="article-info">
+              <img src="assets/img/artikel/artikel1.jpg" alt="Article Image" />
+              <div class="article-text">
+                <p class="title">Apa Itu Mindfulness?</p>
+                <p>Mindfulness, Psychology</p>
+                <p>Nama Penulis</p>
+                <p class="date">04-12-2020</p>
+              </div>
+            </div>
+            <div class="action-icons">
+              <i class="bi bi-pencil"></i>
+              <i class="bi bi-trash"></i>
+            </div>
+          </div>
+
+          <div class="article-item">
+            <div class="article-info">
+              <img src="assets/img/artikel/artikel2.jpg" alt="Article Image" />
+              <div class="article-text">
+                <p class="title">Apa Itu Mindfulness?</p>
+                <p>Mindfulness, Psychology</p>
+                <p>Nama Penulis</p>
+                <p class="date">04-12-2020</p>
+              </div>
+            </div>
+            <div class="action-icons">
+              <i class="bi bi-pencil"></i>
+              <i class="bi bi-trash"></i>
+            </div>
+          </div>
+
+          <!-- Modal Add Article -->
+          <div
+            class="modal fade"
+            id="addArticleModal"
+            tabindex="-1"
+            aria-labelledby="addArticleModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add New Article</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="mb-3">
+                      <label for="title" class="form-label">Title</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        required
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="category" class="form-label">Category</label>
+                      <select class="form-select" id="category" required>
+                        <option selected disabled>Choose category</option>
+                        <option value="Health">Health</option>
+                        <option value="Mindfulness">Mindfulness</option>
+                        <option value="Mental Wellness">Mental Wellness</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="coverImage" class="form-label"
+                        >Cover Image</label
+                      >
+                      <input
+                        type="file"
+                        class="form-control"
+                        id="coverImage"
+                        accept=".png, .jpg, .svg"
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="content" class="form-label">Content</label>
+                      <textarea
+                        class="form-control"
+                        id="content"
+                        rows="4"
+                        required
+                      ></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                      <button
+                        type="button"
+                        class="btn btn-danger me-2"
+                        data-bs-dismiss="modal"
+                      >
+                        Cancel
+                      </button>
+                      <button type="submit" class="btn btn-success">
+                        Create New Article
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

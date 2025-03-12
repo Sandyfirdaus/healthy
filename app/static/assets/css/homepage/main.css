@@ -1,4 +1,3 @@
-
 /* Fonts */
 /* Fonts */
 :root {
@@ -304,13 +303,11 @@ h6 {
 
   .navmenu li {
     position: relative;
-    
   }
 
   .navmenu > ul > li {
     white-space: nowrap;
     padding: 15px 14px;
-    
   }
 
   .navmenu > ul > li:last-child {
@@ -567,7 +564,6 @@ h6 {
   mix-blend-mode: multiply;
   object-fit: contain; /* Agar logo tidak terdistorsi */
 }
-
 
 .footer .footer-top {
   background-color: white;
@@ -855,8 +851,8 @@ section,
 --------------------------------------------------------------*/
 
 .modal-content {
-    border-radius: 15px;
-    box-shadow: 0 40px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 40px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Reset overflow body */
@@ -871,7 +867,6 @@ body.modal-open {
 .modal-backdrop {
   z-index: 1040;
 }
-
 
 .hero {
   width: 100%;
@@ -906,10 +901,10 @@ body.modal-open {
 .welcome-text {
   font-family: "Poppins", sans-serif;
   font-size: 4rem;
-  color: #F5F5DC;
+  color: #f5f5dc;
   margin-top: -10px;
-  text-shadow: 1px 1px 0 #F5F5DC, -1px -1px 0 #F5F5DC, 1px -1px 0 #F5F5DC,
-    -1px 1px 0 #F5F5DC;
+  text-shadow: 1px 1px 0 #f5f5dc, -1px -1px 0 #f5f5dc, 1px -1px 0 #f5f5dc,
+    -1px 1px 0 #f5f5dc;
 }
 
 .welcome-text1 {
@@ -934,7 +929,7 @@ body.modal-open {
   text-decoration: none;
 }
 
-.btn-get-started:hover{
+.btn-get-started:hover {
   background: color-mix(in srgb, var(--accent-color) 90%, black 15%);
   color: var(--contrast-color);
 }
@@ -1017,7 +1012,6 @@ body.modal-open {
 /*--------------------------------------------------------------
 # Featured Services Section
 --------------------------------------------------------------*/
-
 
 #services .section-title h2 {
   color: #0cb280;
@@ -1174,8 +1168,8 @@ body.modal-open {
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  width: 50%; 
-  max-width: 640px; 
+  width: 50%;
+  max-width: 640px;
 }
 
 .guide-title {
@@ -1198,9 +1192,9 @@ body.modal-open {
 .guide-list li {
   display: flex;
   align-items: center;
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
   background: white;
-  padding: 6px 10px; 
+  padding: 6px 10px;
   border-radius: 6px;
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
 }
@@ -1208,10 +1202,10 @@ body.modal-open {
 .step-number {
   background: #39ce7d;
   color: white;
-  font-size: 15px; 
+  font-size: 15px;
   font-weight: bold;
-  width: 27px; 
-  height: 27px; 
+  width: 27px;
+  height: 27px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -1220,15 +1214,15 @@ body.modal-open {
 }
 
 .step-content {
-  background: #E0F7FA; 
-  padding:15px;
+  background: #e0f7fa;
+  padding: 15px;
   border-radius: 5px;
 }
 
 .step-content h5 {
   font-size: 17px;
   font-weight: bold;
-  margin-bottom: 2px; 
+  margin-bottom: 2px;
 }
 
 .step-content p {
@@ -1244,15 +1238,15 @@ body.modal-open {
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-    width: 92%; 
-    margin: 0 auto; 
+    width: 92%;
+    margin: 0 auto;
     text-align: center;
   }
   .guide-list li {
     flex-direction: column; /* Ubah ke kolom */
     align-items: center; /* Rata tengah */
     text-align: center; /* Teks di tengah */
-    width: 100%; 
+    width: 100%;
   }
 
   .step-number {
@@ -1312,7 +1306,7 @@ body.modal-open {
   transform: scale(1.05);
 }
 .custom-section h2 {
-  font-family: 'Poppins', sans-serif; /* Gunakan font Poppins atau font lain */
+  font-family: "Poppins", sans-serif; /* Gunakan font Poppins atau font lain */
   font-size: 2.5rem; /* Ukuran font */
 }
 .custom-card img {
@@ -1332,7 +1326,6 @@ body.modal-open {
   background: linear-gradient(to bottom, #485664, #39ce7d);
   padding: 50px 60px;
 }
-
 
 /*--------------------------------------------------------------
 # AKHIR CARD Section
@@ -1852,41 +1845,41 @@ body.modal-open {
 Homesignin Section
 --------------------------------------------------------------*/
 .note-icon {
-  position: absolute; 
-  top: 20%; 
-  left: 10px; 
-  transform: translateY(-70%); 
-  font-size: 22px; 
-  background: #39ce7d; 
-  color: #fff; 
-  border: none; 
-  border-radius: 50%; 
-  width: 50px; 
-  height: 50px; 
+  position: absolute;
+  top: 20%;
+  left: 10px;
+  transform: translateY(-70%);
+  font-size: 22px;
+  background: #39ce7d;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer; 
-  z-index: 1000; 
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-  transition: background 0.3s ease; 
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease;
 }
 
 .note-icon:hover {
-  background: #218838; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  background: #218838;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Menyesuaikan posisi dan ukuran ikon pada mobile */
 @media (max-width: 768px) {
   navbar {
-    position: relative; 
+    position: relative;
     padding: 10px;
   }
   .note-icon {
     right: 10px; /* Menempatkan ikon di sebelah kanan */
     left: auto; /* Menghilangkan pengaturan left */
-    top: 20%;  /* Mengatur posisi vertikal lebih tinggi */
+    top: 20%; /* Mengatur posisi vertikal lebih tinggi */
     width: 40px; /* Ukuran ikon lebih kecil */
     height: 40px; /* Ukuran ikon lebih kecil */
     font-size: 18px; /* Ukuran font lebih kecil */
@@ -1898,7 +1891,7 @@ Homesignin Section
   .note-icon {
     right: 10px; /* Menempatkan ikon di sebelah kanan */
     left: auto; /* Menghilangkan pengaturan left */
-    top: 20%;  /* Mengatur posisi vertikal lebih tinggi */
+    top: 20%; /* Mengatur posisi vertikal lebih tinggi */
     width: 40px; /* Ukuran ikon lebih kecil */
     height: 40px; /* Ukuran ikon lebih kecil */
     font-size: 18px; /* Ukuran font lebih kecil */
@@ -2028,10 +2021,6 @@ Homesignin Section
     margin-left: 10px; /* Jarak antara ikon bi-list dan foto profil */
   }
 }
-
-
-
-
 
 /*--------------------------------------------------------------
 # navbar masuk Section
@@ -3123,7 +3112,6 @@ Homesignin Section
   color: black !important; /* Tetap hitam meskipun di-hover */
 }
 
-
 .blog-author {
   padding: 10px 0 40px 0;
 }
@@ -3315,7 +3303,6 @@ Homesignin Section
   cursor: pointer; /* Menampilkan pointer saat di-hover */
 }
 
-
 /* Post hover effect */
 .post-item {
   transition: transform 0.3s ease; /* Smooth transition */
@@ -3324,7 +3311,6 @@ Homesignin Section
 .post-item:hover {
   transform: scale(1.05); /* Membesar saat di-hover */
 }
-
 
 .program-title {
   color: var(
@@ -3582,8 +3568,6 @@ Homesignin Section
   font-size: 14px;
 }
 
-
-
 /*--------------------------------------------------------------
 # akhir Widgets
 
@@ -3591,5 +3575,112 @@ Homesignin Section
 
 
 
+/* articles */
+.card {
+  border-radius: 10px;
+  background: #f0f8ff;
+  padding: 20px;
+}
+.article-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  padding: 15px 0;
+}
+.article-item:last-child {
+  border-bottom: none;
+}
+.article-info {
+  display: flex;
+  align-items: center;
+}
+.article-info img {
+  width: 80px;
+  height: 80px;
+  border-radius: 5px;
+  margin-right: 15px;
+}
+.article-text {
+  display: flex;
+  flex-direction: column;
+}
+.article-text p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+.article-text .title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+}
+.article-text .date {
+  font-size: 12px;
+  color: #777;
+}
+.action-icons i {
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: 10px;
+  color: #28a745;
+}
+.action-icons .bi-trash {
+  color: #dc3545;
+}
 
+/* program */
+.card-container {
+  background: #f0f8ff;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 20px auto;
+  width: 100%;
+  opacity: 1 !important;
+}
+.program-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+.program-item img {
+  width: 60px;
+  height: 60px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+.program-text {
+  flex-grow: 1;
+  margin-left: 15px;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+}
+.add-button {
+  float: right;
+}
 
+.content > div {
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.5s ease-in-out;
+  position: absolute;
+  width: calc(100% - 40px);
+  visibility: hidden;
+}
+
+.content > div:not(.d-none) {
+  opacity: 1;
+  transform: translateX(0);
+  visibility: visible;
+  position: relative;
+}
+
+.sidebar a.active {
+  background: #145c43;
+}
