@@ -99,7 +99,7 @@
                       {% endfor %}
                     </p>
                     <h4>Referensi</h4>
-                    <p>{{ article.referensi }}
+                    <p>{{ article.kategori }}
                       </p>
                   </div>
                   <!-- End post content -->
@@ -108,9 +108,7 @@
 
                     <i class="bi bi-tags"></i>
                     <ul class="tags">
-                      {% for tag in article['tags'] %}
-                      <li>{{ tag }}</a></li>
-                      {% endfor %}
+                      <li>{{ article.kategori }}</a></li>
                     </ul>
                   </div>
                   <!-- End meta bottom -->
@@ -124,7 +122,7 @@
               <div class="container">
                 <div class="author-container d-flex align-items-center">
                   <img
-                  src="{{ url_for('static', filename=article['penulis_foto']) }}"
+                  src="{{ url_for('static', filename=article['authorPict']) }}"
                   class="rounded-circle flex-shrink-0"
                   alt="Penulis"
                   />

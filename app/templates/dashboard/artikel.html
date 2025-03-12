@@ -5,65 +5,6 @@
     <title>Artikel - PSIDAMAI</title>
 
     <script>
-      $(document).ready(function () {
-          $.ajax({
-              type: "GET",
-              url: "/get-artikel",
-              success: function (response) {
-                  console.log(response.data_artikel);
-                  $("#articleList").empty();
-                  data = response.data_artikel;
-                  data.forEach((item, index) => {
-                      let imagePath = `../../static/${item.artikelPict}`; // Path gambar yang benar
-                      let authorImagePath = `../../static/${item.authorPict}`;  // Path gambar author
-                      
-                      let articleList = `
-                      <section id="blog-posts" class="blog-posts section">
-                        <div class="container">
-                          <div class="row gy-5">
-                          {% for article in articles %}
-                        <div class="col-lg-4" data-aos="flip-up">
-              <a
-                href="/artikel_details/{{ article.id }}"
-                class="post-item-link text-decoration-none"
-              >
-                <article class="post-item">
-                  <div class="post-img">
-                    <img
-                      src="{{ url_for('static', filename=article.image) }}"
-                      alt="{{ article.title }}"
-                      class="img-fluid"
-                    />
-                  </div>
-                  <p class="post-category">${item.kategori}</p>
-                  <h2 class="title">${item.title}</h2>
-                  <div class="d-flex align-items-center">
-                    <img
-                      src="{{ url_for('static', filename=article.author_image) }}"
-                      alt="{{ article.author }}"
-                      class="img-fluid post-author-img flex-shrink-0"
-                    />
-                    <div class="post-meta">
-                      <p class="post-author">${item.author}</p>
-                      <p class="post-date">${item.date}</p>
-                    </div>
-                  </div>
-                </article>
-              </a>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-      </section>
-                      `;
-                      $("#articleList").append(articleList);
-                  });
-              },
-              error: function (xhr, status, error) {
-                  console.error("Error:", error);
-              }
-          });
-      });
       
 
     function addArtikel() {
@@ -122,7 +63,7 @@
             {% for article in articles %}
             <div class="col-lg-4" data-aos="flip-up">
               <a
-                href="/artikel_details/{{ article.id }}"
+                href="/artikel_details/{{ article.title }}"
                 class="post-item-link text-decoration-none"
               >
                 <article class="post-item">

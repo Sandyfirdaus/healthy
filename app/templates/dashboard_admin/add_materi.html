@@ -189,7 +189,7 @@
                                     <button class="btn btn-outline-primary btn-sm" onclick="detailMateri('${item.title}'); event.stopPropagation();">
                                         <i class="bi bi-pencil"></i> Ubah
                                     </button>
-                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteMateri('${item.title}'); event.stopPropagation();">
+                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteMateri('${item.program_title}'); event.stopPropagation();">
                                         <i class="bi bi-trash"></i> Hapus
                                     </button>
                                 </div>
@@ -706,9 +706,8 @@
         });
       }
 
-      function deleteMateri(title) {
-        console.log("Attempting to delete materi:", title, "from program:", programTitle);
-        
+      function deleteMateri(program_title) {
+        console.log("Deleting materi:", program_title);
         Swal.fire({
           title: "Apakah anda yakin?",
           text: "Materi akan dihapus permanen!",
@@ -720,65 +719,27 @@
           cancelButtonText: "Batal",
         }).then((result) => {
           if (result.isConfirmed) {
-            // Show loading state
-            Swal.fire({
-              title: "Sedang Memproses",
-              text: "Menghapus materi...",
-              allowOutsideClick: false,
-              didOpen: () => {
-                Swal.showLoading();
-              }
-            });
-            
             $.ajax({
               type: "POST",
               url: "/delete-materi",
-              data: { 
-                title: title,
-                program_title: programTitle 
-              },
+              data: { program_title: program_title },  // Form data
               success: function (response) {
                 console.log("Delete success response:", response);
                 Swal.fire({
                   title: "Berhasil",
-                  text: response.msg || "Materi berhasil dihapus!",
+                  text: "Materi berhasil dihapus!",
                   icon: "success",
                   confirmButtonText: "Oke",
                 }).then(() => window.location.reload());
               },
               error: function (xhr, status, error) {
                 console.error("Delete error:", xhr.responseText, status, error);
-                
-                let errorMessage = "Gagal menghapus materi.";
-                
-                try {
-                  // Try to parse the error response
-                  const errorResponse = JSON.parse(xhr.responseText);
-                  if (errorResponse && errorResponse.msg) {
-                    errorMessage = errorResponse.msg;
-                  }
-                } catch (e) {
-                  // If parsing fails, use the error parameter
-                  if (error) {
-                    errorMessage += " Error: " + error;
-                  }
-                }
-                
-                Swal.fire({
-                  icon: "error",
-                  title: "Gagal",
-                  text: errorMessage,
-                  confirmButtonText: "Tutup",
-                });
               },
-              // Add timeout to prevent hanging requests
-              timeout: 30000, // 30 seconds
-              // Ensure data is sent as form data
-              contentType: 'application/x-www-form-urlencoded; charset=UTF-8'
             });
           }
         });
       }
+
       function logout() {
         $.ajax({
           url: "/logout",

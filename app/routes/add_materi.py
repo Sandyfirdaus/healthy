@@ -244,91 +244,9 @@ def get_program_materi(program_title):
 
 @add_materi_.route('/delete-materi', methods=['POST'])
 def delete_materi():
-    try:
-        title = request.form.get('title')
-        program_title = request.form.get('program_title')
-        
-        if not title or not program_title:
-            return jsonify({'msg': 'Title dan program_title diperlukan!'}), 400
-        
-        print(f"Attempting to delete materi: {title} from program: {program_title}")
-        
-        # Check if the materi exists
-        materi = current_app.db.materi.find_one({
-            'title': title,
-            'program_title': program_title
-        })
-        
-        if not materi:
-            return jsonify({'msg': f'Materi dengan judul "{title}" tidak ditemukan!'}), 404
-        
-        # Try to delete associated files
-        try:
-            # Delete cover image if it exists
-            if 'coverImage' in materi:
-                if materi['coverImage'] == 'default_cover.jpg':
-                    # Skip deleting default cover
-                    pass
-                elif materi['coverImage'].startswith('assets/'):
-                    # If it's a full path (new format)
-                    cover_path = os.path.join(current_app.root_path, "static", materi['coverImage'])
-                    if os.path.exists(cover_path):
-                        os.remove(cover_path)
-                        print(f"Deleted cover image: {cover_path}")
-                else:
-                    # If it's just a filename (legacy format)
-                    cover_path = os.path.join(current_app.root_path, "static", "assets", "img", "materi", materi['coverImage'])
-                    if os.path.exists(cover_path):
-                        os.remove(cover_path)
-                        print(f"Deleted cover image: {cover_path}")
-            
-            # Delete illustration images if they exist
-            if 'illustrations' in materi and isinstance(materi['illustrations'], list):
-                for illustration in materi['illustrations']:
-                    ill_path = os.path.join(current_app.root_path, "static", illustration)
-                    if os.path.exists(ill_path):
-                        os.remove(ill_path)
-                        print(f"Deleted illustration: {ill_path}")
-            
-            # Delete audio files if they exist
-            if 'relaxation_audios' in materi and isinstance(materi['relaxation_audios'], list):
-                for audio in materi['relaxation_audios']:
-                    audio_path = os.path.join(current_app.root_path, "static", audio)
-                    if os.path.exists(audio_path):
-                        os.remove(audio_path)
-                        print(f"Deleted audio: {audio_path}")
-            
-            # Delete learning audio files if they exist
-            if 'learning_audios' in materi and isinstance(materi['learning_audios'], list):
-                for audio in materi['learning_audios']:
-                    audio_path = os.path.join(current_app.root_path, "static", audio)
-                    if os.path.exists(audio_path):
-                        os.remove(audio_path)
-                        print(f"Deleted learning audio: {audio_path}")
-            
-            # Delete summary PDF if it exists
-            if 'summary_pdf' in materi and materi['summary_pdf']:
-                pdf_path = os.path.join(current_app.root_path, "static", materi['summary_pdf'])
-                if os.path.exists(pdf_path):
-                    os.remove(pdf_path)
-                    print(f"Deleted summary PDF: {pdf_path}")
-        except Exception as file_error:
-            print(f"Warning: Error deleting files: {str(file_error)}")
-            # Continue with database deletion even if file deletion fails
-        
-        # Delete the materi from database
-        result = current_app.db.materi.delete_one({
-            'title': title,
-            'program_title': program_title
-        })
-        
-        if result.deleted_count > 0:
-            return jsonify({'msg': 'Materi berhasil dihapus!'})
-        else:
-            return jsonify({'msg': 'Materi tidak dapat dihapus dari database!'}), 500
-    except Exception as e:
-        print(f"Error deleting materi: {str(e)}")
-        return jsonify({'msg': f'Error: {str(e)}'}), 500
+    program_title = request.form['program_title']
+    current_app.db.materi.delete_one({'program_title': program_title})
+    return jsonify({'msg': 'Data artikel berhasil dihapus!'})
 
 @add_materi_.route('/edit-materi', methods=['POST'])
 def edit_materi():

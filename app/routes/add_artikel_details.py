@@ -27,3 +27,9 @@ def view_artikel_details():
         return redirect(url_for("auth_admin.login_admin"))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("auth_admin.login_admin"))
+    
+
+@add_artikel_details_.route('/detail-artikel/<title>')
+def detail_artikel(title):
+    article = current_app.db.artikel.find_one({'title': title}, {'_id' : False})
+    return jsonify({'msg': 'Artikel berhasil ditemukan!', 'article': article})
