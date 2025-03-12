@@ -153,8 +153,8 @@
         margin-bottom: 3px;
       }
       .author-image {
-        width: 30px; /* Ukuran kecil */
-        height: 30px;
+        width: 40px; /* Match the size with article details */
+        height: 40px;
         border-radius: 50%; /* Agar bentuknya bulat */
         object-fit: cover; /* Agar tidak terdistorsi */
         margin-right: 8px; /* Jarak dengan nama */
@@ -205,10 +205,10 @@
                             <div class="article-content">
                                 <img src="${imagePath}" alt="Article thumbnail" class="article-image"/>
                                 <div class="article-details">
-                                    <h5>${item.title}</h5>
+                                    <h5><a href="/view-artikel-details?title=${encodeURIComponent(item.title)}" class="text-decoration-none text-dark">${item.title}</a></h5>
                                     <p class="article-category mb-1">${item.kategori}</p>
                                     <p class="text-muted mb-0">
-                                        <img src="${authorImagePath}" class="author-image" alt="Author Image"/> 
+                                        <img src="${authorImagePath}" class="author-image" alt="${item.author}"/> 
                                         ${item.author}
                                     </p>
                                     <small class="text-muted">${item.date}</small>
@@ -267,14 +267,17 @@
         let fileInput = $("#foto")[0].files[0];
         let fileAuthor = $("#fotoAuthor")[0].files[0];
 
+        // Debug log
+        console.log('Adding article with content:', konten);
+
         let formData = new FormData();
-        formData.append("filePict", fileInput);
-        formData.append("fileAuthor", fileAuthor);
         formData.append("title", title);
         formData.append("kategori", kategori);
         formData.append("author", author);
         formData.append("date", date);
         formData.append("konten", konten);
+        if (fileInput) formData.append("filePict", fileInput);
+        if (fileAuthor) formData.append("fileAuthor", fileAuthor);
 
         $.ajax({
           type: "POST",
@@ -284,6 +287,7 @@
           contentType: false,
           processData: false,
           success: function (response) {
+            console.log('Article added successfully:', response);
             Swal.fire({
               title: "Berhasil",
               text: "Artikel berhasil ditambahkan!",
@@ -291,6 +295,15 @@
               confirmButtonText: "Oke",
             }).then(() => window.location.reload());
           },
+          error: function(xhr, status, error) {
+            console.error('Error adding article:', error);
+            Swal.fire({
+              title: "Gagal",
+              text: "Gagal menambahkan artikel. Silakan coba lagi.",
+              icon: "error",
+              confirmButtonText: "Oke",
+            });
+          }
         });
       }
 
@@ -304,15 +317,18 @@
         let fileInput = $("#editFoto")[0].files[0];
         let fileAuthor = $("#editFotoAuthor")[0].files[0];
 
+        // Debug log
+        console.log('Editing article with content:', konten);
+
         let formData = new FormData();
         formData.append("title", title);
-        formData.append("filePict", fileInput);
-        formData.append("fileAuthor", fileAuthor);
         formData.append("new_title", new_title);
         formData.append("kategori", kategori);
         formData.append("author", author);
         formData.append("date", date);
         formData.append("konten", konten);
+        if (fileInput) formData.append("filePict", fileInput);
+        if (fileAuthor) formData.append("fileAuthor", fileAuthor);
 
         $.ajax({
           type: "POST",
@@ -322,6 +338,7 @@
           contentType: false,
           processData: false,
           success: function (response) {
+            console.log('Article edited successfully:', response);
             Swal.fire({
               title: "Berhasil",
               text: "Artikel berhasil diubah!",
@@ -329,6 +346,15 @@
               confirmButtonText: "Oke",
             }).then(() => window.location.reload());
           },
+          error: function(xhr, status, error) {
+            console.error('Error editing article:', error);
+            Swal.fire({
+              title: "Gagal",
+              text: "Gagal mengubah artikel. Silakan coba lagi.",
+              icon: "error",
+              confirmButtonText: "Oke",
+            });
+          }
         });
       }
 
@@ -494,6 +520,12 @@
                 <label class="form-label">Image Author</label>
                 <input type="file" class="form-control" id="editFotoAuthor" />
               </div>
+
+              <div class="mb-3">
+                <label class="form-label">Content</label>
+                <textarea class="form-control" id="editKonten" rows="10" placeholder="Write your article content here..."></textarea>
+                <div class="form-text">Write the main content of your article.</div>
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -584,6 +616,12 @@
               <div class="mb-3">
                 <label class="form-label">Image Author</label>
                 <input type="file" class="form-control" id="fotoAuthor" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Content</label>
+                <textarea class="form-control" id="konten" rows="10" placeholder="Write your article content here..."></textarea>
+                <div class="form-text">Write the main content of your article.</div>
               </div>
             </form>
           </div>

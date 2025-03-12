@@ -13,6 +13,10 @@ def view_artikel_details():
         payload = jwt.decode(myToken, SECRET_KEY, algorithms=["HS256"])
         
         user_info = current_app.db.users_admin.find_one({"username": payload["id"]})
+        title = request.args.get('title')
+
+        if not title:
+            return redirect(url_for("add_artikel.view_artikel"))
 
         if user_info and user_info.get('username') == 'admin.psidamai':
             return render_template('dashboard_admin/artikel_details.html', user_info=user_info)

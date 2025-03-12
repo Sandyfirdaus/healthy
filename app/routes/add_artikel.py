@@ -36,51 +36,43 @@ def add_artikel():
     kategori = request.form['kategori']
     author = request.form['author']
     date = request.form['date'] 
+    konten = request.form['konten']  # Make sure to get the content
+    
     newDoc = {
         'title': title,
         'kategori': kategori,
         'author': author,
         'date': date,
-
+        'konten': konten,  # Add content to the document
     }
+    
     if "filePict" in request.files:
-            file = request.files["filePict"]
-            if file.filename != '':  
-                filename = secure_filename(file.filename)
-                extension = filename.split(".")[-1]
-                file_path = f"assets/img/artikel/{title}.{extension}"
+        file = request.files["filePict"]
+        if file.filename != '':  
+            filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file_path = f"assets/img/artikel/{title}.{extension}"
 
-                upload_dir = os.path.join(current_app.root_path, "static", "assets", "img", "artikel")
-                if not os.path.exists(upload_dir):
-                    os.makedirs(upload_dir)
+            upload_dir = os.path.join(current_app.root_path, "static", "assets", "img", "artikel")
+            if not os.path.exists(upload_dir):
+                os.makedirs(upload_dir)
 
-                file.save(os.path.join(upload_dir, f"{title}.{extension}"))
+            file.save(os.path.join(upload_dir, f"{title}.{extension}"))
 
-                newDoc["artikel"] = filename
-                newDoc["artikelPict"] = file_path
+            newDoc["artikel"] = filename
+            newDoc["artikelPict"] = file_path
     
     if "fileAuthor" in request.files:
         fileAuthor = request.files["fileAuthor"]
-    
-    if fileAuthor.filename != '':  
-        filename = secure_filename(fileAuthor.filename)
-        extensionAuthor = filename.split(".")[-1]
-
-        file_path_author = f"assets/img/authors/{title}.{extensionAuthor}"
-
-        upload_dir_author = os.path.join(current_app.root_path, "static", "assets", "img", "authors")
-        
-        # Buat folder jika belum ada
-        if not os.path.exists(upload_dir_author):
-            os.makedirs(upload_dir_author)
-
-        # Simpan file di direktori yang benar
-        fileAuthor.save(os.path.join(upload_dir_author, f"{title}.{extensionAuthor}"))
-
-        # Simpan path relatif ke database atau objek
-        newDoc["authorPict"] = file_path_author  # Path ini akan digunakan di frontend
-    
-    
+        if fileAuthor.filename != '':  
+            filename = secure_filename(fileAuthor.filename)
+            extensionAuthor = filename.split(".")[-1]
+            file_path_author = f"assets/img/authors/{title}.{extensionAuthor}"
+            upload_dir_author = os.path.join(current_app.root_path, "static", "assets", "img", "authors")
+            if not os.path.exists(upload_dir_author):
+                os.makedirs(upload_dir_author)
+            fileAuthor.save(os.path.join(upload_dir_author, f"{title}.{extensionAuthor}"))
+            newDoc["authorPict"] = file_path_author
     
     current_app.db.artikel.insert_one(newDoc)
     return jsonify({'msg': 'Add artikel sukses!'})
@@ -143,5 +135,8 @@ def edit_artikel():
 
 @add_artikel_.route('/detail-artikel/<title>')
 def detail_artikel(title):
-    article = current_app.db.artikel.find_one({'title': title}, {'_id' : False})
-    return jsonify({'msg': 'Artikel berhasil ditemukan!', 'article': article})
+    article = current_app.db.artikel.find_one({'title': title}, {'_id': False})
+    if article:
+        # Make sure konten is included in the response
+        return jsonify({'msg': 'Artikel berhasil ditemukan!', 'article': article})
+    return jsonify({'msg': 'Artikel tidak ditemukan'}), 404
