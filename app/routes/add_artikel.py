@@ -3,8 +3,16 @@ from werkzeug.utils import secure_filename
 import jwt
 import os
 from bson import json_util, ObjectId
+import re
 
 add_artikel_ = Blueprint('add_artikel', __name__)
+
+def sanitize_filename(title):
+    """
+    Sanitizes a title for use in filenames while preserving the original title for display.
+    Replaces special characters with underscores.
+    """
+    return re.sub(r'[^\w\s-]', '_', title).strip()
 
 @add_artikel_.route('/view-artikel')
 def screening():
@@ -36,14 +44,17 @@ def add_artikel():
     kategori = request.form['kategori']
     author = request.form['author']
     date = request.form['date'] 
-    konten = request.form['konten']  # Make sure to get the content
+    konten = request.form['konten']
+    
+    # Create sanitized filename for file storage
+    safe_filename = sanitize_filename(title)
     
     newDoc = {
-        'title': title,
+        'title': title,  # Store original title with special characters
         'kategori': kategori,
         'author': author,
         'date': date,
-        'konten': konten,  # Add content to the document
+        'konten': konten,
     }
     
     if "filePict" in request.files:
@@ -51,13 +62,13 @@ def add_artikel():
         if file.filename != '':  
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
-            file_path = f"assets/img/artikel/{title}.{extension}"
+            file_path = f"assets/img/artikel/{safe_filename}.{extension}"
 
             upload_dir = os.path.join(current_app.root_path, "static", "assets", "img", "artikel")
             if not os.path.exists(upload_dir):
                 os.makedirs(upload_dir)
 
-            file.save(os.path.join(upload_dir, f"{title}.{extension}"))
+            file.save(os.path.join(upload_dir, f"{safe_filename}.{extension}"))
 
             newDoc["artikel"] = filename
             newDoc["artikelPict"] = file_path
@@ -67,11 +78,11 @@ def add_artikel():
         if fileAuthor.filename != '':  
             filename = secure_filename(fileAuthor.filename)
             extensionAuthor = filename.split(".")[-1]
-            file_path_author = f"assets/img/authors/{title}.{extensionAuthor}"
+            file_path_author = f"assets/img/authors/{safe_filename}.{extensionAuthor}"
             upload_dir_author = os.path.join(current_app.root_path, "static", "assets", "img", "authors")
             if not os.path.exists(upload_dir_author):
                 os.makedirs(upload_dir_author)
-            fileAuthor.save(os.path.join(upload_dir_author, f"{title}.{extensionAuthor}"))
+            fileAuthor.save(os.path.join(upload_dir_author, f"{safe_filename}.{extensionAuthor}"))
             newDoc["authorPict"] = file_path_author
     
     current_app.db.artikel.insert_one(newDoc)
@@ -91,24 +102,29 @@ def edit_artikel():
     author = request.form['author']
     date = request.form['date']
     konten = request.form['konten']
+    
+    # Create sanitized filename for file storage
+    safe_new_title = sanitize_filename(new_title)
+    
     update_fields = {
-        'title': new_title,
+        'title': new_title,  # Store original title with special characters
         'kategori': kategori,
         'author': author,
         'date': date,
         'konten': konten,
     }
+    
     # Update gambar artikel jika ada
     if 'filePict' in request.files:
         file = request.files['filePict']
         if file.filename:
             filename = secure_filename(file.filename)
             extension = filename.split('.')[-1]
-            file_path = f"assets/img/artikel/{new_title}.{extension}"
+            file_path = f"assets/img/artikel/{safe_new_title}.{extension}"
             upload_dir = os.path.join(current_app.root_path, "static", "assets", "img", "artikel")
             if not os.path.exists(upload_dir):
                 os.makedirs(upload_dir)
-            file.save(os.path.join(upload_dir, f"{new_title}.{extension}"))
+            file.save(os.path.join(upload_dir, f"{safe_new_title}.{extension}"))
             update_fields['artikelPict'] = file_path
     
     # Update gambar author jika ada
@@ -117,11 +133,11 @@ def edit_artikel():
         if fileAuthor.filename:
             filename = secure_filename(fileAuthor.filename)
             extensionAuthor = filename.split('.')[-1]
-            file_path_author = f"assets/img/authors/{new_title}.{extensionAuthor}"
+            file_path_author = f"assets/img/authors/{safe_new_title}.{extensionAuthor}"
             upload_dir_author = os.path.join(current_app.root_path, "static", "assets", "img", "authors")
             if not os.path.exists(upload_dir_author):
                 os.makedirs(upload_dir_author)
-            fileAuthor.save(os.path.join(upload_dir_author, f"{new_title}.{extensionAuthor}"))
+            fileAuthor.save(os.path.join(upload_dir_author, f"{safe_new_title}.{extensionAuthor}"))
             update_fields['authorPict'] = file_path_author
     
     # Update data di database
