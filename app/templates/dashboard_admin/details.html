@@ -62,6 +62,12 @@
         .card-body {
             padding: 25px;
         }
+
+        .btn-delete {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 0.2rem;
+        }
     </style>
 </head>
 
@@ -74,40 +80,78 @@
             console.log(response.data_materi);
             $("#table_materi").empty();
             dataMateri = response.data_materi;
-            dataMateri.forEach((item, index) => {
+            dataMateri.forEach((item) => {
                 let tableRowMateri = `
-                       <tr>
-                      <td>${item.username}</td>
-                      <td>${item.program} C</td>
-                      <td>${item.materi} 3</td>
-                      <td>
-                      Completed
-                      </td>
-                      <td>${item.tanggal}</td>
-                      <td>${item.waktu}</td>
-                      <td><button type="button" onclick="deleteMateri('${item.username}', '${item.materi}')">Delete</button></td>
+                    <tr>
+                        <td>${item.username || '-'}</td>
+                        <td>${item.program || 'Program'}</td>
+                        <td>${item.materi || '-'}</td>
+                        <td>Completed</td>
+                        <td>${item.tanggal || '-'}</td>
+                        <td>${item.waktu || '-'}</td>
+                        <td>
+                            <button class="btn btn-danger btn-delete" onclick="deleteMateri('${item.username}', '${item.materi}')">
+                                Delete
+                            </button>
+                        </td>
                     </tr>
-                      `;
+                `;
                 $("#table_materi").append(tableRowMateri);
-              });
+            });
           },
         });
-      });
+    });
 
-      function deleteMateri(username, materi) {
+    function deleteMateri(username, materi) {
+        Swal.fire({
+            title: 'Apakah anda yakin?',
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "/delete-materi",
+                    data: { username: username, materi: materi },
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Berhasil!",
+                            text: response["msg"],
+                            icon: "success",
+                            confirmButtonText: "Oke",
+                        }).then((result) => {
+                            window.location.reload();
+                        });
+                    },
+                    error: function(response) {
+                        Swal.fire({
+                            title: "Gagal!",
+                            text: response.responseJSON?.msg || "Terjadi kesalahan saat menghapus data",
+                            icon: "error",
+                            confirmButtonText: "Oke",
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    function logout() {
         $.ajax({
-          type: "POST",
-          url: "/delete-materi",
-          data: { username: username, materi: materi },
+          url: "/logout",
+          type: "DELETE",
           success: function (response) {
-            Swal.fire({
-              title: "Hapus berhasil!",
-              text: response["msg"],
-              icon: "success",
-              confirmButtonText: "Oke",
-            }).then((result) => {
-              window.location.reload();
-            });
+            document.cookie =
+              "mytoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.href = "/login-admin";
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
           },
         });
       }
@@ -123,15 +167,15 @@
             <div class="col-md-10 main-content">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2>Dashboard</h2>
-                    <button class="btn btn-danger" onclick="window.location.href='login_admin.html'">Logout</button>
+                    <button class="btn btn-danger" onclick="logout()">Logout</button>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
-                        <h3>Status Details</h3>
-                        <div class="table-responsive mt-4">
+                        <h3 class="mb-4">Status Details</h3>
+                        <div class="table-responsive">
                             <table class="table table-bordered">
-                                <thead>
+                                <thead class="table-light">
                                     <tr>
                                         <th>Username</th>
                                         <th>Program</th>
@@ -143,17 +187,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="table_materi">
-                                    <tr>
-                                        <td>User1</td>
-                                        <td>Program A</td>
-                                        <td>Materi 1</td>
-                                        <td>Completed</td>
-                                        <td>2025-02-20</td>
-                                        <td>11:00 AM</td>
-                                        <td>
-                                            <button class="btn btn-danger btn-sm">Delete</button>
-                                        </td>
-                                    </tr>
+                                    <!-- Data will be populated here -->
                                 </tbody>
                             </table>
                         </div>

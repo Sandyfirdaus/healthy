@@ -28,7 +28,7 @@ def details():
 
 @details_.route('/get-materi', methods=['GET'])
 def get_materi():
-    data_materi = list(current_app.db.status.find({}, {'_id': False}))
+    data_materi = list(current_app.db.status_materi.find({}, {'_id': False}))
     return jsonify({"data_materi": data_materi})
 
 @details_.route('/delete-materi', methods=['POST'])
@@ -39,7 +39,7 @@ def delete_materi():
     if not username or not materi:
         return jsonify({'msg': 'Data tidak lengkap!'}), 400
 
-    result = current_app.db.status.delete_one({'username': username, 'materi': materi})
+    result = current_app.db.status_materi.delete_one({'username': username, 'materi': materi})
 
     if result.deleted_count == 0:
         return jsonify({'msg': 'Data materi tidak ditemukan!'}), 404

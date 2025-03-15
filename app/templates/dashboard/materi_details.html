@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include "base/header.html" %}
+    <title>{{ materi.judul }} - PSIDAMAI</title>
+    <style>
+      :root {
+        --primary-color: #17cf97;
+        --text-color: #333;
+        --bg-light: #f8f9fa;
+        --shadow: 0 4px 15px rgba(0,0,0,0.1);
+      }
+
+      body {
+        background-color: #f0f7ff;
+      }
+
+      .page-header {
+        background: white;
+        padding: 15px 0;
+        box-shadow: var(--shadow);
+        margin-bottom: 30px;
+      }
+
+      .back-button {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      .back-button:hover {
+        background: #14b584;
+        color: white;
+        transform: translateX(-5px);
+      }
+
+      .back-button i {
+        margin-right: 8px;
+      }
+
+      .content-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+        margin-bottom: 80px;
+      }
+
+      .two-column-layout {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 30px;
+        align-items: start;
+      }
+
+      .left-column {
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        padding: 30px;
+      }
+
+      .right-column {
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        padding: 30px;
+      }
+
+      .materi-title {
+        color: var(--primary-color);
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+      }
+
+      .materi-description {
+        color: var(--text-color);
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+      }
+
+      .section-title {
+        color: var(--primary-color);
+        font-size: 1.3rem;
+        margin: 25px 0 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--bg-light);
+      }
+
+      .resource-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 15px 40px;
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+        width: 100%;
+        max-width: 800px;
+        font-size: 1.1rem;
+      }
+
+      .resource-link:hover {
+        background: #14b584;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(23, 207, 151, 0.3);
+      }
+
+      .resource-link i {
+        font-size: 1.2rem;
+      }
+
+      .audio-section {
+        margin-bottom: 25px;
+      }
+
+      .audio-title {
+        font-size: 1.1rem;
+        color: var(--text-color);
+        margin-bottom: 10px;
+      }
+
+      .audio-player {
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+
+      .comic-frame {
+        position: relative;
+        margin-bottom: 30px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .comic-image-container {
+        position: relative;
+        width: 100%;
+        display: flex;
+        align-items: center;
+      }
+
+      .comic-image {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+        max-height: 500px;
+      }
+
+      .comic-navigation {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(23, 207, 151, 0.9);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        z-index: 10;
+        transition: all 0.3s ease;
+        margin: 0 10px;
+      }
+
+      .comic-navigation:hover {
+        background: var(--primary-color);
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      .prev-btn { left: 0; }
+      .next-btn { right: 0; }
+
+      .subtitle-container {
+        padding: 20px;
+        background: var(--bg-light);
+        border-top: 2px solid #eee;
+        width: 100%;
+      }
+
+      .subtitle-text {
+        text-align: center;
+        margin: 0;
+        color: var(--text-color);
+        font-size: 1.1rem;
+        line-height: 1.6;
+      }
+
+      @media (max-width: 992px) {
+        .two-column-layout {
+          grid-template-columns: 1fr;
+        }
+        
+        .right-column {
+          margin-top: 30px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .content-container {
+          padding: 0 15px;
+          margin-bottom: 60px;
+        }
+        
+        .left-column,
+        .right-column {
+          padding: 20px;
+        }
+        
+        .materi-title {
+          font-size: 1.5rem;
+        }
+        
+        .comic-navigation {
+          width: 35px;
+          height: 35px;
+          font-size: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% include "base/navbar_masuk.html" %}
+
+    <div class="page-header">
+      <div class="container">
+        <a href="/program_content/{{ materi.program_title }}" class="back-button">
+          <i class="bi bi-arrow-left"></i> Kembali ke Program
+        </a>
+      </div>
+    </div>
+
+    <main class="content-container">
+      <div class="two-column-layout">
+        <!-- Left Column: Material Information -->
+        <div class="left-column">
+          <h1 class="materi-title">{{ materi.judul }}</h1>
+          <p class="materi-description">{{ materi.deskripsi }}</p>
+
+          {% if materi.naskah %}
+          <h2 class="section-title">Ringkasan Materi</h2>
+          <a href="{{ url_for('static', filename=materi.naskah) }}" class="resource-link" target="_blank">
+            <i class="bi bi-file-pdf"></i> Unduh PDF
+          </a>
+          {% endif %}
+
+          {% if materi.audio %}
+          <h2 class="section-title">Audio Relaksasi</h2>
+          {% for audio in materi.audio %}
+          <div class="audio-section">
+            <h3 class="audio-title">{{ audio.judul }}</h3>
+            <audio controls class="audio-player">
+              <source src="{{ url_for('static', filename=audio.src) }}" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+          {% endfor %}
+          {% endif %}
+        </div>
+
+        <!-- Right Column: Comic and Subtitle -->
+        <div class="right-column">
+          {% if materi.ilustrasi %}
+          <div class="comic-frame">
+            <div class="comic-image-container">
+              <button class="comic-navigation prev-btn" onclick="changeIlustrasi(-1)">❮</button>
+              <img id="currentIlustrasi" 
+                   src="{{ url_for('static', filename=materi.ilustrasi[0]) }}" 
+                   alt="Ilustrasi" 
+                   class="comic-image">
+              <button class="comic-navigation next-btn" onclick="changeIlustrasi(1)">❯</button>
+            </div>
+            
+            <div class="subtitle-container">
+              <p id="currentTranscript" class="subtitle-text">
+                {% if materi.audio_pembelajaran and materi.audio_pembelajaran[0].transkrip %}
+                  {{ materi.audio_pembelajaran[0].transkrip[0].text }}
+                {% else %}
+                  Dengarkan audio untuk melihat transkrip
+                {% endif %}
+              </p>
+            </div>
+          </div>
+
+          {% if materi.audio_pembelajaran %}
+          <div id="audioPlayer" class="audio-section">
+            <h3 class="audio-title" id="currentAudioTitle">{{ materi.audio_pembelajaran[0].judul }}</h3>
+            <audio controls class="audio-player" onplay="startTranscriptSync()" onpause="stopTranscriptSync()">
+              <source src="{{ url_for('static', filename=materi.audio_pembelajaran[0].src) }}" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+          {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </main>
+
+    {% include "base/footer.html" %}
+
+    <script>
+      const audioData = {{ materi.audio_pembelajaran | tojson | safe }};
+      const illustrations = {{ materi.ilustrasi | tojson | safe }};
+      let currentIndex = 0;
+      let transcriptInterval;
+      let lastSubtitleIndex = -1;
+      let isCompleted = false;
+
+      function changeIlustrasi(direction) {
+        const newIndex = currentIndex + direction;
+        
+        // Prevent going beyond bounds
+        if (newIndex < 0 || newIndex >= illustrations.length) {
+          return;
+        }
+
+        // Check if we're moving forward to the last illustration
+        if (direction > 0 && newIndex === illustrations.length - 1) {
+          const audioPlayer = document.querySelector('#audioPlayer audio');
+          if (!audioPlayer || audioPlayer.ended || !audioPlayer.duration) {
+            if (!isCompleted) {
+              isCompleted = true;
+              markMaterialAsComplete();
+            }
+          }
+        }
+        
+        currentIndex = newIndex;
+        updateContent();
+
+        // Update navigation buttons visibility
+        updateNavigationButtons();
+      }
+
+      function updateNavigationButtons() {
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        
+        // Hide prev button if at first illustration
+        if (prevBtn) {
+          prevBtn.style.display = currentIndex === 0 ? 'none' : 'flex';
+        }
+        
+        // Hide next button if at last illustration
+        if (nextBtn) {
+          nextBtn.style.display = currentIndex === illustrations.length - 1 ? 'none' : 'flex';
+        }
+      }
+
+      function markMaterialAsComplete() {
+        $.ajax({
+          type: "POST",
+          url: "/save-status",
+          data: {
+            username: "{{ user_info.username }}",
+            materi: "{{ materi.judul }}",
+            status: "100"
+          },
+          success: function(response) {
+            Swal.fire({
+              title: "Materi Selesai!",
+              text: "Selamat! Anda telah menyelesaikan materi ini.",
+              icon: "success",
+              confirmButtonText: "Lanjut ke materi berikutnya"
+            }).then(() => {
+              window.location.href = "/program_content/{{ materi.program_title }}";
+            });
+          },
+          error: function(xhr, status, error) {
+            console.error("Error saving status:", error);
+            Swal.fire({
+              title: "Error",
+              text: "Terjadi kesalahan saat menyimpan status materi.",
+              icon: "error",
+              confirmButtonText: "OK"
+            });
+          }
+        });
+      }
+
+      function updateContent() {
+        // Update illustration
+        if (illustrations && illustrations.length > currentIndex) {
+          document.getElementById('currentIlustrasi').src = "{{ url_for('static', filename='') }}" + illustrations[currentIndex];
+        }
+        
+        // Update audio content if available
+        if (audioData && audioData.length > currentIndex) {
+          const currentData = audioData[currentIndex];
+          
+          // Update audio title and source
+          document.getElementById('currentAudioTitle').textContent = currentData.judul;
+          const audioPlayer = document.querySelector('#audioPlayer audio');
+          audioPlayer.src = "{{ url_for('static', filename='') }}" + currentData.src;
+          audioPlayer.load();
+          
+          // Reset transcript and subtitle index
+          lastSubtitleIndex = -1;
+          document.getElementById('currentTranscript').textContent = "Dengarkan audio untuk melihat transkrip";
+
+          // Check if we're on the last illustration
+          if (currentIndex === illustrations.length - 1) {
+            audioPlayer.addEventListener('ended', function() {
+              if (!isCompleted) {
+                isCompleted = true;
+                markMaterialAsComplete();
+              }
+            });
+          }
+        }
+      }
+
+      function updateTranscript() {
+        const audioPlayer = document.querySelector('#audioPlayer audio');
+        const currentTime = audioPlayer.currentTime;
+        const currentData = audioData[currentIndex];
+
+        if (!currentData || !currentData.transkrip || currentData.transkrip.length === 0) {
+          document.getElementById('currentTranscript').textContent = "Tidak ada transkrip tersedia";
+          return;
+        }
+
+        // Sort transcripts by start time
+        const sortedTranscripts = [...currentData.transkrip].sort((a, b) => a.start - b.start);
+
+        // Find the current subtitle based on timing
+        let foundIndex = -1;
+        for (let i = 0; i < sortedTranscripts.length; i++) {
+          const subtitle = sortedTranscripts[i];
+          if (currentTime >= subtitle.start && currentTime <= subtitle.end) {
+            foundIndex = i;
+            break;
+          }
+        }
+
+        // Update the subtitle text only if it's different from the last one
+        const transcriptElement = document.getElementById('currentTranscript');
+        if (foundIndex !== -1 && foundIndex !== lastSubtitleIndex) {
+          lastSubtitleIndex = foundIndex;
+          transcriptElement.textContent = sortedTranscripts[foundIndex].text;
+        } else if (foundIndex === -1) {
+          // If no subtitle is active, show dots only if we're between subtitles
+          const nextSubtitle = sortedTranscripts.find(sub => sub.start > currentTime);
+          if (nextSubtitle) {
+            transcriptElement.textContent = "...";
+          }
+        }
+      }
+
+      function startTranscriptSync() {
+        // Clear any existing interval
+        stopTranscriptSync();
+        // Start new interval for regular updates
+        transcriptInterval = setInterval(updateTranscript, 100); // Check every 100ms
+        // Initial update
+        updateTranscript();
+      }
+
+      function stopTranscriptSync() {
+        if (transcriptInterval) {
+          clearInterval(transcriptInterval);
+          transcriptInterval = null;
+        }
+      }
+
+      // Initialize event listeners
+      document.addEventListener('DOMContentLoaded', function() {
+        const audioPlayer = document.querySelector('#audioPlayer audio');
+        
+        // Update transcript on timeupdate
+        audioPlayer.addEventListener('timeupdate', updateTranscript);
+
+        // Start sync when playing
+        audioPlayer.addEventListener('play', function() {
+          startTranscriptSync();
+        });
+
+        // Stop sync when paused
+        audioPlayer.addEventListener('pause', function() {
+          stopTranscriptSync();
+        });
+
+        // Stop sync when ended
+        audioPlayer.addEventListener('ended', function() {
+          stopTranscriptSync();
+          if (currentIndex === illustrations.length - 1 && !isCompleted) {
+            isCompleted = true;
+            markMaterialAsComplete();
+          } else if (!isCompleted) {
+            changeIlustrasi(1);
+          }
+        });
+
+        // Set initial state
+        document.getElementById('currentTranscript').textContent = "Dengarkan audio untuk melihat transkrip";
+        updateNavigationButtons();
+      });
+    </script>
+  </body>
+</html> 

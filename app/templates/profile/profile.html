@@ -179,35 +179,39 @@
             url: "/check-status",
             type: "GET",
             success: function (response) {
-                progres = response["progres"]
-                let progresBar = 0;
-                let programEndRoll = 0;
-                $("#progressBar").empty();
-                $("#statusEndRoll").empty();
-                $("#programList").empty();
-                console.log(progres)
-                for (let i = 0; i < progres.length; i++) {
-                  progresBar += parseInt(progres[i].status)
-                  programEndRoll++;
-                  let programTemp = `<div class="program-item">${progres[i].materi}</div>
-                  `;
-                  $("#programList").append(programTemp);
-                }
-                let progresTemp = `<div
-                                class="progress-bar bg-primary"
-                                role="progressbar"
-                                style="width: ${progresBar}%"
-                                aria-valuenow="${progresBar}"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                            >
-                                ${progresBar} %
-                            </div>`;
-                $("#progressBar").append(progresTemp);
-                let endRoll = `<p class="text-muted mb-0">${programEndRoll}/4</p>`;
-                $("#statusEndRoll").append(endRoll);
+              const progres = response["progres"];
+              const totalMateri = 4; // Total jumlah materi
+              const completedMateri = progres.length; // Jumlah materi yang selesai
+              const progressPercentage = Math.round((completedMateri / totalMateri) * 100); // Persentase progress
+              
+              $("#progressBar").empty();
+              $("#statusEndRoll").empty();
+              $("#programList").empty();
+
+              // Update progress bar
+              const progresTemp = `<div
+                              class="progress-bar bg-primary"
+                              role="progressbar"
+                              style="width: ${progressPercentage}%"
+                              aria-valuenow="${progressPercentage}"
+                              aria-valuemin="0"
+                              aria-valuemax="100"
+                          >
+                              ${progressPercentage}%
+                          </div>`;
+              $("#progressBar").append(progresTemp);
+
+              // Update completed materials counter
+              const endRoll = `<p class="text-muted mb-0">${completedMateri}/${totalMateri}</p>`;
+              $("#statusEndRoll").append(endRoll);
+
+              // Update list of completed materials
+              progres.forEach(function(item) {
+                const programTemp = `<div class="program-item">${item.materi}</div>`;
+                $("#programList").append(programTemp);
+              });
             },
-            error: function (xhr, progres, error) {
+            error: function (xhr, status, error) {
               console.error(error);
             },
           });

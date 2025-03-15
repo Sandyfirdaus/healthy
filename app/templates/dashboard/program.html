@@ -15,19 +15,19 @@
           success: function (response) {
             console.log(response);
             if (response.exists) {
-              $('#mindfulness-link').off('click').css('pointer-events', 'auto').css('color', ''); // Mengaktifkan kembali link
+              $('.program-link').off('click').css('pointer-events', 'auto').css('color', ''); // Mengaktifkan kembali link
             } else {
-              $('#mindfulness-link').on('click', function (e) {
+              $('.program-link').on('click', function (e) {
                 e.preventDefault(); // Mencegah link agar tidak bisa diakses
-            }).css('pointer-events', 'none').css('color', 'gray');
-            Swal.fire({
-              icon: "info",
-              title: "Kamu belum bisa mengakses program yang tersedia!",
-              text: "Silahkan tes skrining terlebih dahulu",
-              confirmButtonText: "Oke",
-            }).then(() => {
-              window.location.href = "/homesignin";
-            });
+              }).css('pointer-events', 'none').css('color', 'gray');
+              Swal.fire({
+                icon: "info",
+                title: "Kamu belum bisa mengakses program yang tersedia!",
+                text: "Silahkan tes skrining terlebih dahulu",
+                confirmButtonText: "Oke",
+              }).then(() => {
+                window.location.href = "/homesignin";
+              });
             }
           },
         });
@@ -53,20 +53,22 @@
       <section id="program-posts" class="program-posts section">
         <div class="container">
           <div class="row gy-4">
+            {% for program in programs %}
             <div class="col-lg-4" data-aos="fade-up">
               <article class="post-item">
                 <div class="post-img">
                   <img
-                    src="{{url_for('static', filename='assets/img/program/program-1.jpg')}}"
-                    alt="Gangguan Kecemasan"
+                    src="{{url_for('static', filename=program.coverImage)}}"
+                    alt="{{ program.title }}"
                     class="img-fluid"
                   />
                 </div>
                 <h2 class="title-center">
-                  <a href="/program_content" id="mindfulness-link">Perkenalan Mindfulness Untuk Mahasiswa</a>
+                  <a href="/program_content/{{ program.title }}" class="program-link">{{ program.title }}</a>
                 </h2>
               </article>
             </div>
+            {% endfor %}
           </div>
         </div>
       </section>

@@ -11,7 +11,9 @@ def program():
     try:
         payload = jwt.decode(myToken, SECRET_KEY, algorithms=["HS256"])
         user_info = current_app.db.users.find_one({"username": payload["id"]})
-        return render_template('dashboard/program.html', user_info=user_info)
+        # Fetch all programs from the database
+        programs = list(current_app.db.program.find({}, {'_id': False}))
+        return render_template('dashboard/program.html', user_info=user_info, programs=programs)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("auth.login"))
     except jwt.exceptions.DecodeError:
