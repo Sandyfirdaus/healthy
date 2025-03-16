@@ -73,36 +73,84 @@
 
 <script>
     $(document).ready(function () {
-        $.ajax({
-          type: "GET",
-          url: "/get-materi",
-          success: function (response) {
-            console.log(response.data_materi);
-            $("#table_materi").empty();
-            dataMateri = response.data_materi;
-            dataMateri.forEach((item) => {
-                let tableRowMateri = `
-                    <tr>
-                        <td>${item.username || '-'}</td>
-                        <td>${item.program || 'Program'}</td>
-                        <td>${item.materi || '-'}</td>
-                        <td>Completed</td>
-                        <td>${item.tanggal || '-'}</td>
-                        <td>${item.waktu || '-'}</td>
-                        <td>
-                            <button class="btn btn-danger btn-delete" onclick="deleteMateri('${item.username}', '${item.materi}')">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                $("#table_materi").append(tableRowMateri);
-            });
-          },
-        });
+        // Load data on page load
+        loadMateriData();
     });
 
+    // Function to load materi data
+    function loadMateriData() {
+        console.log("Loading materi data...");
+        $("#table_materi").empty();
+        $("#table_materi").append(`
+            <tr>
+                <td colspan="7" class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </td>
+            </tr>
+        `);
+        
+        $.ajax({
+            type: "GET",
+            url: "/get-materi",
+            success: function (response) {
+                console.log("Received materi data:", response.data_materi);
+                $("#table_materi").empty();
+                dataMateri = response.data_materi;
+                
+                if (dataMateri.length === 0) {
+                    console.log("No materi data found");
+                    $("#table_materi").append(`
+                        <tr>
+                            <td colspan="7" class="text-center">Tidak ada data</td>
+                        </tr>
+                    `);
+                    return;
+                }
+                
+                dataMateri.forEach((item) => {
+                    console.log("Processing item:", item);
+                    // Escape special characters to prevent JS injection
+                    const username = item.username ? String(item.username).replace(/'/g, "\\'") : '-';
+                    const program = item.program ? String(item.program).replace(/'/g, "\\'") : 'Program';
+                    const materi = item.materi ? String(item.materi).replace(/'/g, "\\'") : '-';
+                    const tanggal = item.tanggal || '-';
+                    const waktu = item.waktu || '-';
+                    
+                    let tableRowMateri = `
+                        <tr>
+                            <td>${username}</td>
+                            <td>${program}</td>
+                            <td>${materi}</td>
+                            <td>Completed</td>
+                            <td>${tanggal}</td>
+                            <td>${waktu}</td>
+                            <td>
+                                <button class="btn btn-danger btn-delete" onclick="deleteMateri('${username}', '${materi}')">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    $("#table_materi").append(tableRowMateri);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("Error loading materi data:", error);
+                $("#table_materi").empty();
+                $("#table_materi").append(`
+                    <tr>
+                        <td colspan="7" class="text-center">Error loading data</td>
+                    </tr>
+                `);
+            }
+        });
+    }
+
     function deleteMateri(username, materi) {
+        console.log("Deleting:", username, materi);
+        
         Swal.fire({
             title: 'Apakah anda yakin?',
             text: "Data yang dihapus tidak dapat dikembalikan!",
@@ -114,24 +162,36 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
+                // Create form data to ensure proper data transmission
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('materi', materi);
+                
+                console.log("Sending delete request with data:", username, materi);
+                
                 $.ajax({
                     type: "POST",
                     url: "/delete-materi",
-                    data: { username: username, materi: materi },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function (response) {
+                        console.log("Delete success:", response);
                         Swal.fire({
                             title: "Berhasil!",
-                            text: response["msg"],
+                            text: response.msg,
                             icon: "success",
                             confirmButtonText: "Oke",
-                        }).then((result) => {
-                            window.location.reload();
+                        }).then(() => {
+                            // Hard reload the page
+                            document.location.reload(true);
                         });
                     },
-                    error: function(response) {
+                    error: function(xhr, status, error) {
+                        console.error("Delete error:", error, xhr.responseText);
                         Swal.fire({
                             title: "Gagal!",
-                            text: response.responseJSON?.msg || "Terjadi kesalahan saat menghapus data",
+                            text: "Terjadi kesalahan saat menghapus data",
                             icon: "error",
                             confirmButtonText: "Oke",
                         });
