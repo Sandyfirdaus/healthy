@@ -156,19 +156,32 @@
             <div class="col-md-8">
                 <div class="article-main">
                     <div class="article-header">
-                        <span class="article-category" id="articleCategory"></span>
-                        <h1 class="article-title" id="articleTitle"></h1>
+                        <span class="article-category">{{ article.kategori }}</span>
+                        <h1 class="article-title">{{ article.title }}</h1>
                         <div class="article-meta">
-                            <img id="authorImage" src="" alt="Author" class="author-image">
-                            <span id="authorName"></span>
+                            {% if article.authorPict %}
+                            <img src="{{ url_for('static', filename=article.authorPict) }}" alt="{{ article.author }}" class="author-image">
+                            {% endif %}
+                            <span>{{ article.author }}</span>
                             <span>•</span>
-                            <span id="articleDate"></span>
+                            <span>{{ article.date }}</span>
                         </div>
                     </div>
 
-                    <img id="articleImage" src="" alt="Article cover" class="article-image">
+                    {% if article.artikelPict %}
+                    <img src="{{ url_for('static', filename=article.artikelPict) }}" alt="{{ article.title }}" class="article-image">
+                    {% endif %}
                     
-                    <div class="article-content" id="articleContent">
+                    <div class="article-content">
+                        {% if article.konten %}
+                            {% for paragraph in article.konten.split('\n') %}
+                                {% if paragraph.strip() %}
+                                <p>{{ paragraph }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <p>No content available.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -187,57 +200,8 @@
 
     <script>
         $(document).ready(function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const articleTitle = urlParams.get('title');
-            
-            if (articleTitle) {
-                // Fetch article details
-                $.ajax({
-                    url: `/detail-artikel/${encodeURIComponent(articleTitle)}`,
-                    type: 'GET',
-                    success: function(response) {
-                        const article = response.article;
-                        console.log('Article data:', article); // Debug log
-                        
-                        // Update page content
-                        $('#articleTitle').text(article.title);
-                        $('#articleCategory').text(article.kategori);
-                        $('#authorName').text(article.author);
-                        $('#articleDate').text(article.date);
-                        
-                        // Format and display content
-                        if (article.konten) {
-                            // Convert line breaks to paragraphs and preserve formatting
-                            const formattedContent = article.konten
-                                .split('\n')
-                                .filter(line => line.trim() !== '')
-                                .map(line => `<p>${line}</p>`)
-                                .join('');
-                            $('#articleContent').html(formattedContent);
-                        } else {
-                            $('#articleContent').html('<p>No content available.</p>');
-                        }
-                        
-                        // Update images with proper paths
-                        if (article.artikelPict) {
-                            $('#articleImage').attr('src', `../../static/${article.artikelPict}`);
-                        }
-                        if (article.authorPict) {
-                            $('#authorImage').attr('src', `../../static/${article.authorPict}`).attr('alt', article.author);
-                        }
-
-                        // Fetch related articles
-                        fetchRelatedArticles(article.kategori);
-                    },
-                    error: function(xhr) {
-                        console.error('Error fetching article:', xhr);
-                        alert('Failed to load article details');
-                    }
-                });
-            } else {
-                alert('Article not found');
-                window.location.href = '/view-artikel';
-            }
+            // Fetch related articles
+            fetchRelatedArticles('{{ article.kategori }}');
         });
 
         function fetchRelatedArticles(category) {
@@ -247,14 +211,14 @@
                 success: function(response) {
                     const articles = response.data_artikel;
                     const relatedArticles = articles.filter(article => 
-                        article.kategori === category
+                        article.kategori === category && article.title !== '{{ article.title }}'
                     ).slice(0, 3); // Get up to 3 related articles
 
                     $("#relatedArticlesList").empty();
                     relatedArticles.forEach(article => {
                         const relatedArticleHtml = `
                             <div class="related-article-item">
-                                <img src="../../static/${article.authorPict}" alt="${article.author}" class="related-article-image">
+                                <img src="${article.authorPict ? '../../static/' + article.authorPict : ''}" alt="${article.author}" class="related-article-image">
                                 <div class="related-article-content">
                                     <h5><a href="/view-artikel-details?title=${encodeURIComponent(article.title)}" class="text-decoration-none text-dark">${article.title}</a></h5>
                                     <p>${article.author} • ${article.date}</p>

@@ -18,8 +18,14 @@ def view_artikel_details():
         if not title:
             return redirect(url_for("add_artikel.view_artikel"))
 
+        # Fetch the article data
+        article = current_app.db.artikel.find_one({'title': title}, {'_id': False})
+        
+        if not article:
+            return redirect(url_for("add_artikel.view_artikel"))
+
         if user_info and user_info.get('username') == 'admin.psidamai':
-            return render_template('dashboard_admin/artikel_details.html', user_info=user_info)
+            return render_template('dashboard_admin/artikel_details.html', user_info=user_info, article=article)
         else:
             return redirect(url_for("auth_admin.login_admin"))
         

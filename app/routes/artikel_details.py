@@ -1,16 +1,34 @@
 from flask import Flask, redirect, current_app, jsonify, url_for, render_template, Blueprint, request
 import jwt
+import urllib.parse
 
 # Blueprint untuk halaman artikel
-artikel_details_ = Blueprint('artikel_details', __name__, template_folder='templates/dashboard')
+artikel_details_ = Blueprint('artikel_details', __name__)
 
-
-@artikel_details_.route('/artikel_details/<title>')  # Change to article_id here
+# Main route for article details with title parameter
+@artikel_details_.route('/artikel_details/<title>')
 def artikel_detail(title):  
     myToken = request.cookies.get("mytoken")
-    article = current_app.db.artikel.find_one({'title': title}, {'_id' : False})
+    
+    # Try to find the article with the exact title
+    article = current_app.db.artikel.find_one({'title': title}, {'_id': False})
+    
+    # If not found, try with URL decoded title
+    if not article:
+        decoded_title = urllib.parse.unquote(title)
+        article = current_app.db.artikel.find_one({'title': decoded_title}, {'_id': False})
+    
+    # If still not found, try adding a question mark
+    if not article and not title.endswith('?'):
+        article = current_app.db.artikel.find_one({'title': title + '?'}, {'_id': False})
+    
+    # If still not found, try with decoded title plus question mark
+    if not article and not decoded_title.endswith('?'):
+        article = current_app.db.artikel.find_one({'title': decoded_title + '?'}, {'_id': False})
+    
     SECRET_KEY = current_app.config['SECRET_KEY']
     articles = current_app.db.artikel.find({}, {'_id': False})
+    
     try:
         # Validasi token JWT
         payload = jwt.decode(myToken, SECRET_KEY, algorithms=["HS256"])

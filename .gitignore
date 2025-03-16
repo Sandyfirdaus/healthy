@@ -1,2 +1,7 @@
 # FFmpeg executables
 app/utils/ffmpeg/*.exe 
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class 
