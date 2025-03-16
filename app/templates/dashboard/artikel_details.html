@@ -307,7 +307,7 @@
                     <img  src="{{ url_for('static', filename=article.artikelPict) }}" alt="" class="flex-shrink-0">
                     <div>
                       <h4><a
-                        href="/artikel_details/{{ article.title }}"
+                        href="/artikel_details/{{ article.title|urlencode }}"
                         class="text-decoration-none"
                       >
                         {{ article.title }}

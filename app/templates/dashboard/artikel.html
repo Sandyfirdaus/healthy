@@ -65,7 +65,7 @@
             {% for article in articles %}
             <div class="col-lg-4" data-aos="flip-up">
               <a
-                href="/artikel_details/{{ article.title }}"
+                href="/artikel_details/{{ article.title|urlencode }}"
                 class="post-item-link text-decoration-none"
               >
                 <article class="post-item">
