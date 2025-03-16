@@ -17,13 +17,19 @@ try:
 except ImportError:
     PIL_AVAILABLE = False
 
+# Check if we're running on Railway
+IS_RAILWAY = os.environ.get('RAILWAY_ENVIRONMENT') is not None
+
 # Konfigurasi path ffmpeg
 FFMPEG_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'utils', 'ffmpeg'))
-FFMPEG_EXE = os.path.join(FFMPEG_PATH, 'ffmpeg.exe')
-FFPROBE_EXE = os.path.join(FFMPEG_PATH, 'ffprobe.exe')
+FFMPEG_EXE = None
+FFPROBE_EXE = None
 
 # Check if we're on Windows or Linux/Mac
 if os.name == 'nt':  # Windows
+    FFMPEG_EXE = os.path.join(FFMPEG_PATH, 'ffmpeg.exe')
+    FFPROBE_EXE = os.path.join(FFMPEG_PATH, 'ffprobe.exe')
+    
     if not os.path.exists(FFMPEG_EXE):
         # Try to find ffmpeg in PATH
         try:
@@ -34,22 +40,35 @@ if os.name == 'nt':  # Windows
                 print(f"Found FFmpeg in PATH: {FFMPEG_EXE}")
         except Exception as e:
             print(f"Error finding FFmpeg in PATH: {str(e)}")
-else:  # Linux/Mac
-    FFMPEG_EXE = os.path.join(FFMPEG_PATH, 'ffmpeg')
-    FFPROBE_EXE = os.path.join(FFMPEG_PATH, 'ffprobe')
-    
-    if not os.path.exists(FFMPEG_EXE):
-        # Try to find ffmpeg in PATH
+else:  # Linux/Mac or Railway
+    if IS_RAILWAY:
+        # On Railway, use system-installed FFmpeg
         try:
             FFMPEG_EXE = shutil.which('ffmpeg')
             FFPROBE_EXE = shutil.which('ffprobe')
             if FFMPEG_EXE:
                 FFMPEG_PATH = os.path.dirname(FFMPEG_EXE)
-                print(f"Found FFmpeg in PATH: {FFMPEG_EXE}")
+                print(f"Using system FFmpeg on Railway: {FFMPEG_EXE}")
         except Exception as e:
-            print(f"Error finding FFmpeg in PATH: {str(e)}")
+            print(f"Error finding system FFmpeg on Railway: {str(e)}")
+    else:
+        # Regular Linux/Mac
+        FFMPEG_EXE = os.path.join(FFMPEG_PATH, 'ffmpeg')
+        FFPROBE_EXE = os.path.join(FFMPEG_PATH, 'ffprobe')
+        
+        if not os.path.exists(FFMPEG_EXE):
+            # Try to find ffmpeg in PATH
+            try:
+                FFMPEG_EXE = shutil.which('ffmpeg')
+                FFPROBE_EXE = shutil.which('ffprobe')
+                if FFMPEG_EXE:
+                    FFMPEG_PATH = os.path.dirname(FFMPEG_EXE)
+                    print(f"Found FFmpeg in PATH: {FFMPEG_EXE}")
+            except Exception as e:
+                print(f"Error finding FFmpeg in PATH: {str(e)}")
 
-if os.path.exists(FFMPEG_PATH) and os.path.exists(FFMPEG_EXE) and os.path.exists(FFPROBE_EXE):
+# Configure AudioSegment with FFmpeg paths if available
+if FFMPEG_EXE and FFPROBE_EXE and os.path.exists(FFMPEG_EXE) and os.path.exists(FFPROBE_EXE):
     os.environ["PATH"] = FFMPEG_PATH + os.pathsep + os.environ["PATH"]
     AudioSegment.converter = FFMPEG_EXE
     AudioSegment.ffmpeg = FFMPEG_EXE
@@ -60,15 +79,20 @@ if os.path.exists(FFMPEG_PATH) and os.path.exists(FFMPEG_EXE) and os.path.exists
 else:
     print("Warning: FFmpeg files not found!")
     print(f"Looking in: {FFMPEG_PATH}")
-    print(f"Files exist? ffmpeg.exe: {os.path.exists(FFMPEG_EXE)}, ffprobe.exe: {os.path.exists(FFPROBE_EXE)}")
+    if FFMPEG_EXE:
+        print(f"Files exist? ffmpeg: {os.path.exists(FFMPEG_EXE) if FFMPEG_EXE else 'Not found'}, ffprobe: {os.path.exists(FFPROBE_EXE) if FFPROBE_EXE else 'Not found'}")
     
     # Try to use system ffmpeg as a last resort
     try:
-        if shutil.which('ffmpeg'):
-            print("Using system FFmpeg")
-            AudioSegment.converter = shutil.which('ffmpeg')
-            AudioSegment.ffmpeg = shutil.which('ffmpeg')
-            AudioSegment.ffprobe = shutil.which('ffprobe')
+        system_ffmpeg = shutil.which('ffmpeg')
+        system_ffprobe = shutil.which('ffprobe')
+        if system_ffmpeg:
+            print(f"Using system FFmpeg: {system_ffmpeg}")
+            AudioSegment.converter = system_ffmpeg
+            AudioSegment.ffmpeg = system_ffmpeg
+            AudioSegment.ffprobe = system_ffprobe
+            FFMPEG_EXE = system_ffmpeg
+            FFPROBE_EXE = system_ffprobe
     except Exception as e:
         print(f"Error configuring system FFmpeg: {str(e)}")
 
@@ -755,11 +779,20 @@ def convert_audio_to_wav(input_file, output_file):
     """Konversi file audio ke format WAV menggunakan pydub"""
     try:
         print(f"Converting {input_file} to {output_file}")
-        print(f"Using FFmpeg at: {FFMPEG_EXE}")
         
-        if not os.path.exists(FFMPEG_EXE):
-            print(f"FFmpeg not found at: {FFMPEG_EXE}")
-            return False
+        # Check if FFmpeg is available
+        if not FFMPEG_EXE or not os.path.exists(FFMPEG_EXE):
+            print(f"FFmpeg not found or not executable. Using pydub's default configuration.")
+            # Try using pydub's default configuration
+            try:
+                audio = AudioSegment.from_file(input_file)
+                audio.export(output_file, format="wav", parameters=["-ac", "1", "-ar", "16000"])
+                return True
+            except Exception as e:
+                print(f"Error using pydub's default configuration: {str(e)}")
+                return False
+        
+        print(f"Using FFmpeg at: {FFMPEG_EXE}")
             
         # Try direct FFmpeg command for more control
         try:
@@ -774,70 +807,75 @@ def convert_audio_to_wav(input_file, output_file):
                 output_file  # Output file
             ]
             
-            print(f"Running FFmpeg command: {' '.join(cmd)}")
+            # Execute command
+            result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             
-            # Run the command
-            process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
-            stdout, stderr = process.communicate()
+            if result.returncode != 0:
+                print(f"FFmpeg command failed: {result.stderr.decode()}")
+                # Fallback to pydub
+                audio = AudioSegment.from_file(input_file)
+                audio.export(output_file, format="wav", parameters=["-ac", "1", "-ar", "16000"])
             
-            # Check if conversion was successful
-            if process.returncode == 0 and os.path.exists(output_file):
-                print(f"Successfully converted to {output_file} using direct FFmpeg command")
-                return True
-            else:
-                print(f"FFmpeg direct command failed with return code {process.returncode}")
-                print(f"FFmpeg stderr: {stderr.decode('utf-8', errors='ignore')}")
-                # Fall back to pydub method
-                print("Falling back to pydub method")
-        except Exception as e:
-            print(f"Error with direct FFmpeg command: {str(e)}")
-            print("Falling back to pydub method")
-            
-        # Fallback: Use pydub method
-        # Load file audio
-        audio = AudioSegment.from_file(input_file)
-        
-        # Konversi ke mono dan set sample rate
-        audio = audio.set_channels(1)
-        audio = audio.set_frame_rate(16000)
-        
-        # Export ke WAV dengan parameter yang lebih spesifik
-        audio.export(
-            output_file,
-            format='wav',
-            parameters=[
-                "-ac", "1",  # mono
-                "-ar", "16000",  # sample rate
-                "-acodec", "pcm_s16le"  # codec
-            ]
-        )
-        
-        if os.path.exists(output_file):
-            print(f"Successfully converted to {output_file}")
             return True
-        else:
-            print(f"Output file {output_file} was not created")
-            return False
             
+        except Exception as e:
+            print(f"Error running FFmpeg command: {str(e)}")
+            
+            # Fallback to pydub
+            try:
+                audio = AudioSegment.from_file(input_file)
+                audio.export(output_file, format="wav", parameters=["-ac", "1", "-ar", "16000"])
+                return True
+            except Exception as e2:
+                print(f"Error using pydub fallback: {str(e2)}")
+                return False
+                
     except Exception as e:
-        print(f"Conversion error: {str(e)}")
+        print(f"Error in convert_audio_to_wav: {str(e)}")
         return False
 
 def get_audio_duration(audio_path):
     """Get duration of audio file in seconds"""
     try:
-        if not os.path.exists(FFPROBE_EXE):
-            print(f"FFprobe not found at: {FFPROBE_EXE}")
-            return 0
+        # Try using pydub directly first
+        try:
+            audio = AudioSegment.from_file(audio_path)
+            return len(audio) / 1000.0  # Convert to seconds
+        except Exception as e:
+            print(f"Error getting duration with pydub: {str(e)}")
             
-        audio = AudioSegment.from_wav(audio_path)
-        return len(audio) / 1000.0  # Convert to seconds
+            # If FFprobe is available, try using it
+            if FFPROBE_EXE and os.path.exists(FFPROBE_EXE):
+                try:
+                    cmd = [
+                        FFPROBE_EXE,
+                        "-v", "error",
+                        "-show_entries", "format=duration",
+                        "-of", "default=noprint_wrappers=1:nokey=1",
+                        audio_path
+                    ]
+                    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                    if result.returncode == 0:
+                        duration = float(result.stdout.strip())
+                        return duration
+                except Exception as e2:
+                    print(f"Error getting duration with FFprobe: {str(e2)}")
+            
+            # Last resort: try to open with wave module if it's a WAV file
+            if audio_path.lower().endswith('.wav'):
+                try:
+                    with wave.open(audio_path, 'rb') as wav_file:
+                        frames = wav_file.getnframes()
+                        rate = wav_file.getframerate()
+                        duration = frames / float(rate)
+                        return duration
+                except Exception as e3:
+                    print(f"Error getting duration with wave module: {str(e3)}")
+            
+            # If all methods fail, return a default duration
+            return 0
     except Exception as e:
-        print(f"Error getting duration: {str(e)}")
+        print(f"Error in get_audio_duration: {str(e)}")
         return 0
 
 @add_materi_.route('/convert-audio-to-text', methods=['POST'])

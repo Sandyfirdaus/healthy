@@ -34,6 +34,30 @@ If the automatic setup doesn't work, you can download FFmpeg manually:
    python app.py
    ```
 
+## Deployment to Railway
+
+This application is configured to deploy smoothly on Railway. The code has been updated to handle the absence of local FFmpeg executables by using the system-installed FFmpeg on Railway.
+
+### Railway Deployment Steps
+
+1. Push your code to a GitHub repository
+2. Connect your repository to Railway
+3. Railway will automatically detect the configuration in `railway.toml` and install FFmpeg during deployment
+4. The application will use the system-installed FFmpeg on Railway
+
+### Alternative: Docker Deployment
+
+You can also deploy using the provided Dockerfile:
+
+1. Build the Docker image:
+   ```
+   docker build -t psidamai-app .
+   ```
+2. Run the container:
+   ```
+   docker run -p 5000:5000 psidamai-app
+   ```
+
 ## GitHub Large File Handling
 The FFmpeg executables are excluded from the repository using `.gitignore` because they exceed GitHub's recommended file size limits. This approach ensures:
 
