@@ -3,8 +3,8 @@ builder = "nixpacks"
 
 [deploy]
 startCommand = "python app.py"
-healthcheckPath = "/"
-healthcheckTimeout = 100
+# healthcheckPath = "/"
+# healthcheckTimeout = 100
 
 [nixpacks]
 # Install FFmpeg
