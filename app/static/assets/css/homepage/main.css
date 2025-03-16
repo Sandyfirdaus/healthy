@@ -2507,6 +2507,75 @@ Homesignin Section
   margin-bottom: 0;
 }
 
+
+.pagination-container {
+  margin: 50px auto 30px;
+  text-align: center;
+  width: 100%;
+}
+.pagination-wrapper {
+  display: inline-block;
+}
+.pagination {
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border-radius: 50px;
+  display: inline-flex;
+  background-color: white;
+  padding: 8px 20px;
+  margin-bottom: 0;
+}
+.pagination .page-item {
+  margin: 0 3px;
+}
+.pagination .page-link {
+  color: #555;
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 16px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+.pagination .arrow-item .page-link {
+  background-color: #f8f9fa;
+}
+.pagination .page-link:hover {
+  background-color: #f0f0f0;
+  color: #333;
+  transform: scale(1.1);
+}
+.pagination .page-item.active .page-link {
+  background-color: #4CAF50;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
+}
+.pagination .page-item.disabled .page-link {
+  color: #ccc;
+  pointer-events: none;
+  background-color: #f8f9fa;
+  opacity: 0.7;
+}
+.bi-chevron-left, .bi-chevron-right {
+  font-size: 18px;
+  font-weight: bold;
+}
+/* Hide fallback arrows when Bootstrap Icons are loaded */
+.bi-chevron-left + .fallback-arrow,
+.bi-chevron-right + .fallback-arrow {
+  display: none;
+}
+/* Show fallback arrows when Bootstrap Icons fail to load */
+.bi-chevron-left:not(:defined) + .fallback-arrow,
+.bi-chevron-right:not(:defined) + .fallback-arrow {
+  display: inline;
+}
+
 /*--------------------------------------------------------------
 # Contact Section
 --------------------------------------------------------------*/
